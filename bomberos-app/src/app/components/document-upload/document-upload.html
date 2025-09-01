@@ -1,0 +1,30 @@
+<mat-toolbar color="primary">
+  <span>SIGBA</span>
+  <span class="spacer"></span>
+  <a mat-button routerLink="/historial">
+    <mat-icon>arrow_back</mat-icon>
+    Volver
+  </a>
+</mat-toolbar>
+
+<div class="container">
+  <h1>Flujo de Ingreso de Documentos Bombero Accidentado</h1>
+
+  <mat-vertical-stepper [linear]="true" #stepper>
+    <mat-step *ngFor="let step of steps; let i = index" [label]="step.title">
+      <div class="step-content">
+        <div class="upload-area">
+          <mat-icon>cloud_upload</mat-icon>
+          <p>Arrastra y suelta archivos aquí o haz clic para seleccionar</p>
+          <input type="file" (change)="onFileSelected($event)" #fileInput>
+        </div>
+
+        <div *ngIf="step.optional" class="optional-button">
+          <button mat-button (click)="stepper.next()">No Aplica</button>
+        </div>
+
+        <button mat-raised-button color="primary" (click)="stepper.next()">Subir Documento</button>
+      </div>
+    </mat-step>
+  </mat-vertical-stepper>
+</div>

@@ -1,0 +1,28 @@
+.container {
+  padding: 2rem;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.new-process {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.status {
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+}
+
+.completado {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.en-revisión {
+  background-color: #fef3c7;
+  color: #92400e;
+}

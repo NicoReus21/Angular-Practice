@@ -1,0 +1,53 @@
+<mat-toolbar color="primary">
+  <span>SIGBA</span>
+</mat-toolbar>
+
+<div class="container">
+  <div class="header">
+    <h1>Historial de Documentación</h1>
+    <p>Consulta los registros anteriores o inicia un nuevo proceso para un bombero accidentado.</p>
+  </div>
+
+  <div class="new-process">
+    <a mat-raised-button color="warn" routerLink="/app">
+      <mat-icon>add</mat-icon>
+      Iniciar Documentación de Bombero Accidentado
+    </a>
+  </div>
+
+  <h2>Registros Anteriores</h2>
+  <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <ng-container matColumnDef="id">
+      <mat-header-cell *matHeaderCellDef> ID Caso </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="nombre">
+      <mat-header-cell *matHeaderCellDef> Nombre del Bombero </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.nombre}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="fecha">
+      <mat-header-cell *matHeaderCellDef> Fecha de Ingreso </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.fecha}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="estado">
+      <mat-header-cell *matHeaderCellDef> Estado </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <span class="status" [ngClass]="element.estado.toLowerCase().replace(' ', '-')">{{element.estado}}</span>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="acciones">
+      <mat-header-cell *matHeaderCellDef> Acciones </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <a mat-icon-button color="primary" [routerLink]="['/app']"><mat-icon>edit</mat-icon></a>
+        <a mat-icon-button><mat-icon>visibility</mat-icon></a>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+</div>
