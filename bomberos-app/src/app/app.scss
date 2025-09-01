@@ -1,0 +1,21 @@
+// src/app/app.component.scss
+
+// Esto asegura que el componente principal ocupe toda la pantalla
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.main-toolbar {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.content-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Cambiado de 'center' a 'flex-start' */
+  flex-grow: 1;
+  padding: 32px; /* Un poco más de espacio */
+  overflow-y: auto; /* Permite scroll si el contenido es muy largo */
+}

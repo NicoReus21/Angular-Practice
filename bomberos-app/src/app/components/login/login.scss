@@ -1,15 +1,49 @@
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
+// src/app/components/login/login.scss
+
+// src/app/components/login/login.scss
 
 .login-card {
-  max-width: 400px;
   width: 100%;
+  max-width: 650px; /* <-- Aquí está el nuevo ancho de 450px + 200px */
+  padding: 32px 40px; 
+  box-sizing: border-box;
+  border-radius: 12px !important; 
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
 }
 
-mat-form-field {
-  width: 100%;
+// ... el resto de los estilos del archivo siguen igual ...
+
+mat-card-header {
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  margin-bottom: 8px;
+}
+
+mat-card-title {
+  font-size: 32px; /* Título más grande y en negrita */
+  font-weight: 600;
+  margin: 0;
+}
+
+.login-subtitle {
+  text-align: center;
+  color: #6c757d; /* Color de texto más suave */
+  margin: 0 0 32px 0; /* Más espacio debajo del subtítulo */
+}
+
+mat-card-content {
+  padding: 0 !important;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Más espacio entre los campos y el botón */
+}
+
+.login-button {
+  padding: 18px 0; /* Botón más alto */
+  font-size: 1rem;
+  font-weight: 500;
 }

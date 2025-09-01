@@ -1,20 +1,73 @@
-.container {
-  padding: 2rem;
+.historial-container {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  width: 100%;
+  max-width: 1200px;
+  box-sizing: border-box;
 }
 
-.header {
-  margin-bottom: 2rem;
-}
-
-.new-process {
-  margin-bottom: 2rem;
+.page-header {
   text-align: center;
+  margin-bottom: 32px;
 }
 
+.page-title {
+  font-size: 32px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #212529;
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  color: #6c757d;
+  max-width: 600px;
+  margin: auto;
+}
+
+.new-process-box {
+  border: 2px dashed #d8d8d8;
+  background-color: #fafafa;
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+  margin-bottom: 48px;
+
+  h2 {
+    margin: 0 0 16px 0;
+    font-size: 20px;
+    font-weight: 500;
+  }
+}
+
+.section-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #212529;
+}
+
+.table-container {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+mat-header-cell {
+  background-color: #f8f9fa;
+  font-size: 12px;
+  font-weight: 600;
+  color: #495057;
+}
+
+// Estilos para los chips de estado (ya los tenías, pero los incluimos para asegurar)
 .status {
-  padding: 0.25rem 0.5rem;
-  border-radius: 1rem;
-  font-size: 0.75rem;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .completado {
