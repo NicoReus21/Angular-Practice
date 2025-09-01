@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicación de Documentos - SIGBA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .step-item {
+            transition: all 0.3s ease;
+        }
+        .step-item.active {
+            border-color: #4f46e5;
+            background-color: #eef2ff;
+        }
+        .step-item.completed {
+            background-color: #d1fae5;
+            border-color: #10b981;
+        }
+        .drag-area {
+            border: 2px dashed #9ca3af;
+            background-color: #f9fafb;
+            transition: all 0.3s ease;
+        }
+        .drag-area.active {
+            border-color: #4f46e5;
+            background-color: #eef2ff;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <header class="bg-red-700 text-white shadow-lg fixed top-0 left-0 w-full z-50">
+        <div class="w-full py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <h1 class="text-3xl font-bold">SIGBA</h1>
+            <a href="historial.html" class="bg-white text-red-700 font-semibold px-4 py-2 rounded-lg text-sm hover:bg-gray-200 transition-colors flex items-center">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Volver
+            </a>
+        </div>
+    </header>
+    <main class="p-4 sm:p-6 md:p-10">
+        <div class="max-w-5xl mx-auto bg-white p-6 md:p-10 rounded-xl shadow-lg mt-32">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-center text-gray-900 mb-4">
+                Flujo de Ingreso de Documentos <br> Bombero Accidentado
+            </h1>
+
+            <div class="text-center mb-8">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Estado Del Proceso</h2>
+                <button id="process-button" class="bg-red-600 text-white px-8 py-3 rounded-md text-lg font-semibold shadow-lg transition duration-300 hover:bg-red-700">
+                    Iniciar Proceso
+                </button>
+                <div id="message-container" class="mt-4 text-sm text-gray-600"></div>
+            </div>
+
+            <div id="checklist" class="space-y-4">
+                <h2 class="text-xl font-semibold text-gray-700 mb-2">Pasos del Proceso (Checklist)</h2>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const checklistContainer = document.getElementById('checklist');
+            const processButton = document.getElementById('process-button');
+            const messageContainer = document.getElementById('message-container');
+
+            const stepsData = [
+                { title: "Cheque médico mutual", optional: false },
+                { title: "Informe médico", optional: false },
+                { title: "Resumen de atención urgencias", optional: false },
+                { title: "DIAB", optional: false },
+                { title: "Documento Capitán", optional: false },
+                { title: "OBAC", optional: false },
+                { title: "Testigo", optional: true }
+            ];
+
+            let currentStep = -1;
+
+            function renderizarPasos() {
+                checklistContainer.innerHTML = '<h2 class="text-xl font-semibold text-gray-700 mb-2">Pasos del Proceso (Checklist)</h2>';
+                stepsData.forEach((step, index) => {
+                    const stepElement = document.createElement('div');
+                    stepElement.className = `step-item p-4 border border-gray-200 rounded-lg space-y-2 relative ${index === currentStep ? 'active' : ''} ${index < currentStep ? 'completed' : ''}`;
+                    
+                    const header = document.createElement('div');
+                    header.className = 'flex items-center justify-between';
+                    header.innerHTML = `
+                        <div class="flex items-center space-x-3">
+                            <span class="text-lg font-bold text-gray-400 w-6 text-center">${index + 1}.</span>
+                            <span class="font-medium text-gray-900">${step.title}</span>
+                            ${step.optional ? '<span class="text-xs font-semibold text-gray-500 bg-gray-200 px-2 py-1 rounded-full">Opcional</span>' : ''}
+                        </div>
+                        <div>
+                            ${index < currentStep ? '<i class="fas fa-check-circle text-green-500 text-2xl"></i>' : ''}
+                        </div>
+                    `;
+                    stepElement.appendChild(header);
+
+                    if (index === currentStep) {
+                        const dropArea = document.createElement('div');
+                        dropArea.className = 'drag-area p-8 text-center rounded-lg mt-4 cursor-pointer hover:border-indigo-600 hover:bg-indigo-50 transition-all';
+                        dropArea.innerHTML = `
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                            <p class="text-gray-500">Arrastra y suelta archivos aquí o haz clic para seleccionar</p>
+                            <input type="file" multiple class="hidden" />
+                        `;
+                        dropArea.addEventListener('click', () => dropArea.querySelector('input').click());
+                        dropArea.querySelector('input').addEventListener('change', (e) => manejarArchivos(e.target.files, dropArea));
+
+                        dropArea.addEventListener('dragover', (e) => { e.preventDefault(); dropArea.classList.add('active'); });
+                        dropArea.addEventListener('dragleave', () => dropArea.classList.remove('active'));
+                        dropArea.addEventListener('drop', (e) => { e.preventDefault(); dropArea.classList.remove('active'); manejarArchivos(e.dataTransfer.files, dropArea); });
+
+                        stepElement.appendChild(dropArea);
+                        
+                        if (step.optional) {
+                            const buttonContainer = document.createElement('div');
+                            buttonContainer.className = 'mt-2 text-right';
+                            const noAplicaButton = document.createElement('button');
+                            noAplicaButton.textContent = 'No Aplica';
+                            noAplicaButton.className = 'bg-gray-500 text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-gray-600 transition-colors';
+                            noAplicaButton.addEventListener('click', avanzarAlSiguientePaso);
+                            buttonContainer.appendChild(noAplicaButton);
+                            stepElement.appendChild(buttonContainer);
+                        }
+
+                    } else if (index > currentStep) {
+                        stepElement.className += ' opacity-50';
+                    }
+                    checklistContainer.appendChild(stepElement);
+                });
+            }
+
+            function manejarArchivos(files, dropArea) {
+                if (files.length > 0) {
+                    const fileList = document.createElement('ul');
+                    fileList.className = 'mt-2 text-sm text-left text-gray-700 list-disc list-inside';
+                    Array.from(files).forEach(file => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+                        fileList.appendChild(listItem);
+                    });
+                    
+                    dropArea.innerHTML = '';
+                    dropArea.classList.remove('drag-area', 'hover:border-indigo-600', 'hover:bg-indigo-50', 'p-8');
+                    dropArea.classList.add('p-4', 'bg-gray-100', 'text-left');
+                    
+                    const title = document.createElement('p');
+                    title.className = 'font-semibold mb-2 text-gray-800';
+                    title.textContent = 'Archivos seleccionados:';
+                    dropArea.appendChild(title);
+                    dropArea.appendChild(fileList);
+
+                    const uploadButton = document.createElement('button');
+                    uploadButton.textContent = 'Subir Documento';
+                    uploadButton.className = 'mt-4 bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition-colors w-full md:w-auto';
+                    
+                    uploadButton.addEventListener('click', () => {
+                        uploadButton.textContent = 'Subiendo...';
+                        uploadButton.disabled = true;
+                        setTimeout(() => avanzarAlSiguientePaso(), 500);
+                    });
+                    
+                    const buttonContainer = document.createElement('div');
+                    buttonContainer.className = 'text-center mt-3';
+                    buttonContainer.appendChild(uploadButton);
+                    dropArea.appendChild(buttonContainer);
+                }
+            }
+
+            function avanzarAlSiguientePaso() {
+                if (currentStep < stepsData.length - 1) {
+                    currentStep++;
+                    renderizarPasos();
+                    actualizarBotonDeProceso();
+                } else {
+                    currentStep++;
+                    renderizarPasos();
+                    processButton.style.display = 'none';
+                    messageContainer.innerHTML = `
+                        <div class="p-4 bg-green-100 text-green-800 rounded-lg text-center font-semibold">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            ¡Proceso completado con éxito! Redirigiendo...
+                        </div>
+                    `;
+                    setTimeout(() => { window.location.href = 'historial.html'; }, 3000);
+                }
+            }
+            
+            function actualizarBotonDeProceso() {
+                if (currentStep === -1) {
+                    processButton.textContent = 'Iniciar Proceso';
+                    processButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                    processButton.classList.add('bg-red-600', 'hover:bg-red-700');
+                    processButton.disabled = false;
+                } else if (currentStep < stepsData.length) {
+                    processButton.textContent = `Paso Actual: ${stepsData[currentStep].title}`;
+                    processButton.disabled = true;
+                    processButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+                    processButton.classList.remove('bg-red-600', 'hover:bg-red-700');
+                }
+            }
+            
+            processButton.addEventListener('click', () => {
+                if (currentStep === -1) {
+                    avanzarAlSiguientePaso();
+                }
+            });
+
+            renderizarPasos();
+            actualizarBotonDeProceso();
+        });
+    </script>
+</body>
+</html>
