@@ -45,7 +45,7 @@ export interface UploadSection {
   styleUrls: ['./document-upload.scss'],
 })
 export class DocumentUploadComponent implements OnInit {
-  // State Signals
+  
   editMode = signal(false);
   currentRecordId = signal<string | null>(null);
   preliminaryDataCompleted = signal(false);
@@ -53,19 +53,16 @@ export class DocumentUploadComponent implements OnInit {
   isUploading = signal(false);
   uploadError = signal<string | null>(null);
 
-  // Form & Data
   preliminaryForm: FormGroup;
   fireCompanies = ['Primera', 'Segunda', 'Tercera', 'Quinta', 'Sexta', 'Séptima', 'Octava', 'Décima'];
   sections = signal<UploadSection[]>([]);
 
-  // Dependency Injection
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private uploadService = inject(FileUploadService);
   private historialService = inject(HistorialService);
 
-  // Computed Signals
   allSteps = computed(() => this.sections().flatMap(s => s.steps));
   requiredStepsCompleted = computed(() => 
     this.allSteps()

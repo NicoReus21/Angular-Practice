@@ -27,7 +27,7 @@ export class HistorialService {
   constructor() { }
   
   /**
-   * Busca y devuelve un registro por su ID.
+   * Busca y devuelve un registro por ID.
    */
   getRecordById(id: string): HistorialElement | undefined {
     return this.records().find(record => record.id === id);

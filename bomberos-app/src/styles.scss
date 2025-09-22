@@ -1,25 +1,21 @@
-// src/styles.scss
-
 @import "@angular/material/prebuilt-themes/indigo-pink.css";
 
-/* Estilos globales */
 html, body { 
     height: 100%; 
 }
 body { 
     margin: 0; 
     font-family: Roboto, "Helvetica Neue", sans-serif; 
-    background-color: #f4f4f4; /* Fondo gris claro para toda la app */
+    background-color: #f4f4f4; 
 }
 
-/* Sobrescribe los colores primarios para que sean rojos */
 .mdc-text-field--filled:not(.mdc-text-field--disabled) {
     background-color: #fff !important;
 }
 
 .mat-primary {
-    --mdc-theme-primary: #d32f2f; /* Rojo principal */
-    --mdc-theme-on-primary: #fff; /* Texto blanco sobre el rojo */
+    --mdc-theme-primary: #d32f2f;
+    --mdc-theme-on-primary: #fff;
 }
 
 .mat-warn {

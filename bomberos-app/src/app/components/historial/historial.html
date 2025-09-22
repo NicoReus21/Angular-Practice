@@ -46,7 +46,7 @@
       <ng-container matColumnDef="acciones">
         <mat-header-cell *matHeaderCellDef> ACCIONES </mat-header-cell>
         <mat-cell *matCellDef="let element">
-          <!-- CORRECCIÓN: Se añade [routerLink] para que el botón navegue -->
+          
           <a mat-icon-button color="primary" [routerLink]="['/app', element.id]" aria-label="Modificar">
             <mat-icon>edit</mat-icon>
           </a>

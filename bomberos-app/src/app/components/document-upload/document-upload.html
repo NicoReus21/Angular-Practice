@@ -1,5 +1,4 @@
 <div class="upload-container mat-elevation-z4">
-  <!-- FORMULARIO PRELIMINAR: Se muestra al inicio en modo creación -->
   <ng-container *ngIf="!preliminaryDataCompleted()">
     <h1 class="page-title">Información del Siniestro</h1>
     <p class="page-subtitle">Ingrese los datos del voluntario antes de iniciar la carga de documentos.</p>
@@ -23,7 +22,6 @@
     </form>
   </ng-container>
 
-  <!-- FLUJO DE CARGA: Se muestra después de completar el form inicial o en modo edición -->
   <ng-container *ngIf="preliminaryDataCompleted()">
     <h1 class="page-title">
       <span *ngIf="editMode()">Editando Documentación</span>
@@ -118,7 +116,6 @@
       </ng-container>
     </mat-accordion>
 
-    <!-- BOTÓN FINALIZAR: Fuera del acordeón para que siempre sea visible cuando se cumpla la condición -->
     <div *ngIf="!editMode() && requiredStepsCompleted()" class="finish-flow-container">
         <button mat-flat-button color="primary" (click)="finishProcess()">
           <mat-icon>done_all</mat-icon>
@@ -126,7 +123,6 @@
         </button>
     </div>
     
-    <!-- BOTÓN GUARDAR: Se muestra solo en modo edición -->
     <div *ngIf="editMode()" class="finish-flow-container">
         <button mat-flat-button color="primary" (click)="saveChanges()">
           <mat-icon>save</mat-icon>

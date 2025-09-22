@@ -29,8 +29,8 @@ export const appConfig: ApplicationConfig = {
       MatToolbarModule,
       MatTableModule,
       MatIconModule,
-      MatExpansionModule, // <-- Añadido
-      MatCheckboxModule   // <-- Añadido
+      MatExpansionModule, 
+      MatCheckboxModule  
     )
   ]
 };
