@@ -15,8 +15,7 @@
   <h2 class="section-title">Registro de Solicitudes</h2>
 
   <div class="table-container">
-    <mat-table [dataSource]="dataSource">
-
+    <mat-table [dataSource]="dataSource()">
       <ng-container matColumnDef="id">
         <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
         <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
@@ -27,8 +26,13 @@
         <mat-cell *matCellDef="let element"> {{element.nombre}} </mat-cell>
       </ng-container>
 
+      <ng-container matColumnDef="compania">
+        <mat-header-cell *matHeaderCellDef> COMPAÑÍA </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.compania}} </mat-cell>
+      </ng-container>
+
       <ng-container matColumnDef="fecha">
-        <mat-header-cell *matHeaderCellDef> FECHA DE INGRESO </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef> FECHA DE SOLICITUD </mat-header-cell>
         <mat-cell *matCellDef="let element"> {{element.fecha}} </mat-cell>
       </ng-container>
 
@@ -42,9 +46,10 @@
       <ng-container matColumnDef="acciones">
         <mat-header-cell *matHeaderCellDef> ACCIONES </mat-header-cell>
         <mat-cell *matCellDef="let element">
-          <button mat-icon-button color="primary" aria-label="Modificar">
+          <!-- CORRECCIÓN: Se añade [routerLink] para que el botón navegue -->
+          <a mat-icon-button color="primary" [routerLink]="['/app', element.id]" aria-label="Modificar">
             <mat-icon>edit</mat-icon>
-          </button>
+          </a>
           <button mat-icon-button color="accent" aria-label="Ver detalles">
             <mat-icon>visibility</mat-icon>
           </button>
@@ -56,3 +61,4 @@
     </mat-table>
   </div>
 </div>
+

@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-
-// Importaciones para Standalone
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,9 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-login',
-  // Asegúrate de que esta línea esté presente
   standalone: true, 
-  // Añade el array de imports
   imports: [
     CommonModule,
     ReactiveFormsModule,
