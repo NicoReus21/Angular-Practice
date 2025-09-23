@@ -1,17 +1,14 @@
 import { Injectable, signal } from '@angular/core';
 import { UploadSection } from '../components/document-upload/document-upload';
 
-// La interfaz ahora incluye las secciones con sus pasos y archivos
 export interface HistorialElement {
   id: string;
   nombre: string;
   fecha: string;
   estado: string;
   compania: string;
-  sections: UploadSection[]; // Guardamos el estado completo aquí
+  sections: UploadSection[];
 }
-
-// Datos iniciales de ejemplo
 const INITIAL_DATA: HistorialElement[] = [
   {id: 'SBA-001', nombre: 'Juan Pérez', fecha: '20/08/2025', estado: 'Completado', compania: 'Primera', sections: []},
   {id: 'SBA-002', nombre: 'María González', fecha: '25/08/2025', estado: 'En Revisión', compania: 'Tercera', sections: []},
