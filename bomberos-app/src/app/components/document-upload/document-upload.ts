@@ -51,8 +51,10 @@ export class DocumentUploadComponent implements OnInit {
   preliminaryDataCompleted = signal(false);
   flatStepIndex = signal(-1);
   isUploading = signal(false);
+  isFinishing = signal(false);
   uploadError = signal<string | null>(null);
 
+  
   preliminaryForm: FormGroup;
   fireCompanies = ['Primera', 'Segunda', 'Tercera', 'Quinta', 'Sexta', 'Séptima', 'Octava', 'Décima'];
   sections = signal<UploadSection[]>([]);
@@ -69,7 +71,6 @@ export class DocumentUploadComponent implements OnInit {
       .filter(step => !step.optional)
       .every(step => step.isCompleted)
   );
-
   currentSectionIndex = computed(() => {
     const currentFlatIndex = this.flatStepIndex();
     if (currentFlatIndex < 0) return -1;
@@ -161,16 +162,10 @@ export class DocumentUploadComponent implements OnInit {
         this.advanceToNextStep();
         return;
     }
-
-    this.isUploading.set(true);
-    of(null).pipe(
-      delay(500),
-      finalize(() => this.isUploading.set(false))
-    ).subscribe(() => {
-      currentStep.isCompleted = true;
-      this.sections.update(s => [...s]);
-      this.advanceToNextStep();
-    });
+    
+    currentStep.isCompleted = true;
+    this.sections.update(s => [...s]);
+    this.advanceToNextStep();
   }
 
   private advanceToNextStep(): void {
@@ -189,33 +184,48 @@ export class DocumentUploadComponent implements OnInit {
   removeFile(step: UploadStep, fileToRemove: File): void {
     step.files = step.files.filter(f => f !== fileToRemove);
   }
-
+  
+  // Acá se envían los datos al backend
   finishProcess(): void {
-    if (this.preliminaryForm.valid) {
-      this.historialService.addRecord({
-        nombre: this.preliminaryForm.value.bomberoNombre,
-        compania: this.preliminaryForm.value.compania,
-        sections: this.sections(),
-      });
-      this.flatStepIndex.set(this.allSteps().length);
-      setTimeout(() => {
-        this.router.navigate(['/historial']);
-      }, 2000);
+    if (this.preliminaryForm.invalid) {
+      this.uploadError.set("Los datos del bombero son requeridos.");
+      return;
     }
+
+    this.isFinishing.set(true);
+    this.uploadError.set(null);
+
+    this.uploadService.submitFullProcess(this.preliminaryForm.value, this.sections())
+      .pipe(
+        finalize(() => this.isFinishing.set(false))
+      )
+      .subscribe({
+        next: (response) => {
+          console.log('Proceso guardado en el backend con éxito:', response);
+          
+          this.historialService.addRecord({
+            nombre: this.preliminaryForm.value.bomberoNombre,
+            compania: this.preliminaryForm.value.compania,
+            sections: this.sections(),
+          });
+
+          this.flatStepIndex.set(this.allSteps().length);
+          setTimeout(() => {
+            this.router.navigate(['/historial']);
+          }, 2000);
+        },
+        error: (err) => {
+          console.error('Error al finalizar el proceso:', err);
+          this.uploadError.set('Error al conectar con el servidor. Por favor, inténtelo de nuevo.');
+        }
+      });
   }
   
   saveChanges(): void {
-    const id = this.currentRecordId();
-    if (id) {
-      const existingRecord = this.historialService.getRecordById(id);
-      if (existingRecord) {
-        this.historialService.updateRecord({
-          ...existingRecord,
-          sections: this.sections(),
-        });
-        this.router.navigate(['/historial']);
-      }
-    }
+    // Aquí iría la lógica para enviar las actualizaciones al backend
+    // this.uploadService.updateFullProcess(...)
+    console.log("Guardando cambios (simulado)...");
+    this.router.navigate(['/historial']);
   }
 
   onDragOver(event: DragEvent) { event.preventDefault(); (event.currentTarget as HTMLElement).classList.add('drag-over'); }
@@ -265,8 +275,8 @@ export class DocumentUploadComponent implements OnInit {
             title: 'PRESTACIONES MEDICA',
             steps: [
             { title: 'Factura establecimiento hospitalario, con detalle de prestaciones.', optional: false, files: [], isCompleted: false, isPaid: false },
-            { title: 'Boletas de Honorarios Profesionales, no incluidas en factura, visadas por medico jefe del servicio.', optional: true, files: [], isCompleted: false },
-            { title: 'Boleta de Medicamentos y prescripción correspondiente.', optional: false, files: [], isCompleted: false },
+            { title: 'Boletas de Honorarios Profesionales, no incluidas en factura, visadas por medico jefe del servicio.', optional: true, files: [], isCompleted: false, isPaid: false },
+            { title: 'Boleta de Medicamentos y prescripción correspondiente.', optional: false, files: [], isCompleted: false, isPaid: false },
             { title: 'Certificado del director del servicio que autoriza exámenes, recetas, medicamentos, controles, traslados, acciones médicas y procedimientos generales...', optional: true, files: [], isCompleted: false },
             ],
         },
