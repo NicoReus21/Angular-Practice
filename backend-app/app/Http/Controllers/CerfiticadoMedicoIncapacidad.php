@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class OtroGastoController extends BaseDocumentController
+class CertificadoMedicoTrasladoController extends BaseDocumentController
 {
     protected function getSectionTitle(): string
     {
@@ -13,6 +13,6 @@ class OtroGastoController extends BaseDocumentController
 
     protected function getStepTitle(): string
     {
-        return 'Otros (Especificar)';
+        return 'Certificado del médico tratante que determine la incapacidad de asistir al voluntario...';
     }
 }

@@ -4,15 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class InformeMedicoController extends BaseDocumentController
+class CopiaListaAsistenciaController extends BaseDocumentController
 {
     protected function getSectionTitle(): string
     {
-        return 'ANTECEDENTES GENERALES';
+        return 'REQUERIMIENTO OPERATIVO';
     }
 
     protected function getStepTitle(): string
     {
-        return 'Otros Documentos de caracter Médico adicional';
+        return 'Declaracion de testigos (si es que aplica)';
     }
 }

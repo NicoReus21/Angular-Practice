@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class InformeMedicoController extends BaseDocumentController
+class CopiaListaAsistenciaController extends BaseDocumentController
 {
     protected function getSectionTitle(): string
     {
@@ -13,6 +13,6 @@ class InformeMedicoController extends BaseDocumentController
 
     protected function getStepTitle(): string
     {
-        return 'Otros Documentos de caracter Médico adicional';
+        return 'DAU o variantes.';
     }
 }

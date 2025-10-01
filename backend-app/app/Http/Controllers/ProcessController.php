@@ -1,66 +1,98 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Models\Process;
-use App\Http\Requests\StoreProcessRequest;
-use App\Http\Requests\UpdateProcessRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ProcessController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index()
     {
-        //
+        $processes = Process::with('documents')->orderBy('created_at', 'desc')->get();
+        return response()->json($processes);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Almacena un nuevo proceso en la base de datos.
      */
-    public function create()
+    public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'bombero_nombre' => 'required|string|max:255',
+            'compania' => 'required|string|max:255',
+        ]);
+
+        $process = Process::create([
+            'bombero_nombre' => $validatedData['bombero_nombre'],
+            'compania' => $validatedData['compania'],
+            'sections_data' => '[]',
+            'estado' => 'Iniciado', 
+        ]);
+
+        return response()->json($process, 201);
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreProcessRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
+     * Muestra un proceso específico con sus documentos.
      */
     public function show(Process $process)
     {
-        //
+        return response()->json($process->load('documents'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Actualiza un proceso existente.
      */
-    public function edit(Process $process)
+    public function update(Request $request, Process $process)
     {
-        //
+        $validatedData = $request->validate([
+            'bombero_nombre' => 'sometimes|required|string|max:255',
+            'compania' => 'sometimes|required|string|max:255',
+            'estado' => 'sometimes|required|string',
+        ]);
+
+        $process->update($validatedData);
+
+        return response()->json($process);
     }
 
     /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateProcessRequest $request, Process $process)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
+     * Elimina el proceso.
      */
     public function destroy(Process $process)
     {
-        //
+        try {
+        $process->delete();
+        return response()->json(null, 204);
+        } catch (\Exception $e) {
+            Log::error('Error al eliminar el proceso: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al eliminar el registro.'], 500);
+        }
+    }
+
+
+    public function completeStep(Request $request, Process $process)
+    {
+        $validatedData = $request->validate([
+            'step_title' => 'required|string|max:255',
+        ]);
+
+        $sectionsData = $process->sections_data ?? ['optional_steps_completed' => []];
+        
+        if (!isset($sectionsData['optional_steps_completed'])) {
+            $sectionsData['optional_steps_completed'] = [];
+        }
+
+        $stepTitle = $validatedData['step_title'];
+
+        if (!in_array($stepTitle, $sectionsData['optional_steps_completed'])) {
+            $sectionsData['optional_steps_completed'][] = $stepTitle;
+            
+            $process->sections_data = $sectionsData;
+            $process->save();
+        }
+
+        return response()->json($process->load('documents'));
     }
 }
