@@ -209,3 +209,49 @@
   padding: 0 24px 16px 24px !important;
 }
 
+.page-header-edit {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  padding: 1rem;
+
+  .page-title {
+    margin: 0;
+  }
+
+  .back-button {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+  }
+}
+
+.section-panel {
+  &.locked {
+    .mat-expansion-panel-header {
+      background-color: #f5f5f5; 
+      color: #aaa; 
+      cursor: not-allowed; 
+    }
+
+    .section-title mat-icon {
+      margin-right: 8px;
+    }
+  }
+}
+
+.step-item {
+  &.hidden-step {
+    display: none; 
+  }
+}
+
+.next-section-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+}
