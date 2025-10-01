@@ -1,56 +1,48 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
 import { UploadSection } from '../components/document-upload/document-upload';
 
 export interface HistorialElement {
-  id: string;
-  nombre: string;
-  fecha: string;
+  id: number;
+  bombero_nombre: string; 
+  created_at: string;
   estado: string;
   compania: string;
-  sections: UploadSection[];
+  sections_data: string | UploadSection[]; 
 }
-const INITIAL_DATA: HistorialElement[] = [
-  {id: 'SBA-001', nombre: 'Juan Pérez', fecha: '20/08/2025', estado: 'Completado', compania: 'Primera', sections: []},
-  {id: 'SBA-002', nombre: 'María González', fecha: '25/08/2025', estado: 'En Revisión', compania: 'Tercera', sections: []},
-];
 
 @Injectable({
   providedIn: 'root'
 })
 export class HistorialService {
-  private records = signal<HistorialElement[]>(INITIAL_DATA);
+  private http = inject(HttpClient);
+  private backendUrl = 'http://localhost:8000/api/process';
+
+  private records = signal<HistorialElement[]>([]);
   public readonly historyRecords = this.records.asReadonly();
 
-  constructor() { }
-  
-  /**
-   * Busca y devuelve un registro por ID.
-   */
-  getRecordById(id: string): HistorialElement | undefined {
-    return this.records().find(record => record.id === id);
+  constructor() {
+    this.fetchHistory().subscribe({
+      error: (err) => console.error('Error al cargar el historial inicial:', err)
+    });
   }
 
-  /**
-   * Añade un nuevo registro al historial.
-   */
-  addRecord(record: Omit<HistorialElement, 'id' | 'fecha' | 'estado'>): void {
-    const newId = `SBA-${(this.records().length + 1).toString().padStart(3, '0')}`;
-    const newRecord: HistorialElement = {
-      ...record,
-      id: newId,
-      fecha: new Date().toLocaleDateString('es-CL'),
-      estado: 'En Revisión'
-    };
-    this.records.update(currentRecords => [...currentRecords, newRecord]);
-  }
-
-  /**
-   * Actualiza un registro existente en el historial.
-   */
-  updateRecord(updatedRecord: HistorialElement): void {
-    this.records.update(currentRecords => 
-      currentRecords.map(rec => rec.id === updatedRecord.id ? updatedRecord : rec)
+  fetchHistory(): Observable<HistorialElement[]> {
+    console.log('Fetching history from backend...');
+    return this.http.get<HistorialElement[]>(this.backendUrl).pipe(
+      tap(data => {
+        console.log('History data received:', data);
+        this.records.set(data);
+      })
     );
   }
-}
 
+  getRecordById(id: string): HistorialElement | undefined {
+    return this.records().find(record => record.id === Number(id));
+  }
+
+  deleteRecord(id: number): Observable<any> {
+    return this.http.delete(`${this.backendUrl}/${id}`);
+  }
+}

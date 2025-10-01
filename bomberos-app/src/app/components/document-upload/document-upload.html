@@ -1,134 +1,147 @@
-<div class="upload-container mat-elevation-z4">
-  <ng-container *ngIf="!preliminaryDataCompleted()">
-    <h1 class="page-title">Información del Siniestro</h1>
-    <p class="page-subtitle">Ingrese los datos del voluntario antes de iniciar la carga de documentos.</p>
+<div *ngIf="isLoading()" class="loading-container">
+  <mat-spinner></mat-spinner>
+</div>
+
+<ng-container *ngIf="!isLoading()">
+  <div class="upload-container mat-elevation-z4">
     
-    <form [formGroup]="preliminaryForm" (ngSubmit)="submitPreliminaryData()" class="preliminary-form">
-      <mat-form-field appearance="outline">
-        <mat-label>Nombre del Bombero</mat-label>
-        <input matInput formControlName="bomberoNombre">
-      </mat-form-field>
+    <ng-container *ngIf="!preliminaryDataCompleted()">
+      <h1 class="page-title">Información del Siniestro</h1>
+      <p class="page-subtitle">Ingrese los datos del voluntario antes de iniciar la carga de documentos.</p>
+      <form [formGroup]="preliminaryForm" (ngSubmit)="submitPreliminaryData()" class="preliminary-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre del Bombero</mat-label>
+          <input matInput formControlName="bomberoNombre">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Compañía</mat-label>
+          <mat-select formControlName="compania">
+            <mat-option *ngFor="let company of fireCompanies" [value]="company">{{company}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button mat-flat-button color="warn" type="submit" [disabled]="preliminaryForm.invalid || isUploading()">
+          <span *ngIf="!isUploading()">Continuar con la Documentación</span>
+          <span *ngIf="isUploading()">Creando Proceso...</span>
+        </button>
+      </form>
+    </ng-container>
+
+    <ng-container *ngIf="preliminaryDataCompleted()">
+      <h1 class="page-title">
+        <span *ngIf="editMode()">Completando Documentación</span>
+        <span *ngIf="!editMode()">Flujo de Ingreso de Documentos</span>
+        <br>{{ preliminaryForm.get('bomberoNombre')?.value }}
+      </h1>
       
-      <mat-form-field appearance="outline">
-        <mat-label>Compañía</mat-label>
-        <mat-select formControlName="compania">
-          <mat-option *ngFor="let company of fireCompanies" [value]="company">{{company}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      
-      <button mat-flat-button color="warn" type="submit" [disabled]="preliminaryForm.invalid">
-        Continuar con la Documentación
-      </button>
-    </form>
-  </ng-container>
+      <div *ngIf="uploadError()" class="error-message">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ uploadError() }}</span>
+      </div>
 
-  <ng-container *ngIf="preliminaryDataCompleted()">
-    <h1 class="page-title">
-      <span *ngIf="editMode()">Editando Documentación</span>
-      <span *ngIf="!editMode()">Flujo de Ingreso de Documentos</span>
-      <br>{{ preliminaryForm.get('bomberoNombre')?.value }}
-    </h1>
-    
-    <p *ngIf="!editMode()" class="process-message">Siga los pasos para completar el ingreso de documentos.</p>
-    
-    <div *ngIf="uploadError()" class="error-message">
-      <mat-icon>error_outline</mat-icon>
-      <span>{{ uploadError() }}</span>
-    </div>
+      <h2 class="checklist-title">Pasos del Proceso (Checklist)</h2>
+      <mat-accordion [multi]="false">
+        <ng-container *ngFor="let section of sections(); let sectionIndex = index">
+          <mat-expansion-panel 
+            class="section-panel"
+            [class.locked]="sectionIndex > currentSectionIndex()"
+            [expanded]="sectionIndex === currentSectionIndex()"
+            [disabled]="sectionIndex > currentSectionIndex()">
+            
+            <mat-expansion-panel-header>
+              <mat-panel-title class="section-title">
+                <mat-icon *ngIf="sectionIndex > currentSectionIndex()">lock</mat-icon>
+                <mat-icon *ngIf="sectionIndex < currentSectionIndex() && isCurrentSectionCompleted()">check_circle</mat-icon>
+                <span>{{ section.title }}</span>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
 
-    <div *ngIf="flatStepIndex() === allSteps().length" class="completion-message">
-        <mat-icon>check_circle</mat-icon>
-        <span>¡Proceso completado con éxito! Redirigiendo...</span>
-    </div>
-
-    <h2 class="checklist-title">Pasos del Proceso (Checklist)</h2>
-
-    <mat-accordion multi="false">
-      <ng-container *ngFor="let section of sections(); let sectionIndex = index">
-        <mat-expansion-panel 
-          class="section-panel" 
-          [expanded]="editMode() || sectionIndex === currentSectionIndex()"
-          [disabled]="true">
-          
-          <mat-expansion-panel-header>
-            <mat-panel-title class="section-title">{{ section.title }}</mat-panel-title>
-          </mat-expansion-panel-header>
-
-          <div class="checklist">
-            <ng-container *ngFor="let step of section.steps; let stepIndex = index">
-              <div class="step-item"
-                   [class.active]="!editMode() && flatStepIndex() === getFlatIndex(sectionIndex, stepIndex)"
-                   [class.completed]="step.isCompleted">
-
-                <div class="step-header">
-                  <div class="step-info">
-                    <span class="step-number">{{ getFlatIndex(sectionIndex, stepIndex) + 1 }}.</span>
-                    <span class="step-title">{{ step.title }}</span>
-                    <span *ngIf="step.optional" class="optional-badge">Opcional</span>
+            <div class="checklist">
+              <ng-container *ngFor="let step of section.steps; let stepIndex = index">
+                <div class="step-item"
+                     *ngIf="step.isCompleted || flatStepIndex() === getFlatIndex(sectionIndex, stepIndex)"
+                    [class.active]="flatStepIndex() === getFlatIndex(sectionIndex, stepIndex)"
+                    [class.completed]="step.isCompleted">
+                  
+                  <div class="step-header">
+                    <div class="step-info">
+                      <span class="step-number">{{ getFlatIndex(sectionIndex, stepIndex) + 1 }}.</span>
+                      <span class="step-title">{{ step.title }}</span>
+                      <span *ngIf="step.optional" class="optional-badge">Opcional</span>
+                    </div>
+                    <mat-spinner *ngIf="step.isUploading" [diameter]="20" class="step-spinner"></mat-spinner>
+                    <mat-icon *ngIf="step.isCompleted && !step.isUploading" class="completion-icon">check_circle</mat-icon>
                   </div>
-                  <mat-icon *ngIf="step.isCompleted" class="completion-icon">check_circle</mat-icon>
-                </div>
 
-                <div *ngIf="editMode() || flatStepIndex() === getFlatIndex(sectionIndex, stepIndex)" class="step-content">
-                  <div class="drag-area"
-                       (click)="fileInput.click()"
-                       (dragover)="onDragOver($event)"
-                       (dragleave)="onDragLeave($event)"
-                       (drop)="onDrop($event, getFlatIndex(sectionIndex, stepIndex))">
-                    
-                    <ng-container *ngIf="step.files.length === 0; else fileList">
-                      <mat-icon>upload</mat-icon>
-                      <p>Arrastra y suelta archivos aquí o haz clic para seleccionar</p>
-                    </ng-container>
-                    <ng-template #fileList>
-                      <ul class="file-list">
-                        <li *ngFor="let file of step.files">
-                            <span>{{ file.name }} ({{ (file.size / 1024).toFixed(2) }} KB)</span>
-                            <button mat-icon-button (click)="removeFile(step, file)" class="delete-file-btn" aria-label="Eliminar archivo">
+                  <div *ngIf="flatStepIndex() === getFlatIndex(sectionIndex, stepIndex)" class="step-content">
+                    <div class="drag-area"
+                        (click)="fileInput.click()"
+                        (dragover)="onDragOver($event)"
+                        (dragleave)="onDragLeave($event)"
+                        (drop)="onDrop($event, step)">
+                      <ng-container *ngIf="step.files.length === 0; else fileList">
+                        <mat-icon>upload</mat-icon>
+                        <p>Arrastra y suelta archivos aquí o haz clic para seleccionar</p>
+                      </ng-container>
+                      <ng-template #fileList>
+                        <ul class="file-list">
+                          <li *ngFor="let file of step.files">
+                            <span>{{ file.name }}</span>
+                            <button mat-icon-button (click)="removeFile(step, file)" [disabled]="step.isUploading" class="delete-file-btn" aria-label="Eliminar archivo">
                                 <mat-icon>delete</mat-icon>
                             </button>
-                        </li>
-                      </ul>
-                    </ng-template>
-                    
-                    <input type="file" #fileInput hidden multiple (change)="handleFiles($any($event.target).files, getFlatIndex(sectionIndex, stepIndex))">
-                  </div>
+                          </li>
+                        </ul>
+                      </ng-template>
+                      <input type="file" #fileInput hidden (change)="handleFiles($any($event.target).files, step)">
+                    </div>
 
-                  <mat-checkbox *ngIf="section.title === 'PRESTACIONES MEDICA' && stepIndex === 0 && step.files.length > 0"
-                                [checked]="step.isPaid"
-                                (change)="togglePaidStatus(step)"
-                                class="paid-checkbox">
-                    Factura Pagada
-                  </mat-checkbox>
-                  
-                  <div *ngIf="!editMode()" class="action-buttons">
-                    <button *ngIf="step.optional" mat-stroked-button (click)="nextStep()">No Aplica</button>
-                    <button mat-flat-button color="warn" [disabled]="(!step.optional && step.files.length === 0) || isUploading()" (click)="nextStep()">
-                       <span *ngIf="!isUploading()">Listo y Continuar</span>
-                       <span *ngIf="isUploading()">Subiendo...</span>
-                    </button>
+                    <mat-checkbox *ngIf="step.isPaid !== undefined && step.files.length > 0"
+                                  [checked]="step.isPaid"
+                                  (change)="togglePaidStatus(step)"
+                                  class="paid-checkbox">
+                      Factura Pagada
+                    </mat-checkbox>
+                    
+                    <div class="action-buttons">
+                      <button *ngIf="step.optional" mat-stroked-button (click)="nextStep()">No Aplica / Omitir</button>
+                      <button mat-flat-button color="warn" [disabled]="(!step.optional && step.files.length === 0) || step.isUploading" (click)="nextStep()">
+                        <span>Listo y Continuar</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div *ngIf="step.isCompleted && flatStepIndex() !== getFlatIndex(sectionIndex, stepIndex)" class="step-content-readonly">
+                      <ul class="file-list">
+                          <li *ngFor="let file of step.files">
+                              <span>{{ file.name }}</span>
+                              <button mat-icon-button (click)="removeFile(step, file)" class="delete-file-btn" aria-label="Eliminar archivo">
+                                  <mat-icon>delete</mat-icon>
+                              </button>
+                          </li>
+                      </ul>
                   </div>
                 </div>
+              </ng-container>
+              
+              <div *ngIf="isCurrentSectionCompleted() && currentSectionIndex() < sections().length - 1" class="next-section-container">
+                  <button mat-flat-button color="primary" (click)="advanceToNextStep()">
+                      <span>Siguiente Sección</span>
+                      <mat-icon>arrow_forward</mat-icon>
+                  </button>
               </div>
-            </ng-container>
-          </div>
-        </mat-expansion-panel>
-      </ng-container>
-    </mat-accordion>
 
-    <div *ngIf="!editMode() && requiredStepsCompleted()" class="finish-flow-container">
-        <button mat-flat-button color="primary" (click)="finishProcess()">
-          <mat-icon>done_all</mat-icon>
-          Finalizar Flujo
-        </button>
-    </div>
-    
-    <div *ngIf="editMode()" class="finish-flow-container">
-        <button mat-flat-button color="primary" (click)="saveChanges()">
-          <mat-icon>save</mat-icon>
-          Guardar Cambios
-        </button>
-    </div>
-  </ng-container>
-</div>
+            </div>
+          </mat-expansion-panel>
+        </ng-container>
+      </mat-accordion>
+
+      <div class="finish-flow-container">
+          <button mat-flat-button color="primary" [disabled]="isFinishing()" (click)="editMode() ? saveChanges() : finishProcess()">
+            <mat-icon>{{ editMode() ? 'save' : 'done_all' }}</mat-icon>
+            <span>{{ editMode() ? 'Guardar Cambios y Salir' : 'Finalizar Flujo' }}</span>
+          </button>
+      </div>
+    </ng-container>
+
+  </div>
+</ng-container>
 
