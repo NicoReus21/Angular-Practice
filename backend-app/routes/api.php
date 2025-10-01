@@ -69,3 +69,19 @@ Route::post('process/{id}/upload_boleta_gastos_acompanante', [BoletaGastoAcompan
 //TODO: cambiar controlador al correcto
 Route::post('process/{id}/upload_boleta_alimentacion_acompanante', [ProcessController::class, 'upload.reporte_flash']);
 Route::post('process/{id}/upload_gastos_otros', [OtroGastoController::class, 'upload.reporte_flash']);
+
+
+// Mini sistema de usuarios y grupos
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/users', [AuthController::class, 'index']);
+    Route::get('/users/{id}', [AuthController::class, 'show']);
+    Route::put('/users/{id}', [AuthController::class, 'update']);
+    Route::delete('/users/{id}', [AuthController::class, 'destroy']);
+});
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/groups', [AuthController::class, 'index']);
+    Route::get('/groups/{id}', [AuthController::class, 'show']);
+    Route::post('/groups', [AuthController::class, 'store']);
+    Route::put('/groups/{id}', [AuthController::class, 'update']);
+    Route::delete('/groups/{id}', [AuthController::class, 'destroy']);
+});
