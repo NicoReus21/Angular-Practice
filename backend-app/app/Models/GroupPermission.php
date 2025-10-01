@@ -5,13 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Process extends Model
+class GroupPermission extends Model
 {
-    /** @use HasFactory<\Database\Factories\ProcessFactory> */
+    /** @use HasFactory<\Database\Factories\GroupPermissionFactory> */
     use HasFactory;
     protected $fillable = [
-        'name',
-        'description',
+        'id_group',
+        'id_permission',
+        'granted_at',
+        'revoked_at',
         'id_user_created',
     ];
 }
