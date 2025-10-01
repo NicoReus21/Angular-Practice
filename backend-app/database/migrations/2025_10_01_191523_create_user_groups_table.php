@@ -16,8 +16,8 @@ return new class extends Migration
             $table->timestamps();
             $table->integer('id_user');
             $table->integer('id_group');
-            $table->date('joined_at');
-            $table->date('left_at')->nullable();
+            $table->date('assigned_at');
+            $table->date('removed_at')->nullable();
             $table->integer('id_user_created');
         });
     }
