@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('processes', function (Blueprint $table) {
             $table->id();
+            $table->string('bombero_nombre');
+            $table->string('compania');
+            $table->json('sections_data');
+            $table->string('estado')->default('Iniciado');
             $table->timestamps();
         });
     }

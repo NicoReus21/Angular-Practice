@@ -6,23 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
-            $table->datetime('uploaded_at');
+            $table->foreignId('process_id')->constrained()->onDelete('cascade');
+            $table->string('section_title');
+            $table->string('step_title');
             $table->string('file_name');
             $table->string('file_path');
+            $table->timestamps();
         });
     }
-
-    /**
-     * Reverse the migrations.
-     */
+    
     public function down(): void
     {
         Schema::dropIfExists('documents');
