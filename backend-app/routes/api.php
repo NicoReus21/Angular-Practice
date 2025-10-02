@@ -71,3 +71,18 @@ Route::post('process/{id}/upload_boleta_gastos_acompanante', [BoletaGastoAcompan
 Route::post('process/{id}/upload_certificado_medico_incapacidad', [CertificadoMedicoIncapacidadController::class, 'store']);
 Route::post('process/{id}/upload_boleta_alimentacion_acompanante', [BoletaGastoAcompananteController::class, 'store']);
 Route::post('process/{id}/upload_otros_gastos', [OtroGastoController::class, 'store']);
+
+// Mini sistema de usuarios y grupos
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/users', [AuthController::class, 'index']);
+    Route::get('/users/{id}', [AuthController::class, 'show']);
+    Route::put('/users/{id}', [AuthController::class, 'update']);
+    Route::delete('/users/{id}', [AuthController::class, 'destroy']);
+});
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/groups', [AuthController::class, 'index']);
+    Route::get('/groups/{id}', [AuthController::class, 'show']);
+    Route::post('/groups', [AuthController::class, 'store']);
+    Route::put('/groups/{id}', [AuthController::class, 'update']);
+    Route::delete('/groups/{id}', [AuthController::class, 'destroy']);
+});
