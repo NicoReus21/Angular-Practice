@@ -41,35 +41,35 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::middleware('auth:sanctum')->prefix('process/{id}')->group(function () {
     // Requerimiento Operativo
-Route::post('upload_reporte_flash', [ReporteFlashController::class, 'upload'])->name('upload.reporte_flash');
-Route::post('upload_diab', [DiabController::class, 'upload'])->name('upload.diab');
-Route::post('upload_obac', [ObacController::class, 'upload'])->name('upload.obac');
-//TODO: cambiar Controlador al correcto
-Route::post('upload_incidente_sin_lesiones', [ReporteController::class, 'upload.reporte_flash']);
-//Antecedentes Generales
-Route::post('upload_certificado_carabineros', [CertificadoCarabineroController::class, 'upload'])->name('upload.certificado_carabineros');
-Route::post('upload_informe_medico', [InformeMedicoController::class, 'upload'])->name('upload.informe_medico');
-Route::post('upload_otros_documento_medico_adicional', [OtroDocumentoMedicoController::class, 'upload'])->name('upload.otros_documento_medico_adicional');
-//Documento del Cuerpo de Bomberos
-Route::post('upload_certificado_acreditacion_voluntario', [CertificadoAcreditacionVoluntarioController::class, 'upload'])->name('upload.certificado_acreditacion_voluntario')  ;
-Route::post('upload_copia_libro_guardia', [CopiaLibroGuardiaController::class, 'upload'])->name('upload.copia_libro_guardia');
-Route::post('upload_copia_libro_llamada', [CopiaLibroLlamadaController::class, 'upload'])->name('upload.copia_libro_llamada');
-Route::post('upload_aviso_citacion', [AvisoCitacionController::class, 'upload'])->name('upload.aviso_citacion');
-Route::post('upload_copia_lista_asistencia', [CopiaListaAsistenciaController::class, 'upload'])->name('upload.copia_lista_asistencia');
-Route::post('upload_informe_ejecutivo', [InformeEjecutivoController::class, 'upload'])->name('upload.informe_ejecutivo');
-//Prestaciones Medica
-Route::post('upload_factura_prestaciones', [FacturaPrestacionController::class, 'upload'])->name('upload.factura_prestaciones');
-Route::post('upload_boleta_honorarios_visada', [BoletaHonorarioVisadaController::class, 'upload'])->name('upload.boleta_honorarios_visada');
-Route::post('upload_boleta_medicamentos', [BoletaMedicamentoController::class, 'upload'])->name('upload.boleta_medicamentos');
-Route::post('upload_certificado_medico_autorizacion_examen', [CertificadoMedicoAutorizacionExamenController::class, 'upload'])->name('upload.certificado_medico_autorizacion_examen');
-//Gastos de Traslados y alimentacion
-Route::post('upload_boleta_factura_traslado', [BoletaFacturaController::class, 'upload'])->name('upload.boleta_factura_traslado');
-Route::post('upload_certificado_medico_atencion_especial', [CertificadoMedicoAtencionEspecialController::class, 'upload'])->name('upload.certificado_medico_atencion_especial');
-Route::post('upload_certificado_medico_traslado', [CertificadoMedicoTrasladoController::class, 'upload'])->name('upload.certificado_medico_traslado');
-Route::post('upload_boleta_gastos_acompanante', [BoletaGastoAcompananteController::class, 'upload'])->name('upload.boleta_gastos_acompanante');
-//TODO: cambiar controlador al correcto
-Route::post('upload_boleta_alimentacion_acompanante', [ProcessController::class, 'upload.reporte_flash']);
-Route::post('upload_gastos_otros', [OtroGastoController::class, 'upload.reporte_flash']);
+    Route::post('upload_reporte_flash', [ReporteFlashController::class, 'upload'])->name('upload.reporte_flash');
+    Route::post('upload_diab', [DiabController::class, 'upload'])->name('upload.diab');
+    Route::post('upload_obac', [ObacController::class, 'upload'])->name('upload.obac');
+    //TODO: cambiar Controlador al correcto
+    Route::post('upload_incidente_sin_lesiones', [ReporteController::class, 'upload.reporte_flash']);
+    //Antecedentes Generales
+    Route::post('upload_certificado_carabineros', [CertificadoCarabineroController::class, 'upload'])->name('upload.certificado_carabineros');
+    Route::post('upload_informe_medico', [InformeMedicoController::class, 'upload'])->name('upload.informe_medico');
+    Route::post('upload_otros_documento_medico_adicional', [OtroDocumentoMedicoController::class, 'upload'])->name('upload.otros_documento_medico_adicional');
+    //Documento del Cuerpo de Bomberos
+    Route::post('upload_certificado_acreditacion_voluntario', [CertificadoAcreditacionVoluntarioController::class, 'upload'])->name('upload.certificado_acreditacion_voluntario')  ;
+    Route::post('upload_copia_libro_guardia', [CopiaLibroGuardiaController::class, 'upload'])->name('upload.copia_libro_guardia');
+    Route::post('upload_copia_libro_llamada', [CopiaLibroLlamadaController::class, 'upload'])->name('upload.copia_libro_llamada');
+    Route::post('upload_aviso_citacion', [AvisoCitacionController::class, 'upload'])->name('upload.aviso_citacion');
+    Route::post('upload_copia_lista_asistencia', [CopiaListaAsistenciaController::class, 'upload'])->name('upload.copia_lista_asistencia');
+    Route::post('upload_informe_ejecutivo', [InformeEjecutivoController::class, 'upload'])->name('upload.informe_ejecutivo');
+    //Prestaciones Medica
+    Route::post('upload_factura_prestaciones', [FacturaPrestacionController::class, 'upload'])->name('upload.factura_prestaciones');
+    Route::post('upload_boleta_honorarios_visada', [BoletaHonorarioVisadaController::class, 'upload'])->name('upload.boleta_honorarios_visada');
+    Route::post('upload_boleta_medicamentos', [BoletaMedicamentoController::class, 'upload'])->name('upload.boleta_medicamentos');
+    Route::post('upload_certificado_medico_autorizacion_examen', [CertificadoMedicoAutorizacionExamenController::class, 'upload'])->name('upload.certificado_medico_autorizacion_examen');
+    //Gastos de Traslados y alimentacion
+    Route::post('upload_boleta_factura_traslado', [BoletaFacturaController::class, 'upload'])->name('upload.boleta_factura_traslado');
+    Route::post('upload_certificado_medico_atencion_especial', [CertificadoMedicoAtencionEspecialController::class, 'upload'])->name('upload.certificado_medico_atencion_especial');
+    Route::post('upload_certificado_medico_traslado', [CertificadoMedicoTrasladoController::class, 'upload'])->name('upload.certificado_medico_traslado');
+    Route::post('upload_boleta_gastos_acompanante', [BoletaGastoAcompananteController::class, 'upload'])->name('upload.boleta_gastos_acompanante');
+    //TODO: cambiar controlador al correcto
+    Route::post('upload_boleta_alimentacion_acompanante', [ProcessController::class, 'upload.reporte_flash']);
+    Route::post('upload_gastos_otros', [OtroGastoController::class, 'upload.reporte_flash']);
 });
 
 
