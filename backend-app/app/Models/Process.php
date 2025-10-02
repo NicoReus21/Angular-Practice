@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Process extends Model
 {
+    /** @use HasFactory<\Database\Factories\ProcessFactory> */
     use HasFactory;
 
     /**
