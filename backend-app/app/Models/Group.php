@@ -15,4 +15,8 @@ class Group extends Model
         'id_parent_group',
         'id_user_created',
     ];
+    public function user_groups()
+    {
+        return $this->hasMany(UserGroup::class, 'id_group', 'id');
+    }
 }

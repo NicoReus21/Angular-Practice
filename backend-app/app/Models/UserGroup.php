@@ -16,4 +16,13 @@ class UserGroup extends Model
         'removed_at',
         'id_user_created',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user', 'id');
+    }
+    public function group()
+    {
+        return $this->belongsTo(Group::class, 'id_group', 'id');
+    }
 }

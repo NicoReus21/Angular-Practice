@@ -19,6 +19,7 @@ class Document extends Model
         'process_id',
         'section_title',
         'step_title',
+        'user_id',
         'file_name',
         'file_path',
     ];
