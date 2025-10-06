@@ -1,7 +1,6 @@
-<!-- Contenedor principal para el diseño de dos columnas -->
+
 <div class="main-container">
   
-  <!-- Columna Izquierda: Logo Grande (visible en pantallas de escritorio) -->
   <div class="image-container">
     <img 
       src="/logo_150.jpg" 
@@ -9,11 +8,9 @@
       class="large-logo">
   </div>
 
-  <!-- Columna Derecha: Tarjeta de Login -->
   <div class="login-container">
     <mat-card class="login-card" [@slideIn]>
-      
-      <!-- Encabezado del formulario con logo y texto SIGBA -->
+    
       <div class="header-logo">
         <img src="/logo_bomberos.png" alt="SIGBA Logo" class="sigba-logo">
         <span class="sigba-text">SIGBA</span>
@@ -22,25 +19,20 @@
       <mat-card-content>
         <h2 class="login-title">Login</h2>
         
-        <!-- Mensaje de error -->
         <mat-error class="error-message" *ngIf="errorMessage">{{ errorMessage }}</mat-error>
 
-        <!-- Formulario Reactivo -->
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
-          <!-- Campo de Email -->
           <mat-form-field appearance="fill" class="custom-input-field">
             <mat-label>Email</mat-label> 
             <input matInput formControlName="email" placeholder="hola@tuemail.com"> 
           </mat-form-field>
 
-          <!-- Campo de Contraseña -->
           <mat-form-field appearance="fill" class="custom-input-field">
             <mat-label>Contraseña</mat-label>
             <input matInput formControlName="password" type="password">
           </mat-form-field>
 
-          <!-- Contenedor del Botón -->
           <div class="button-container">
             <button class="custom-login-button" type="submit" [disabled]="loginForm.invalid">
               Iniciar Sesión
