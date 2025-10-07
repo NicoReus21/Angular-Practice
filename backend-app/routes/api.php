@@ -39,7 +39,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 Route::post('/login', [AuthController::class, 'login']);
 Route::patch('/processes/{process}/complete-step', [ProcessController::class, 'completeStep']);
 // Rutas para el CRUD
-Route::post('/process', [ProcessController::class, 'store']);
+Route::post('/process', [ProcessController::class, 'store'])->name('process.store');
 Route::get('/process', [ProcessController::class, 'index']);  
 Route::get('/process/{process}', [ProcessController::class, 'show']); 
 Route::put('/process/{process}', [ProcessController::class, 'update']);     
