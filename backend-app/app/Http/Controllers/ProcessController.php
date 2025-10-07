@@ -19,15 +19,14 @@ class ProcessController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'bombero_nombre' => 'required|string|max:255',
-            'compania' => 'required|string|max:255',
+            'bombero_name' => 'required|string|max:255',
+            'company' => 'required|string|max:255',
         ]);
 
         $process = Process::create([
-            'bombero_nombre' => $validatedData['bombero_nombre'],
-            'compania' => $validatedData['compania'],
+            'bombero_name' => $validatedData['bombero_name'],
+            'company' => $validatedData['company'],
             'sections_data' => '[]',
-            'estado' => 'Iniciado', 
         ]);
 
         return response()->json($process, 201);

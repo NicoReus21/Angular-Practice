@@ -18,7 +18,7 @@ class Document extends Model
     protected $fillable = [
         'process_id',
         'section_title',
-        'step_title',
+        'step',
         'user_id',
         'file_name',
         'file_path',

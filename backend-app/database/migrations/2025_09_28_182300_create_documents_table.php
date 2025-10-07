@@ -15,7 +15,7 @@ return new class extends Migration
             $table->enum('step', ['requerimiento_operativo','antecedentes_generales','cuerpo_de_bomberos','prestaciones_medicas','otros']);
             $table->string('file_name');
             $table->string('file_path');
-            $table->integer('user_id');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
         });
     }
