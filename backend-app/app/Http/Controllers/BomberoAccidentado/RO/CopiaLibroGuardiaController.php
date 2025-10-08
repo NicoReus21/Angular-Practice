@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\RO;
+namespace App\Http\Controllers\BomberoAccidentado\RO;
 
 use Illuminate\Http\Request;
 use App\Models\Process;

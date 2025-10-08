@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\RO;
+namespace App\Http\Controllers\BomberoAccidentado\AG;
 
 use Illuminate\Http\Request;
-use App\Models\Process;
 use App\Http\Controllers\DocumentController;
-class ObacController extends DocumentController
+use App\Models\Process;
+class DauController extends DocumentController
 {
-    public function store(Request $request, Process $process)
+public function store(Request $request, Process $process)
 {
     // Verifica autenticación con Sanctum
     if (!$request->user()) {
@@ -20,11 +20,11 @@ class ObacController extends DocumentController
     }
 
     $file = $request->file('document');
-    $document = $this->upload($process,$file,'requerimiento_operativo','obac',$request->user()->id);
+    $document = $this->upload($process,$file,'antecedente_general','dau',$request->user()->id);
     if($document){
         return response()->json([
             'success' => true,
-            'message' => 'OBAC subido correctamente',
+            'message' => 'DAU subido correctamente',
             'document' => $document,
         ], 201);
     }

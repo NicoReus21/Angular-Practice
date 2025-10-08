@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\AG;
+namespace App\Http\Controllers\BomberoAccidentado\RO;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\Controller;
 use App\Models\Process;
-class DauController extends DocumentController
+use App\Http\Controllers\DocumentController;
+class DeclaracionTestigoController extends DocumentController
 {
-public function store(Request $request, Process $process)
+    public function store(Request $request, Process $process)
 {
     // Verifica autenticación con Sanctum
     if (!$request->user()) {
@@ -20,11 +21,11 @@ public function store(Request $request, Process $process)
     }
 
     $file = $request->file('document');
-    $document = $this->upload($process,$file,'antecedente_general','dau',$request->user()->id);
+    $document = $this->upload($process,$file,'requerimiento_operativo','declaracion_testigo',$request->user()->id);
     if($document){
         return response()->json([
             'success' => true,
-            'message' => 'DAU subido correctamente',
+            'message' => 'Declaracion Testigo subido correctamente',
             'document' => $document,
         ], 201);
     }

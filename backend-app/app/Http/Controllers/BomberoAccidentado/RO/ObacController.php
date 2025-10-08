@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\RO;
-use App\Http\Controllers\Controller;
+namespace App\Http\Controllers\BomberoAccidentado\RO;
+
 use Illuminate\Http\Request;
-use App\Models\Document;
 use App\Models\Process;
 use App\Http\Controllers\DocumentController;
-class DiabController extends DocumentController
+class ObacController extends DocumentController
 {
-public function store(Request $request, Process $process)
+    public function store(Request $request, Process $process)
 {
     // Verifica autenticación con Sanctum
     if (!$request->user()) {
@@ -21,15 +20,14 @@ public function store(Request $request, Process $process)
     }
 
     $file = $request->file('document');
-    $document = $this->upload($process,$file,'requerimiento_operativo','diab',$request->user()->id);
+    $document = $this->upload($process,$file,'requerimiento_operativo','obac',$request->user()->id);
     if($document){
         return response()->json([
             'success' => true,
-            'message' => 'DIAB subido correctamente',
+            'message' => 'OBAC subido correctamente',
             'document' => $document,
         ], 201);
     }
     return response()->json(['success' => false, 'message' => 'El archivo no es válido.'], 400);
 }
-
 }
