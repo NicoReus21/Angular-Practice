@@ -29,5 +29,9 @@ class UploadAllDocumentTest extends TestUploadBaseDocument
     public function test_upload_declaracion_testigo(){
         $this->upload_file($this->process,'declaracion_testigo','process.upload.declaracion_testigo','requerimiento_operativo','Declaracion Testigo subido correctamente');
     }
+
+    public function test_upload_dau(){
+        $this->upload_file($this->process,'dau','process.upload.dau','antecedente_general','DAU subido correctamente');
+    }
     
 }

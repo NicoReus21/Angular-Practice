@@ -27,7 +27,7 @@ use App\Http\Controllers\BoletaGastoAcompananteController;
 use App\Http\Controllers\OtroGastoController;
 use App\Http\Controllers\CertificadoMedicoIncapacidadController;
 use App\Http\Controllers\RO\DeclaracionTestigoController;
-use App\Http\Controllers\DauController;
+use App\Http\Controllers\AG\DauController;
 use App\Http\Controllers\DocumentController;
 
 Route::get('/user', function (Request $request) {
@@ -60,7 +60,7 @@ Route::middleware('auth:sanctum')->prefix('process/{process}')->group(function (
     Route::post('/upload_declaracion_testigo', [DeclaracionTestigoController::class, 'store'])->name('process.upload.declaracion_testigo');
     //Antecedentes Generales
     Route::post('/upload_certificado_carabineros', [CertificadoCarabineroController::class, 'store']);
-    Route::post('/upload_dau', [DauController::class, 'store']);
+    Route::post('/upload_dau', [DauController::class, 'store'])->name('process.upload.dau');
     Route::post('/upload_informe_medico', [InformeMedicoController::class, 'store']);
     Route::post('/upload_otros_documento_medico_adicional', [OtroDocumentoMedicoController::class, 'store']);
     Route::post('/upload_certificado_medico_atencion_especial', [CertificadoMedicoAtencionEspecialController::class, 'store']);

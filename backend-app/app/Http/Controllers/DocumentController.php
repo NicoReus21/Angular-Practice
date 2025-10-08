@@ -33,7 +33,7 @@ class DocumentController extends Controller
             'file_name' => $filename,
             'file_path' => $path,
             'section_title' => $section_title,
-            'step' =>"requerimiento_operativo",
+            'step' =>$step,
             'uploaded_at' => now(),
         ]);
 

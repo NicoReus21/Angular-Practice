@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('process_id')->constrained()->onDelete('cascade');
             $table->string('section_title');
-            $table->enum('step', ['requerimiento_operativo','antecedentes_generales','cuerpo_de_bomberos','prestaciones_medicas','otros']);
+            $table->enum('step', ['requerimiento_operativo','antecedente_general','cuerpo_de_bomberos','prestacion_medica','otro']);
             $table->string('file_name');
             $table->string('file_path');
             $table->unsignedBigInteger('user_id');

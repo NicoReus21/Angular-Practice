@@ -43,6 +43,9 @@ class TestUploadBaseDocument extends TestCase{
         
         // Obtener el mensaje de error si la respuesta no es exitosa
         // Verificamos que el endpoint responda correctamente
+        if($response->status()== 500){
+            dd($response->getContent());
+        }
         $response->assertStatus(201)
              ->assertJson([
                  'message' => $message
