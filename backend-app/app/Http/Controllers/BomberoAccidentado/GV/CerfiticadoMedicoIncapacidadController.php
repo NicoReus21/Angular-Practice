@@ -5,7 +5,7 @@ namespace App\Http\Controllers\BomberoAccidentado\CB;
 use Illuminate\Http\Request;
 use App\Models\Process;
 use App\Http\Controllers\DocumentController;
-class FacturaPrestacionController extends DocumentController
+class CerfiticadoMedicoIncapacidadController extends DocumentController
 {
     public function store(Request $request, Process $process)
     {

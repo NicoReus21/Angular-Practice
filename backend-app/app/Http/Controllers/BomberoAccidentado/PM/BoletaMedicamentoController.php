@@ -1,18 +1,35 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\BomberoAccidentado\CB;
 
 use Illuminate\Http\Request;
-
-class BoletaMedicamentoController extends BaseDocumentController
+use App\Models\Process;
+use App\Http\Controllers\DocumentController;
+class BoletaMedicamentoController extends DocumentController
 {
-    protected function getSectionTitle(): string
+    public function store(Request $request, Process $process)
     {
-        return 'MEDICAMENTOS';
-    }
+        // Verifica autenticación con Sanctum
+        if (!$request->user()) {
+            return response()->json(['success' => false, 'message' => 'No autenticado.'], 401);
+        }
 
-    protected function getStepTitle(): string
-    {
-        return 'Boletas de Medicamentos, no incluidas en factura, visadas por medico jefe del servicio.';
+        // Verifica que venga un archivo en la petición
+        if (!$request->hasFile('document')) {
+            return response()->json(['success' => false, 'message' => 'No se recibió ningún archivo.'], 400);
+        }
+
+        $file = $request->file('document');
+        $document = $this->upload($process, $file, 'requerimiento_operativo', 'reporte_flash', $request->user()->id);
+
+        if ($document) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Reporte Flash subido correctamente',
+                'document' => $document,
+            ], 201);
+        }
+
+        return response()->json(['success' => false, 'message' => 'El archivo no es válido.'], 400);
     }
 }
