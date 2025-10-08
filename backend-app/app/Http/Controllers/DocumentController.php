@@ -13,7 +13,7 @@ use App\Models\Process;
 class DocumentController extends Controller
 {
 
-    public function upload(Process $process,UploadedFile $file,$step,$section_title,int $user_id):Document{
+    public function upload(Process $process,UploadedFile $file,$step,$section_title,int $user_id):?Document{
         if ($file && $file->isValid()) {
              $extension = $file->getClientOriginalExtension();
 
