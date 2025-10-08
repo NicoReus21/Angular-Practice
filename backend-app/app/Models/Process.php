@@ -19,9 +19,9 @@ class Process extends Model
     protected $fillable = [
         'bombero_name',
         'company',
-        'sections_data',
         'status',
-        
+        'user_id',
+
     ];
     // ------------------------------------
     protected $casts = [

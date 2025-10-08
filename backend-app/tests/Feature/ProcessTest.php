@@ -4,10 +4,12 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\User;
 
 class ProcessTest extends TestCase
 {
     use RefreshDatabase;    
+
 
     public function test_se_crea_un_proceso()
     {
@@ -15,7 +17,8 @@ class ProcessTest extends TestCase
             'bombero_name' => 'test bombero',
             'company' => 'test compañia',
         ];
-
+         $user = User::factory()->create();
+        $this->actingAs($user);
         $response = $this->postJson(route('process.store'), $payload);
 
         $response->assertStatus(201)

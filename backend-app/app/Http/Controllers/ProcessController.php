@@ -23,9 +23,12 @@ class ProcessController extends Controller
             'company' => 'required|string|max:255',
         ]);
 
+        $userId = $request->user()->id;
+
         $process = Process::create([
             'bombero_name' => $validatedData['bombero_name'],
             'company' => $validatedData['company'],
+            'user_id' => $userId,
             'sections_data' => '[]',
         ]);
 

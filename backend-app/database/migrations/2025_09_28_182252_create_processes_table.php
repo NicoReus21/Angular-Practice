@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('bombero_name');
             $table->string('company');
-            $table->json('sections_data');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->enum('status',['started',''])->default('started');
             $table->foreignId('reporte_flash_id')->nullable()->constrained('documents')->nullOnDelete();
             $table->foreignId('diab_id')->nullable()->constrained('documents')->nullOnDelete();
