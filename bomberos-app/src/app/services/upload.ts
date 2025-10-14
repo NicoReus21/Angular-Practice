@@ -12,8 +12,8 @@ export class FileUploadService {
 
   createProcess(data: { bomberoNombre: string, compania: string }): Observable<any> {
     const payload = {
-      bombero_nombre: data.bomberoNombre,
-      compania: data.compania
+      bombero_name: data.bomberoNombre,
+      company: data.compania
     };
     return this.http.post(`${this.backendUrl}/process`, payload);
   }
@@ -27,7 +27,8 @@ export class FileUploadService {
     }
 
     const formData = new FormData();
-    formData.append('file', file, file.name);
+    // CORREGIDO: Se cambia 'file' por 'document' para que coincida con el backend de Laravel.
+    formData.append('document', file, file.name);
     const finalUrl = `${this.backendUrl}/process/${processId}/${endpoint}`;
     return this.http.post(finalUrl, formData);
   }
@@ -52,7 +53,7 @@ export class FileUploadService {
       'DIAB (declaracion Individual de accidente bomberil)': 'upload_diab',
       'Informe del OBAC': 'upload_obac',
       'Declaracion de testigos (si es que aplica)': 'upload_declaracion_testigo',
-      'Incidente sin lesiones Copia del Libro de Guardia (no legalizado y solo el el registro del accidente)': 'upload_copia_libro_guardia',
+      'Incidente sin lesiones Copia del Libro de Guardia (no legalizado y solo el registro del accidente)': 'upload_copia_libro_guardia',
 
       //ANTECEDENTES GENERALES 
       'Certificado de Carabineros.': 'upload_certificado_carabineros',

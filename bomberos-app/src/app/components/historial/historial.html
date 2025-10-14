@@ -23,12 +23,13 @@
 
       <ng-container matColumnDef="nombre">
         <mat-header-cell *matHeaderCellDef> NOMBRE BOMBERO </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.bombero_nombre}} </mat-cell>
+
+        <mat-cell *matCellDef="let element"> {{element.bombero_name}} </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="compania">
         <mat-header-cell *matHeaderCellDef> COMPAÑÍA </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.compania}} </mat-cell>
+        <mat-cell *matCellDef="let element"> {{element.company}} </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="fecha">
@@ -39,14 +40,14 @@
       <ng-container matColumnDef="estado">
         <mat-header-cell *matHeaderCellDef> ESTADO </mat-header-cell>
         <mat-cell *matCellDef="let element">
-          <span class="status" [ngClass]="element.estado.toLowerCase().replace(' ', '-')">{{element.estado}}</span>
+          <span class="status" [ngClass]="element.estado ? element.estado.toLowerCase().replace(' ', '-') : ''">{{element.estado}}</span>
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="acciones">
         <mat-header-cell *matHeaderCellDef> ACCIONES </mat-header-cell>
         <mat-cell *matCellDef="let element">
-          
+
           <a mat-icon-button color="primary" [routerLink]="['/document-upload', element.id]" aria-label="Modificar">
             <mat-icon>edit</mat-icon>
           </a>

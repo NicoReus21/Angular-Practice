@@ -5,11 +5,11 @@ import { UploadSection } from '../components/document-upload/document-upload';
 
 export interface HistorialElement {
   id: number;
-  bombero_nombre: string; 
+  bombero_name: string;
   created_at: string;
-  estado: string;
-  compania: string;
-  sections_data: string | UploadSection[]; 
+  estado?: string;
+  company: string;
+  sections_data: string | UploadSection[];
 }
 
 @Injectable({
@@ -22,11 +22,6 @@ export class HistorialService {
   private records = signal<HistorialElement[]>([]);
   public readonly historyRecords = this.records.asReadonly();
 
-  constructor() {
-    this.fetchHistory().subscribe({
-      error: (err) => console.error('Error al cargar el historial inicial:', err)
-    });
-  }
 
   fetchHistory(): Observable<HistorialElement[]> {
     console.log('Fetching history from backend...');
@@ -46,3 +41,4 @@ export class HistorialService {
     return this.http.delete(`${this.backendUrl}/${id}`);
   }
 }
+

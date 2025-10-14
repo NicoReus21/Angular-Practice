@@ -2,7 +2,7 @@ import { Component, computed, signal, inject, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { finalize, take } from 'rxjs/operators'; 
+import { finalize } from 'rxjs/operators'; 
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -115,6 +115,36 @@ export class DocumentUploadComponent implements OnInit {
     });
   }
 
+  private getSectionKeyForStepTitle(stepTitle: string): string {
+    const title = stepTitle.toLowerCase();
+    if (title.startsWith('diab')) return 'diab_id';
+    if (title.startsWith('reporte flash')) return 'reporte_flash_id';
+    if (title.startsWith('informe del obac')) return 'obac_id';
+    if (title.startsWith('declaracion de testigos')) return 'declaracion_testigo_id';
+    if (title.startsWith('incidente sin lesiones')) return 'incidente_sin_lesiones_id';
+    if (title.startsWith('certificado de carabineros')) return 'certificado_carabinero_id';
+    if (title.startsWith('dau o variantes')) return 'dau_id';
+    if (title.startsWith('orden de atención médica')) return 'certificado_medico_atencion_especial_id';
+    if (title.startsWith('informe médico')) return 'informe_medico_id';
+    if (title.startsWith('certificado superintendente')) return 'certificado_acreditacion_voluntario_id';
+    if (title.startsWith('incidente sin lesiones copia del libro de guardia')) return 'copia_libro_guardia_id';
+    if (title.startsWith('copia libro de llamadas')) return 'copia_libro_llamada_id';
+    if (title.startsWith('copia aviso de citación')) return 'aviso_citacion_id';
+    if (title.startsWith('copia lista de asistencia')) return 'copia_lista_asistencia_id';
+    if (title.startsWith('informe ejecutivo')) return 'informe_ejecutivo_id';
+    if (title.startsWith('factura establecimiento')) return 'factura_prestaciones_id';
+    if (title.startsWith('boletas de honorarios')) return 'boleta_honorario_id';
+    if (title.startsWith('boleta de medicamentos')) return 'boleta_medicamentos_id';
+    if (title.startsWith('certificado del director')) return 'certificado_examen_id';
+    if (title.startsWith('boleta o factura de gastos de traslado')) return 'boleta_factura_traslado_id';
+    if (title.startsWith('certificado del médico tratante que determine la incapacidad')) return 'certificado_medico_incapacidad_id';
+    if (title.startsWith('certificado médico tratante que justifique la necesidad de traslado')) return 'certificado_medico_traslado_id';
+    if (title.startsWith('boleta de gastos de hospedaje')) return 'boleta_gasto_acompanante_id';
+    if (title.startsWith('boleta de gastos de alimentación')) return 'boleta_alimentacion_acompanante_id';
+    if (title.startsWith('otros')) return 'otros_gastos_id';
+    return '';
+  }
+
   private setupEditMode(id: string): void {
       this.isLoading.set(true);
       this.editMode.set(true);
@@ -122,22 +152,26 @@ export class DocumentUploadComponent implements OnInit {
       
       this.uploadService.getProcessById(id).subscribe({
           next: (record) => {
-              this.preliminaryForm.patchValue({ bomberoNombre: record.bombero_nombre, compania: record.compania });
+              this.preliminaryForm.patchValue({ bomberoNombre: record.bombero_name, compania: record.company });
               this.preliminaryForm.disable();
 
               const sections = this.getInitialSections();
-            const optionalStepsCompleted = record.sections_data?.optional_steps_completed || [];
               
               sections.forEach(section => {
                   section.steps.forEach(step => {
-                      const matchingDocs = record.documents.filter((doc: any) => doc.step_title === step.title);
-                      if (matchingDocs.length > 0) {
-                          step.files = matchingDocs.map((doc: any) => ({ ...doc, fromServer: true, name: doc.file_name }));
-                          step.isCompleted = true;
+                      const backendKey = this.getSectionKeyForStepTitle(step.title);
+                          const documentId = record[backendKey];
+
+                      if (documentId) {
+                            const matchingDoc = record.documents.find((doc: any) => doc.id === documentId);
+                            if (matchingDoc) {
+                                step.files = [{ ...matchingDoc, fromServer: true, name: matchingDoc.file_name }];
+                                step.isCompleted = true;
+                            }
                       } 
-                    else if (step.optional && optionalStepsCompleted.includes(step.title)) {
-                        step.isCompleted = true;
-                    }
+                        else if (step.optional) {
+                            step.isCompleted = true;
+                        }
                   });
               });
               const allSteps = sections.flatMap(s => s.steps);
@@ -190,34 +224,12 @@ export class DocumentUploadComponent implements OnInit {
     }
     return flatIndex + stepIndex;
   }
+
   public nextStep(): void {
     const currentIndex = this.flatStepIndex();
     const currentStep = this.allSteps()[currentIndex];
-    const processId = this.currentProcessId();
     
-    if (currentStep.optional && processId && currentStep.files.length === 0) {
-        currentStep.isUploading = true;
-        this.sections.update(s => [...s]);
-        this.uploadService.completeStep(processId, currentStep.title)
-          .pipe(
-            take(1), 
-            finalize(() => { 
-                currentStep.isUploading = false;
-                this.sections.update(s => [...s]);
-            })
-          )
-          .subscribe({
-            next: () => {
-                currentStep.isCompleted = true; 
-                this.advanceToNextStep();
-            },
-            error: (err) => { 
-              this.uploadError.set(`Error al guardar el estado de omisión: ${currentStep.title}`); 
-            }
-          });
-        return; 
-    } 
-    if (currentStep.files.length > 0 || currentStep.optional) {
+    if ((currentStep.optional && currentStep.files.length === 0) || currentStep.files.length > 0) {
         currentStep.isCompleted = true;
         this.sections.update(s => [...s]);
     }
@@ -249,17 +261,23 @@ export class DocumentUploadComponent implements OnInit {
     const file = fileList[0];
     step.files.push(file); 
     step.isUploading = true;
-
+    
     this.uploadService.uploadFile(processId, step.title, file)
       .pipe(finalize(() => { step.isUploading = false; }))
       .subscribe({
         next: (response) => {
-          step.isCompleted = true;
-          const newFiles = step.files.filter(f => f.name !== file.name);
-          newFiles.push({ ...response, fromServer: true, name: response.file_name });
-          step.files = newFiles;
-          this.sections.update(s => [...s]);
-          this.advanceToNextStep();
+          if (response && response.document) {
+            step.isCompleted = true;
+            const newFiles = step.files.filter(f => f.name !== file.name);
+            newFiles.push({ ...response.document, fromServer: true, name: response.document.file_name });
+            step.files = newFiles;
+            this.sections.update(s => [...s]);
+            this.advanceToNextStep();
+          } else {
+            this.uploadError.set(`Respuesta inesperada del servidor para: ${file.name}`);
+            step.files = step.files.filter(f => f.name !== file.name);
+            this.sections.update(s => [...s]);
+          }
         },
         error: (err) => {
           this.uploadError.set(`Error al subir el archivo: ${file.name}`);
@@ -270,49 +288,49 @@ export class DocumentUploadComponent implements OnInit {
   }
 
   removeFile(step: UploadStep, fileToRemove: File | ServerFile): void {
-    const wasCompleted = step.isCompleted; 
-    
+    const wasCompleted = step.isCompleted; 
+    
     if (this.isServerFile(fileToRemove)) {
       this.uploadService.deleteFile(fileToRemove.id).subscribe({
         next: () => {
           step.files = step.files.filter(f => f !== fileToRemove);
           
-          let needsReactivation = false;
+          let needsReactivation = false;
 
           if (step.files.length === 0 && !step.optional) {
               step.isCompleted = false;
-              needsReactivation = true;
+              needsReactivation = true;
           }
           this.sections.update(s => [...s]);
 
-          if (needsReactivation) {
-            const allSteps = this.allSteps();
-            const firstIncompleteIndex = allSteps.findIndex(s => !s.isCompleted);
-            if (firstIncompleteIndex !== -1) {
-                this.flatStepIndex.set(firstIncompleteIndex);
-            }
-          }
+          if (needsReactivation) {
+            const allSteps = this.allSteps();
+            const firstIncompleteIndex = allSteps.findIndex(s => !s.isCompleted);
+            if (firstIncompleteIndex !== -1) {
+                this.flatStepIndex.set(firstIncompleteIndex);
+            }
+          }
 
         },
         error: (err) => { this.uploadError.set(`Error al eliminar el archivo "${fileToRemove.name}" del servidor.`); }
       });
     } else {
       step.files = step.files.filter(f => f !== fileToRemove);
-      let needsReactivation = false;
-      
+      let needsReactivation = false;
+      
       if (step.files.length === 0 && !step.optional) {
         step.isCompleted = false;
-        needsReactivation = true;
+        needsReactivation = true;
       }
       this.sections.update(s => [...s]);
-      if (needsReactivation) {
-        const allSteps = this.allSteps();
-        const firstIncompleteIndex = allSteps.findIndex(s => !s.isCompleted);
-        
-        if (firstIncompleteIndex !== -1) {
-            this.flatStepIndex.set(firstIncompleteIndex);
-        }
-      }
+      if (needsReactivation) {
+        const allSteps = this.allSteps();
+        const firstIncompleteIndex = allSteps.findIndex(s => !s.isCompleted);
+        
+        if (firstIncompleteIndex !== -1) {
+            this.flatStepIndex.set(firstIncompleteIndex);
+        }
+      }
     }
   }
 
@@ -370,7 +388,6 @@ export class DocumentUploadComponent implements OnInit {
         title: 'DOCUMENTOS DEL CUERPO DE BOMBEROS',
         steps: [
             { title: 'Certificado Superintendente que acredite calidad voluntario', optional: false, files: [], isCompleted: false },
-            { title: 'Copia libro de guardia 3 días previos y 3 días posteriores al accidente Legalizado ante notario.', optional: false, files: [], isCompleted: false },
             { title: 'Copia libro de llamadas (central de Alarmas) referido a 3 días previos y posteriores al accidente autorizado ante notario.', optional: true, files: [], isCompleted: false },
             { title: 'Copia Aviso de citación al acto de servicio (ACADEMIA).', optional: false, files: [], isCompleted: false },
             { title: 'Copia Lista de Asistencia al acto de servicio específico (ACADEMIA), autorizado ante notario.', optional: false, files: [], isCompleted: false },
@@ -401,3 +418,4 @@ export class DocumentUploadComponent implements OnInit {
     ];
   }
 }
+
