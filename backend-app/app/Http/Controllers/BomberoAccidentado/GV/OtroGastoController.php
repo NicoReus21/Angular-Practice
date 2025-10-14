@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\BomberoAccidentado\CB;
+namespace App\Http\Controllers\BomberoAccidentado\GV;
 
 use Illuminate\Http\Request;
 use App\Models\Process;
@@ -20,12 +20,12 @@ class OtroGastoController extends DocumentController
         }
 
         $file = $request->file('document');
-        $document = $this->upload($process, $file, 'requerimiento_operativo', 'reporte_flash', $request->user()->id);
+        $document = $this->upload($process, $file, 'otro', 'otro_gasto', $request->user()->id);
 
         if ($document) {
             return response()->json([
                 'success' => true,
-                'message' => 'Reporte Flash subido correctamente',
+                'message' => 'Otro Gasto subido correctamente',
                 'document' => $document,
             ], 201);
         }

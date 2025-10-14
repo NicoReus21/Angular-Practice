@@ -20,12 +20,12 @@ class InformeEjecutivoController extends DocumentController
         }
 
         $file = $request->file('document');
-        $document = $this->upload($process, $file, 'requerimiento_operativo', 'reporte_flash', $request->user()->id);
+        $document = $this->upload($process, $file, 'cuerpo_de_bomberos', 'informe_ejecutivo', $request->user()->id);
 
         if ($document) {
             return response()->json([
                 'success' => true,
-                'message' => 'Reporte Flash subido correctamente',
+                'message' => 'Informe Ejecutivo subido correctamente',
                 'document' => $document,
             ], 201);
         }

@@ -21,11 +21,11 @@ class CopiaLibroGuardiaController extends DocumentController
     }
 
     $file = $request->file('document');
-    $document = $this->upload($process,$file,'requerimiento_operativo','copia_libro_guia',$request->user()->id);
+    $document = $this->upload($process,$file,'requerimiento_operativo','copia_libro_guardia',$request->user()->id);
     if($document){
         return response()->json([
             'success' => true,
-            'message' => 'Copia Libro Guia subido correctamente',
+            'message' => 'Copia Libro Guardia subido correctamente',
             'document' => $document,
         ], 201);
     }

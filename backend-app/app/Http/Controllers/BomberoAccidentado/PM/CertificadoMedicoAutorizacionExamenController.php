@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\BomberoAccidentado\CB;
+namespace App\Http\Controllers\BomberoAccidentado\PM;
 
 use Illuminate\Http\Request;
 use App\Models\Process;
@@ -20,12 +20,12 @@ class CertificadoMedicoAutorizacionExamenController extends DocumentController
         }
 
         $file = $request->file('document');
-        $document = $this->upload($process, $file, 'requerimiento_operativo', 'reporte_flash', $request->user()->id);
+        $document = $this->upload($process, $file, 'prestacion_medica', 'certificado_medico_autorizacion_examen', $request->user()->id);
 
         if ($document) {
             return response()->json([
                 'success' => true,
-                'message' => 'Reporte Flash subido correctamente',
+                'message' => 'Certificado Médico de Autorización de Examen subido correctamente',
                 'document' => $document,
             ], 201);
         }

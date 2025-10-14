@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\BomberoAccidentado\CB;
+namespace App\Http\Controllers\BomberoAccidentado\GV;
 
 use Illuminate\Http\Request;
 use App\Models\Process;
@@ -20,12 +20,12 @@ class BoletaFacturaTrasladoController extends DocumentController
         }
 
         $file = $request->file('document');
-        $document = $this->upload($process, $file, 'requerimiento_operativo', 'reporte_flash', $request->user()->id);
+        $document = $this->upload($process, $file, 'otro', 'boleta_factura_traslado', $request->user()->id);
 
         if ($document) {
             return response()->json([
                 'success' => true,
-                'message' => 'Reporte Flash subido correctamente',
+                'message' => 'Boleta de Factura de Traslado subida correctamente',
                 'document' => $document,
             ], 201);
         }

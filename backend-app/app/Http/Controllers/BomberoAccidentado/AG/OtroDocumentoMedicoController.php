@@ -20,12 +20,12 @@ class OtroDocumentoMedicoController extends DocumentController
         }
 
         $file = $request->file('document');
-        $document = $this->upload($process, $file, 'requerimiento_operativo', 'reporte_flash', $request->user()->id);
+        $document = $this->upload($process, $file, 'antecedente_general', 'otro_documento_medico', $request->user()->id);
 
         if ($document) {
             return response()->json([
                 'success' => true,
-                'message' => 'Reporte Flash subido correctamente',
+                'message' => 'Otro Documento Médico subido correctamente',
                 'document' => $document,
             ], 201);
         }

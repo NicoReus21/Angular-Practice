@@ -20,12 +20,12 @@ class CertificadoAcreditacionVoluntarioController extends DocumentController
         }
 
         $file = $request->file('document');
-        $document = $this->upload($process, $file, 'requerimiento_operativo', 'reporte_flash', $request->user()->id);
+        $document = $this->upload($process, $file, 'cuerpo_de_bomberos', 'certificado_acreditacion_voluntario', $request->user()->id);
 
         if ($document) {
             return response()->json([
                 'success' => true,
-                'message' => 'Reporte Flash subido correctamente',
+                'message' => 'Certificado de Acreditación subido correctamente',
                 'document' => $document,
             ], 201);
         }

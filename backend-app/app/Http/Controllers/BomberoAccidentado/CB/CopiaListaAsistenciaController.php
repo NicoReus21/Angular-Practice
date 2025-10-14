@@ -20,12 +20,12 @@ class CopiaListaAsistenciaController extends DocumentController
         }
 
         $file = $request->file('document');
-        $document = $this->upload($process, $file, 'requerimiento_operativo', 'reporte_flash', $request->user()->id);
+        $document = $this->upload($process, $file, 'cuerpo_de_bomberos', 'copia_lista_asistencia', $request->user()->id);
 
         if ($document) {
             return response()->json([
                 'success' => true,
-                'message' => 'Reporte Flash subido correctamente',
+                'message' => 'Copia de Lista de Asistencia subida correctamente',
                 'document' => $document,
             ], 201);
         }
