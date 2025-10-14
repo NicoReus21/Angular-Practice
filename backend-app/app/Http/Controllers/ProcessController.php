@@ -72,29 +72,4 @@ class ProcessController extends Controller
             return response()->json(['message' => 'Error al eliminar el registro.'], 500);
         }
     }
-
-
-    public function completeStep(Request $request, Process $process)
-    {
-        $validatedData = $request->validate([
-            'step_title' => 'required|string|max:255',
-        ]);
-
-        $sectionsData = $process->sections_data ?? ['optional_steps_completed' => []];
-        
-        if (!isset($sectionsData['optional_steps_completed'])) {
-            $sectionsData['optional_steps_completed'] = [];
-        }
-
-        $stepTitle = $validatedData['step_title'];
-
-        if (!in_array($stepTitle, $sectionsData['optional_steps_completed'])) {
-            $sectionsData['optional_steps_completed'][] = $stepTitle;
-            
-            $process->sections_data = $sectionsData;
-            $process->save();
-        }
-
-        return response()->json($process->load('documents'));
-    }
 }

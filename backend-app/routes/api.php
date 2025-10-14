@@ -4,31 +4,36 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProcessController;
+// Requerimiento Operativo
 use App\Http\Controllers\BomberoAccidentado\RO\ReporteFlashController;
 use App\Http\Controllers\BomberoAccidentado\RO\DiabController;
 use App\Http\Controllers\BomberoAccidentado\RO\ObacController;
 use App\Http\Controllers\BomberoAccidentado\RO\DeclaracionTestigoController;
 use App\Http\Controllers\BomberoAccidentado\RO\CopiaLibroGuardiaController;
-use App\Http\Controllers\CertificadoCarabineroController;
-use App\Http\Controllers\InformeMedicoController;
-use App\Http\Controllers\OtroDocumentoMedicoController;
-use App\Http\Controllers\CertificadoAcreditacionVoluntarioController;
-use App\Http\Controllers\CopiaLibroLlamadaController;
-use App\Http\Controllers\AvisoCitacionController;
-use App\Http\Controllers\CopiaListaAsistenciaController;
-use App\Http\Controllers\InformeEjecutivoController;
-use App\Http\Controllers\FacturaPrestacionController;
-use App\Http\Controllers\BoletaHonorarioVisadaController;
-use App\Http\Controllers\BoletaMedicamentoController;
-use App\Http\Controllers\CertificadoMedicoAutorizacionExamenController;
-use App\Http\Controllers\BoletaFacturaController;
-use App\Http\Controllers\CertificadoMedicoAtencionEspecialController;
-use App\Http\Controllers\CertificadoMedicoTrasladoController;
-use App\Http\Controllers\BoletaGastoAcompananteController;
-use App\Http\Controllers\OtroGastoController;
-use App\Http\Controllers\CertificadoMedicoIncapacidadController;
+// Antecedentes Generales
+use App\Http\Controllers\BomberoAccidentado\AG\CertificadoCarabineroController;
 use App\Http\Controllers\BomberoAccidentado\AG\DauController;
-use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\BomberoAccidentado\AG\CertificadoMedicoAtencionEspecialController;
+use App\Http\Controllers\BomberoAccidentado\AG\InformeMedicoController;
+use App\Http\Controllers\BomberoAccidentado\AG\OtroDocumentoMedicoController;
+// Documentos del Cuerpo de Bomberos
+use App\Http\Controllers\BomberoAccidentado\CB\CertificadoAcreditacionVoluntarioController;
+use App\Http\Controllers\BomberoAccidentado\CB\CopiaLibroLlamadaController;
+use App\Http\Controllers\BomberoAccidentado\CB\AvisoCitacionController;
+use App\Http\Controllers\BomberoAccidentado\CB\CopiaListaAsistenciaController;
+use App\Http\Controllers\BomberoAccidentado\CB\InformeEjecutivoController;
+// Prestaciones Médicas
+use App\Http\Controllers\BomberoAccidentado\PM\FacturaPrestacionController;
+use App\Http\Controllers\BomberoAccidentado\PM\BoletaHonorarioVisadaController;
+use App\Http\Controllers\BomberoAccidentado\PM\BoletaMedicamentoController;
+use App\Http\Controllers\BomberoAccidentado\PM\CertificadoMedicoAutorizacionExamenController;
+// Gastos de Traslados y Alimentación
+use App\Http\Controllers\BomberoAccidentado\GV\BoletaFacturaTrasladoController;
+use App\Http\Controllers\BomberoAccidentado\GV\CertificadoMedicoTrasladoController;
+use App\Http\Controllers\BomberoAccidentado\GV\BoletaGastoAcompananteController;
+use App\Http\Controllers\BomberoAccidentado\GV\OtroGastoController;
+use App\Http\Controllers\BomberoAccidentado\GV\CerfiticadoMedicoIncapacidadController;
+use App\Http\Controllers\BomberoAccidentado\GV\DocumentController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -56,32 +61,32 @@ Route::middleware('auth:sanctum')->prefix('process/{process}')->group(function (
     Route::post('/upload_reporte_flash', [ReporteFlashController::class, 'store'])->name('process.upload.reporte_flash');
     Route::post('/upload_diab', [DiabController::class, 'store'])->name('process.upload.diab');
     Route::post('/upload_obac', [ObacController::class, 'store'])->name('process.upload.obac');
-    Route::post('/upload_copia_libro_guardia', [CopiaLibroGuardiaController::class, 'store'])->name('process.upload.copia_libro_guia');
+    Route::post('/upload_copia_libro_guardia', [CopiaLibroGuardiaController::class, 'store'])->name('process.upload.copia_libro_guardia');
     Route::post('/upload_declaracion_testigo', [DeclaracionTestigoController::class, 'store'])->name('process.upload.declaracion_testigo');
     //Antecedentes Generales
-    Route::post('/upload_certificado_carabineros', [CertificadoCarabineroController::class, 'store']);
+    Route::post('/upload_certificado_carabineros', [CertificadoCarabineroController::class, 'store'])->name('process.upload.certificado_carabineros');
     Route::post('/upload_dau', [DauController::class, 'store'])->name('process.upload.dau');
-    Route::post('/upload_informe_medico', [InformeMedicoController::class, 'store']);
-    Route::post('/upload_otros_documento_medico_adicional', [OtroDocumentoMedicoController::class, 'store']);
-    Route::post('/upload_certificado_medico_atencion_especial', [CertificadoMedicoAtencionEspecialController::class, 'store']);
+    Route::post('/upload_informe_medico', [InformeMedicoController::class, 'store'])->name('process.upload.informe_medico');
+    Route::post('/upload_otros_documento_medico_adicional', [OtroDocumentoMedicoController::class, 'store'])->name('process.upload.otros_documento_medico_adicional');
+    Route::post('/upload_certificado_medico_atencion_especial', [CertificadoMedicoAtencionEspecialController::class, 'store'])->name('process.upload.certificado_medico_atencion_especial');
     //Documento del Cuerpo de Bomberos
-    Route::post('/upload_certificado_acreditacion_voluntario', [CertificadoAcreditacionVoluntarioController::class, 'store']);
-    Route::post('/upload_copia_libro_llamada', [CopiaLibroLlamadaController::class, 'store']);
-    Route::post('/upload_aviso_citacion', [AvisoCitacionController::class, 'store']);
-    Route::post('/upload_copia_lista_asistencia', [CopiaListaAsistenciaController::class, 'store']);
-    Route::post('/upload_informe_ejecutivo', [InformeEjecutivoController::class, 'store']);
+    Route::post('/upload_certificado_acreditacion_voluntario', [CertificadoAcreditacionVoluntarioController::class, 'store'])->name('process.upload.certificado_acreditacion_voluntario');
+    Route::post('/upload_copia_libro_llamada', [CopiaLibroLlamadaController::class, 'store'])->name('process.upload.copia_libro_llamada');
+    Route::post('/upload_aviso_citacion', [AvisoCitacionController::class, 'store'])->name('process.upload.aviso_citacion');
+    Route::post('/upload_copia_lista_asistencia', [CopiaListaAsistenciaController::class, 'store'])->name('process.upload.copia_lista_asistencia');
+    Route::post('/upload_informe_ejecutivo', [InformeEjecutivoController::class, 'store'])->name('process.upload.informe_ejecutivo');
     //Prestaciones Medica
-    Route::post('/upload_factura_prestaciones', [FacturaPrestacionController::class, 'store']);
-    Route::post('/upload_boleta_honorarios_visada', [BoletaHonorarioVisadaController::class, 'store']);
-    Route::post('/upload_boleta_medicamentos', [BoletaMedicamentoController::class, 'store']);
-    Route::post('/upload_certificado_medico_autorizacion_examen', [CertificadoMedicoAutorizacionExamenController::class, 'store']);
+    Route::post('/upload_factura_prestaciones', [FacturaPrestacionController::class, 'store'])->name('process.upload.factura_prestaciones');
+    Route::post('/upload_boleta_honorarios_visada', [BoletaHonorarioVisadaController::class, 'store'])->name('process.upload.boleta_honorarios_visada');
+    Route::post('/upload_boleta_medicamentos', [BoletaMedicamentoController::class, 'store'])->name('process.upload.boleta_medicamentos');
+    Route::post('/upload_certificado_medico_autorizacion_examen', [CertificadoMedicoAutorizacionExamenController::class, 'store'])->name('process.upload.certificado_medico_autorizacion_examen');
     //Gastos de Traslados y alimentacion
-    Route::post('/upload_boleta_factura_traslado', [BoletaFacturaController::class, 'store']);
-    Route::post('/upload_certificado_medico_traslado', [CertificadoMedicoTrasladoController::class, 'store']);
-    Route::post('/upload_boleta_gastos_acompanante', [BoletaGastoAcompananteController::class, 'store']);
-    Route::post('/upload_certificado_medico_incapacidad', [CertificadoMedicoIncapacidadController::class, 'store']);
-    Route::post('/upload_boleta_alimentacion_acompanante', [BoletaGastoAcompananteController::class, 'store']);
-    Route::post('/upload_otros_gastos', [OtroGastoController::class, 'store']);
+    Route::post('/upload_boleta_factura_traslado', [BoletaFacturaTrasladoController::class, 'store'])->name('process.upload.boleta_factura_traslado');
+    Route::post('/upload_certificado_medico_traslado', [CertificadoMedicoTrasladoController::class, 'store'])->name('process.upload.certificado_medico_traslado');
+    Route::post('/upload_boleta_gastos_acompanante', [BoletaGastoAcompananteController::class, 'store'])->name('process.upload.boleta_gastos_acompanante');
+    Route::post('/upload_certificado_medico_incapacidad', [CerfiticadoMedicoIncapacidadController::class, 'store'])->name('process.upload.certificado_medico_incapacidad');
+    Route::post('/upload_boleta_alimentacion_acompanante', [BoletaGastoAcompananteController::class, 'store'])->name('process.upload.boleta_alimentacion_acompanante');
+    Route::post('/upload_otros_gastos', [OtroGastoController::class, 'store'])->name('process.upload.otros_gastos');
 });
 
 // Mini sistema de usuarios y grupos
