@@ -23,8 +23,8 @@ class UploadAllDocumentTest extends TestUploadBaseDocument
     public function test_upload_obac(){
         $this->upload_file($this->process,'obac','process.upload.obac','requerimiento_operativo','OBAC subido correctamente');
     }
-    public function test_upload_copia_libro_guia(){
-        $this->upload_file($this->process,'copia_libro_guia','process.upload.copia_libro_guia','requerimiento_operativo','Copia Libro Guia subido correctamente');
+    public function test_upload_copia_libro_guardia(){
+        $this->upload_file($this->process,'copia_libro_guardia','process.upload.copia_libro_guia','requerimiento_operativo','Copia Libro Guardia subido correctamente');
     }
     public function test_upload_declaracion_testigo(){
         $this->upload_file($this->process,'declaracion_testigo','process.upload.declaracion_testigo','requerimiento_operativo','Declaracion Testigo subido correctamente');
