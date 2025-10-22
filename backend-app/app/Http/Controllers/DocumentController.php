@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use App\Models\Process;
 use Illuminate\Support\Facades\Schema;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DocumentController extends Controller
 {
@@ -64,13 +66,52 @@ class DocumentController extends Controller
     public function destroy(Document $document)
     {
         try {
-            Storage::delete($document->file_path);
-            $document->delete();
-            return response()->json(null, 204);
-        } catch (\Exception $e) {
-            Log::error("Error al eliminar el documento ID {$document->id}: " . $e->getMessage());
-            return response()->json(['message' => 'Error al eliminar el archivo en el servidor'], 500);
+        $process = $document->process;
+        $foreignKeyColumn = str_replace([' ', '(', ')', '.'], '_', strtolower($document->section_title)) . '_id';
+
+        if ($process && Schema::hasColumn('processes', $foreignKeyColumn)) {
+            $process->{$foreignKeyColumn} = null;
+            $process->save();
         }
+
+        Storage::delete($document->file_path);
+        $document->delete();
+
+        return response()->json(['success' => true, 'message' => 'Archivo eliminado correctamente.'], 200);
+
+    } catch (\Exception $e) {
+        Log::error("Error al eliminar el documento ID {$document->id}: " . $e->getMessage());
+        return response()->json(['message' => 'Error al eliminar el archivo en el servidor'], 500);
+    }
+    }
+
+
+    public function view(Document $document): Response|StreamedResponse
+    {
+
+        if (auth()->id() !== $document->user_id) {
+            abort(403, 'No autorizado.');
+        }
+
+        if (!Storage::disk('local')->exists($document->file_path)) {
+            abort(404, 'Archivo no encontrado.');
+        }
+        return Storage::disk('local')->response($document->file_path);
+    }
+
+    /**
+     * Fuerza la descarga de un archivo privado.
+     */
+    public function download(Document $document): StreamedResponse
+    {
+        if (auth()->id() !== $document->user_id) {
+            abort(403, 'No autorizado.');
+        }
+
+        if (!Storage::disk('local')->exists($document->file_path)) {
+            abort(404, 'Archivo no encontrado.');
+        }
+        return Storage::disk('local')->download($document->file_path, $document->file_name);
     }
 }
 

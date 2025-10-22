@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProcessController;
+use App\Http\Controllers\DocumentController;
 // Requerimiento Operativo
 use App\Http\Controllers\BomberoAccidentado\RO\ReporteFlashController;
 use App\Http\Controllers\BomberoAccidentado\RO\DiabController;
@@ -33,7 +34,6 @@ use App\Http\Controllers\BomberoAccidentado\GV\CertificadoMedicoTrasladoControll
 use App\Http\Controllers\BomberoAccidentado\GV\BoletaGastoAcompananteController;
 use App\Http\Controllers\BomberoAccidentado\GV\OtroGastoController;
 use App\Http\Controllers\BomberoAccidentado\GV\CerfiticadoMedicoIncapacidadController;
-use App\Http\Controllers\BomberoAccidentado\GV\DocumentController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -41,7 +41,7 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::patch('/processes/{process}/complete-step', [ProcessController::class, 'completeStep']);
 
 Route::middleware('auth:sanctum')->group( function(){
@@ -52,6 +52,9 @@ Route::middleware('auth:sanctum')->group( function(){
     Route::put('/process/{process}', [ProcessController::class, 'update']);     
     Route::delete('/process/{process}', [ProcessController::class, 'destroy']);  
     Route::delete('/documents/{document}', [DocumentController::class, 'destroy']);
+
+    Route::get('/documents/{document}/view', [DocumentController::class, 'view'])->name('documents.view');
+    Route::get('/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
 });
 
 
