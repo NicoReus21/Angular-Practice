@@ -46,6 +46,18 @@ export class FileUploadService {
     return this.http.patch(url, { step_title: stepTitle });
   }
 
+  viewFile(fileId: number): Observable<Blob> {
+    return this.http.get(`${this.backendUrl}/documents/${fileId}/view`, {
+      responseType: 'blob'
+    });
+  }
+  
+  downloadFile(fileId: number): Observable<Blob> {
+    return this.http.get(`${this.backendUrl}/documents/${fileId}/download`, {
+      responseType: 'blob'
+    });
+  }
+
   private getEndpointForStep(stepTitle: string): string | null {
     const endpointMap: { [key: string]: string } = {
       //REQUERIMIENTO OPERATIVO

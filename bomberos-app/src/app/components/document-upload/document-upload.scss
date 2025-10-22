@@ -3,25 +3,18 @@
   padding: 40px 50px;
   border-radius: 12px;
   width: 100%;
-  max-width: 900px;
+  max-width: 1200px;
   box-sizing: border-box;
   border: 1px solid #e9ecef;
 }
 
 .page-title {
-  font-size: 38px;
+  font-size: 45px;
   font-weight: 800;
   text-align: center;
   color: #212529;
   line-height: 1.2;
   margin: 0 0 8px 0;
-}
-
-.page-subtitle, .process-message {
-  text-align: center;
-  color: #6c757d;
-  font-size: 1rem;
-  margin: 0 0 48px 0;
 }
 
 .preliminary-form {
@@ -35,8 +28,7 @@
 .completion-message {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
+  justify-content: right;
   padding: 16px;
   background-color: #f0fff4;
   color: #28a745;
@@ -47,7 +39,7 @@
 }
 
 .checklist-title {
-  font-size: 16px;
+  font-size: 25px;
   font-weight: 600;
   color: #495057;
   margin-bottom: 16px;
@@ -56,9 +48,8 @@
 }
 
 .checklist {
-  display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .step-item {
@@ -83,29 +74,29 @@
 .step-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
 }
 
 .step-info {
   display: flex;
   align-items: center;
-  gap: 16px;
 }
 
 .step-number {
   font-weight: 700;
-  color: #adb5bd;
+  color: black; // <-- CAMBIO DE COLOR: Un gris más claro como en tu imagen
+  font-size: 1.2em;
 }
 
 .step-title {
-  font-weight: 500;
+  font-weight: 600;
   color: #212529;
+  font-size: 1.2em;
 }
 
 .optional-badge {
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 500;
-  color: #6c757d;
+  color: black;
   background-color: #e9ecef;
   padding: 4px 8px;
   border-radius: 4px;
@@ -153,12 +144,20 @@
   color: #333;
 
   li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 8px 4px;
     border-bottom: 1px solid #eee;
     &:last-child {
       border-bottom: none;
     }
   }
+}
+
+.file-actions {
+  display: inline-flex;
+  align-items: center;
 }
 
 .paid-checkbox {
@@ -185,23 +184,27 @@
 }
 
 .section-title {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 22px;
+  font-weight:800;
   text-transform: uppercase;
   color: #343a40;
+  display: flex;
+  align-items: left;
 }
 
 .finish-flow-container {
   display: flex;
   justify-content: center;
   padding: 24px 0 8px 0;
-  margin-top: 16px;
+  margin-top: 8px;
   border-top: 1px solid #e9ecef;
 
   button {
-    padding: 12px 32px;
-    font-size: 1rem;
+    padding: 12px 24px;
+    font-size: 18px;
     line-height: 1.5;
+    font-weight: 400;
+    border-radius: 8px;
   }
 }
 
@@ -212,8 +215,8 @@
 .page-header-edit {
   position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center; 
+  align-items: left;
+  justify-content: left; 
   padding: 1rem;
 
   .page-title {

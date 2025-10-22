@@ -361,6 +361,25 @@ export class DocumentUploadComponent implements OnInit {
       this.handleFiles(event.dataTransfer.files, step);
     }
   }
+
+
+onViewFile(file: ServerFile): void {
+    this.uploadService.viewFile(file.id).subscribe(blob => {
+      const fileURL = URL.createObjectURL(blob);
+      window.open(fileURL, '_blank'); // Abre el archivo en una nueva pestaña
+    });
+  }
+
+  onDownloadFile(file: ServerFile): void {
+    this.uploadService.downloadFile(file.id).subscribe(blob => {
+      const a = document.createElement('a');
+      const objectUrl = URL.createObjectURL(blob);
+      a.href = objectUrl;
+      a.download = file.name; // Usa el nombre original del archivo
+      a.click();
+      URL.revokeObjectURL(objectUrl); // Libera memoria
+    });
+  }
   
   private getInitialSections(): UploadSection[] {
     return [
