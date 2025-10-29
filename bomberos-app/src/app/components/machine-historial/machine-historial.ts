@@ -10,8 +10,6 @@ import {
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
-
-// Importaciones de Angular Material
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
@@ -26,14 +24,11 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatToolbarModule } from '@angular/material/toolbar'; // <-- AÑADIDO
-
-// Importaciones de tus componentes de diálogo
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { CreateFiretruckComponent } from '../create-firetruck/create-firetruck';
 import { CreateReportComponent } from '../create-report/create-report';
 import { CreateChecklistComponent } from '../create-checklist/create-checklist';
 
-// --- Interfaces (Tipos de datos) ---
 interface MaintenanceLog {
   id: string;
   date: string;
@@ -98,7 +93,6 @@ export interface VehicleUnit {
     MatInputModule,
     MatTooltipModule,
     CurrencyPipe,
-    MatToolbarModule, // <-- AÑADIDO
   ],
   templateUrl: './machine-historial.html',
   styleUrls: ['./machine-historial.scss'],
@@ -107,7 +101,7 @@ export interface VehicleUnit {
 export class MachineHistorialComponent {
   private dialog = inject(MatDialog);
 
-  @ViewChild('fileInput') fileInputRef!: ElementRef<HTMLInputElement>; // --- Datos de Ejemplo (Actualizados) ---
+  @ViewChild('fileInput') fileInputRef!: ElementRef<HTMLInputElement>;
 
   private allUnits = signal<VehicleUnit[]>([
     {
@@ -199,7 +193,6 @@ export class MachineHistorialComponent {
         },
       ],
     },
-    // Unidad de prueba para el filtro "Fuera de Servicio"
     {
       id: 'r3',
       name: 'Unidad R3',
@@ -212,15 +205,12 @@ export class MachineHistorialComponent {
       documents: [],
       maintenanceHistory: [],
     },
-  ]); // --- Signals (Estado del componente) ---
+  ]); 
 
   selectedUnitId = signal<string | null>(this.allUnits()[0]?.id || null);
   currentStatusFilter = signal<'Todos' | 'En Servicio' | 'En Taller' | 'Fuera de Servicio'>(
     'Todos'
-  );
-
-  // ✅ AÑADIDO: Signal para controlar el Sidenav
-  isSidenavOpen = signal(true); // Calcula la lista de unidades filtradas
+  ); 
 
   filteredUnits = computed(() => {
     const status = this.currentStatusFilter();
@@ -228,15 +218,15 @@ export class MachineHistorialComponent {
       return this.allUnits();
     }
     return this.allUnits().filter((unit) => unit.status === status);
-  }); // Calcula la unidad seleccionada actualmente
+  }); 
 
   selectedUnit = computed(() => {
     const id = this.selectedUnitId();
     return this.allUnits().find((u) => u.id === id) || null;
-  }); // --- Signals para el formulario de documentos ---
+  }); 
 
   newDocumentName = signal<string>('');
-  newDocumentCost = signal<number | null>(null); // --- Computed Signal para calcular el total de gastos ---
+  newDocumentCost = signal<number | null>(null); 
 
   totalDocumentsCost = computed(() => {
     const unit = this.selectedUnit();
@@ -244,12 +234,7 @@ export class MachineHistorialComponent {
       return 0;
     }
     return unit.documents.reduce((sum, doc) => sum + (doc.cost || 0), 0);
-  }); // --- Métodos del Componente ---
-
-  // ✅ AÑADIDO: Método para abrir/cerrar el Sidenav
-  toggleSidenav(): void {
-    this.isSidenavOpen.update((v) => !v);
-  }
+  }); 
 
   onFilterChange(status: 'Todos' | 'En Servicio' | 'En Taller' | 'Fuera de Servicio'): void {
     this.currentStatusFilter.set(status);
@@ -311,33 +296,7 @@ export class MachineHistorialComponent {
     console.log('Intentando editar checklist (requiere lógica de diálogo):', checklistToEdit);
     console.warn(
       `Funcionalidad "Editar" (ID: ${checklistId}). Se necesita modificar el diálogo 'CreateChecklistComponent' para poblarlo con datos existentes.`
-    ); /*
-    try {
-      const dialogRef = this.dialog.open(CreateChecklistComponent, {
-        width: '600px',
-        autoFocus: false,
-        data: { isEdit: true, checklistData: JSON.parse(JSON.stringify(checklistToEdit)) }
-      });
-
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          console.log('Checklist editado:', result);
-          this.allUnits.update(units => {
-            const unitToUpdate = units.find(u => u.id === unit.id);
-            if (unitToUpdate) {
-              const index = unitToUpdate.checklists.findIndex(cl => cl.id === checklistId);
-              if (index > -1) {
-                // ... (lógica para actualizar el checklist en el array) ...
-              }
-            }
-            return [...units];
-          });
-        }
-      });
-    } catch (e) {
-      console.error("Error al abrir CreateChecklistComponent para editar.", e);
-    }
-    */
+    );
   }
 
   onDeleteChecklist(checklistId: string, event: MouseEvent): void {
@@ -359,7 +318,6 @@ export class MachineHistorialComponent {
       });
     });
   }
-
   openCreateUnitDialog(): void {
     try {
       const dialogRef = this.dialog.open(CreateFiretruckComponent, {
@@ -470,7 +428,7 @@ export class MachineHistorialComponent {
     } catch (e) {
       console.error('Error al abrir CreateChecklistComponent.', e);
     }
-  } // --- Métodos para la pestaña de Documentos ---
+  }
 
   clearFileSelection(): void {
     this.newDocumentName.set('');
@@ -514,10 +472,12 @@ export class MachineHistorialComponent {
     };
 
     this.allUnits.update((units) => {
+
       return units.map((unit) => {
+
         if (unit.id !== unitId) {
           return unit;
-        }
+        } 
         return {
           ...unit,
           documents: [...unit.documents, newDoc],
@@ -539,7 +499,7 @@ export class MachineHistorialComponent {
           return unit;
         }
         return {
-          ...unit,
+          ...unit, 
           documents: unit.documents.filter((doc) => doc.id !== docId),
         };
       });

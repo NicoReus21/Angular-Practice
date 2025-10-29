@@ -16,7 +16,6 @@
   border-right: 1px solid #e0e0e0;
   display: flex;
   flex-direction: column;
-  /* MANTENIDO: Ocultar scroll horizontal del sidenav principal */
   overflow-x: hidden;
 }
 
@@ -34,27 +33,16 @@
   }
 }
 
-/* --- Scroll Horizontal para Filtro --- */
+
 .status-filter {
   display: flex;
-  /* ✅ ELIMINADO: width: calc(100% - 32px); */
-  /* ✅ AÑADIDO: Dejar que el contenedor flex maneje el ancho, 
-                 pero asegurarse de que los márgenes estén dentro */
   margin: 16px;
   box-sizing: border-box;
-  /* Asegura que padding/border no lo hagan más ancho */
   box-shadow: none;
   overflow-x: auto;
   white-space: nowrap;
   padding-bottom: 8px;
   flex-shrink: 0;
-
-  /* --- Scrollbar Visible (Lo dejamos visible por ahora) --- */
-  /*
-  &::-webkit-scrollbar { display: none; }
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  */
 
   .mat-button-toggle {
     flex-shrink: 0;
@@ -68,9 +56,6 @@
     color: white;
   }
 }
-
-/* --- Fin Scroll Horizontal --- */
-
 
 .unit-list {
   flex-grow: 1;
@@ -145,7 +130,6 @@
   }
 }
 
-/* --- Estilos para Sidenav Colapsable --- */
 .dashboard-content {
   display: flex;
   flex-direction: column;
@@ -168,9 +152,6 @@
   padding: 24px 32px;
   background-color: #f4f7fa;
 }
-
-/* --- Fin Estilos Sidenav Colapsable --- */
-
 
 .no-selection {
   display: flex;
