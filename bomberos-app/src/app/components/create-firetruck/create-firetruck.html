@@ -1,0 +1,62 @@
+<form [formGroup]="unitForm" (ngSubmit)="onSave()">
+<h1 mat-dialog-title class="dialog-title">
+    Crear Nueva Unidad
+    <button
+    mat-icon-button
+    class="close-button"
+    (click)="onCancel()"
+    type="button"
+    matTooltip="Cerrar"
+    >
+    <mat-icon>close</mat-icon>
+    </button>
+</h1>
+<div mat-dialog-content class="dialog-content">
+    <mat-form-field appearance="outline">
+    <mat-label>Nombre de la Unidad (Ej: B6)</mat-label>
+    <input matInput formControlName="name" cdkFocusInitial />
+    @if (unitForm.get('name')?.hasError('required')) {
+    <mat-error>El nombre es obligatorio</mat-error>
+    }
+    </mat-form-field>
+
+    <div class="form-row">
+    <mat-form-field appearance="outline" class="form-field-half">
+        <mat-label>Patente (Ej: KD-VV-46)</mat-label>
+        <input matInput formControlName="plate" />
+        @if (unitForm.get('plate')?.hasError('required')) {
+        <mat-error>La patente es obligatoria</mat-error>
+        }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="form-field-half">
+        <mat-label>Modelo</mat-label>
+        <input matInput formControlName="model" />
+    </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+    <mat-label>Compañía (Ej: 6ta-10ma)</mat-label>
+    <input matInput formControlName="company" />
+    @if (unitForm.get('company')?.hasError('required')) {
+    <mat-error>La compañía es obligatoria</mat-error>
+    }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+    <mat-label>Estado Inicial</mat-label>
+    <mat-select formControlName="status">
+        <mat-option value="En Servicio">En Servicio</mat-option>
+        <mat-option value="En Taller">En Taller</mat-option>
+        <mat-option value="Fuera de Servicio">Fuera de Servicio</mat-option>
+    </mat-select>
+    </mat-form-field>
+</div>
+
+<div mat-dialog-actions class="dialog-actions" align="end">
+    <button mat-stroked-button (click)="onCancel()" type="button">Cancelar</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="unitForm.invalid">
+    Guardar Unidad
+    </button>
+</div>
+</form>
