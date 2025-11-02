@@ -106,3 +106,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/groups/{id}', [AuthController::class, 'update']);
     Route::delete('/groups/{id}', [AuthController::class, 'destroy']);
 });
+
+// Rutas Modulo material Mayor
+
+//TODO: Agregar las rutas del modulo de Material Mayor aqui
