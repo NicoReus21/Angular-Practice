@@ -110,3 +110,33 @@ Route::middleware('auth:sanctum')->group(function () {
 // Rutas Modulo material Mayor
 
 //TODO: Agregar las rutas del modulo de Material Mayor aqui
+Route::middleware('auth:sanctum')->group(function () {
+    // Companies
+    Route::apiResource('companies', \App\Http\Controllers\CompanyController::class);
+
+    // Suppliers
+    Route::apiResource('suppliers', \App\Http\Controllers\SupplierController::class);
+
+    // Cars (ya existe CarController en el proyecto)
+    Route::apiResource('cars', \App\Http\Controllers\CarController::class);
+
+    // Maintenances
+    Route::apiResource('maintenances', \App\Http\Controllers\MaintenanceController::class);
+
+    // Car Documents (nested under cars) con rutas superficiales para show/update/destroy
+    Route::apiResource('cars.documents', \App\Http\Controllers\CarDocumentController::class)->shallow();
+
+    // Maintenance Documents (nested under maintenances)
+    Route::apiResource('maintenances.documents', \App\Http\Controllers\MaintenanceDocumentController::class)->shallow();
+
+    // Purchase Orders y sus Items
+    Route::apiResource('purchase-orders', \App\Http\Controllers\PurchaseOrderController::class);
+    Route::apiResource('purchase-orders.items', \App\Http\Controllers\PoItemController::class)->shallow();
+
+    // Invoices y Payments del módulo Material Mayor
+    Route::apiResource('mm-invoices', \App\Http\Controllers\InvoicesMmController::class);
+    Route::apiResource('mm-payments', \App\Http\Controllers\PaymentsMmController::class);
+
+    // Budgets por compañía y periodo
+    Route::apiResource('budgets', \App\Http\Controllers\BudgetController::class);
+});
