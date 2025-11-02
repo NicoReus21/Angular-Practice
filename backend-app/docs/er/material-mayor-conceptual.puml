@@ -1,0 +1,24 @@
+@startuml
+' EER Conceptual - Material Mayor (derivado de migraciones actuales)
+
+hide circle
+skinparam linetype ortho
+
+entity "Car" as Car
+entity "Maintenance" as Maintenance
+
+' Relaciones principales detectadas por modelos/migraciones
+Car ||--o{ Maintenance : tiene
+
+note right of Car
+  Según migración cars: patente, marca, model.
+end note
+
+note bottom of Maintenance
+  Relación belongsTo(Car) en el modelo.
+  La migración aún no define columnas, pero el
+  EER reconoce la dependencia conceptual.
+end note
+
+@enduml
+

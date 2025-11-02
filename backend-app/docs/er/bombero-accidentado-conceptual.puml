@@ -1,0 +1,151 @@
+@startchen
+' ============================================
+' MODELO ENTIDAD–RELACIÓN (NOTACIÓN CHEN)
+' ============================================
+
+entity Proceso {
+  ulid
+  ulid_bombero
+  Fecha_inicio
+  Fecha_termino
+  bombero_name
+  company
+  status
+}
+
+entity Documento {
+  ulid
+  titulo
+  Fecha_subida
+  ulid_usuario
+  section_title
+  step
+  file_name
+  file_path
+}
+
+entity DocumentoMedico {
+  Diagnostico
+  Tratamiento
+}
+
+entity DocumentoFinanza {
+  MontoAfecto
+  MontoExcento
+  Total
+}
+
+entity DocumentoCertificado {
+  Identificador
+  Fecha_emision
+}
+
+entity Usuario {
+  id
+  name
+  email
+}
+
+entity Factura {
+  id
+  numero_factura
+  fecha_emision
+  monto_total
+  impuesto
+  estado
+  monto_neto
+}
+
+entity Hospital {
+  id
+  nombre
+  ubicación
+}
+
+' --- Relaciones (rombos) con cuerpo ---
+relationship Contiene {
+}
+relationship Emitido {
+}
+relationship Crea {
+}
+relationship Sube {
+}
+relationship Respalda {
+}
+
+' --- Conexiones + cardinalidades ---
+' Un Proceso contiene muchos Documentos
+Proceso -1- Contiene
+Contiene -N- Documento
+
+' Un Documento es emitido por un Hospital (N:1)
+Documento -N- Emitido
+Emitido -1- Hospital
+
+' Usuario crea Proceso (1:N)
+Usuario -1- Crea
+Crea -N- Proceso
+
+' Usuario sube Documento (1:N)
+Usuario -1- Sube
+Sube -N- Documento
+
+' Documento puede estar respaldado por Factura (1:0..1)
+Documento -1- Respalda
+Respalda -1- Factura
+
+' ==============================
+' Atributos como óvalos (en estrella)
+' ==============================
+' Usuario
+usecase "name" as u_name
+usecase "email" as u_email
+Usuario -left- u_name
+Usuario -right- u_email
+
+' Proceso (según processes)
+usecase "bombero_name" as p_bombero_name
+usecase "company" as p_company
+usecase "status" as p_status
+usecase "Fecha_inicio" as p_fini
+usecase "Fecha_termino" as p_fterm
+Proceso -up- p_bombero_name
+Proceso -right- p_company
+Proceso -down- p_status
+Proceso -left- p_fini
+Proceso -down- p_fterm
+
+' Documento (según documents)
+usecase "section_title" as d_section_title
+usecase "step" as d_step
+usecase "file_name" as d_file_name
+usecase "file_path" as d_file_path
+usecase "Fecha_subida" as d_fecha_subida
+Documento -left- d_section_title
+Documento -up- d_step
+Documento -right- d_file_name
+Documento -down- d_file_path
+Documento -down- d_fecha_subida
+
+' Factura (según facturas)
+usecase "numero_factura" as f_num
+usecase "fecha_emision" as f_fecha
+usecase "monto_total" as f_total
+usecase "monto_neto" as f_neto
+usecase "impuesto" as f_iva
+usecase "estado" as f_estado
+Factura -up- f_num
+Factura -right- f_fecha
+Factura -down- f_total
+Factura -left- f_neto
+Factura -down- f_iva
+Factura -right- f_estado
+
+' Hospital (conceptual)
+usecase "nombre" as h_nombre
+usecase "ubicacion" as h_ubica
+Hospital -left- h_nombre
+Hospital -right- h_ubica
+
+@endchen

@@ -1,0 +1,45 @@
+@startuml
+' EER Conceptual - Autenticación/Autorización (derivado de migraciones actuales)
+
+hide circle
+skinparam linetype ortho
+
+entity "User" as User
+entity "Group" as Group
+entity "Rol" as Rol
+entity "Permission" as Permission
+entity "PersonalAccessToken" as Token
+entity "Session" as Session
+entity "PasswordResetToken" as PwdReset
+
+' Relaciones principales (conceptuales)
+User }o--o{ Group : pertenece
+Group }o--o{ Permission : concede
+User }o--o{ Permission : concede_directo
+User }o--o{ Rol : asignado
+Rol }o--o{ Permission : concede
+User ||--o{ Token : posee
+User ||--o{ Session : sesión
+User ||--o{ PwdReset : resetea
+
+note right of Group
+  Basado en migrations: groups, user_groups,
+  group_permissions.
+end note
+
+note right of Rol
+  Basado en migrations: rols, user_rols.
+end note
+
+note right of Permission
+  Basado en migrations: permissions, user_permissions,
+  group_permissions, user_rols (vía Rol).
+end note
+
+note bottom of Token
+  Tabla personal_access_tokens con morphs(tokenable):
+  conceptualmente se asocia a User en este sistema.
+end note
+
+@enduml
+

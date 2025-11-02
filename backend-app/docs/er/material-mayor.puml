@@ -1,0 +1,153 @@
+@startuml ER - Material Mayor
+
+hide circle
+skinparam linetype ortho
+
+entity "COMPANY" as COMPANY {
+  *id : INT
+  --
+  name : STRING
+  code : STRING
+}
+
+entity "CAR" as CAR {
+  *id : INT
+  --
+  company_id : INT <<FK>>
+  brand : STRING
+  model : STRING
+  plate : STRING
+  chassis_number : STRING
+  type : STRING
+  cabin : STRING
+  mileage : INT
+  hourmeter : INT
+  status : STRING
+}
+
+entity "MAINTENANCE" as MAINTENANCE {
+  *id : INT
+  --
+  car_id : INT <<FK>>
+  supplier_id : INT <<FK>>
+  service_date : DATE
+  service_type : STRING
+  location : STRING
+  reported_issue : STRING
+  pending_work : STRING
+  notes : TEXT
+  last_editor_user_id : INT
+  updated_at : DATETIME
+}
+
+entity "MAINTENANCE_REPORT" as MAINTENANCE_REPORT {
+  *id : INT
+  --
+  maintenance_id : INT <<FK>>
+  activities_detail : STRING
+  inspector_name : STRING
+  officer_in_charge : STRING
+  finalized : BOOLEAN
+  finalized_at : DATETIME
+}
+
+entity "CAR_DOCUMENT" as CAR_DOCUMENT {
+  *id : INT
+  --
+  car_id : INT <<FK>>
+  type : STRING
+  file_path : STRING
+  issue_date : DATE
+  expires_at : DATE
+  alert_sent : BOOLEAN
+  uploaded_by_user_id : INT
+  uploaded_at : DATETIME
+}
+
+entity "MAINTENANCE_DOCUMENT" as MAINTENANCE_DOCUMENT {
+  *id : INT
+  --
+  maintenance_id : INT <<FK>>
+  file_path : STRING
+  mime : STRING
+  size : INT
+}
+
+entity "SUPPLIER" as SUPPLIER {
+  *id : INT
+  --
+  name : STRING
+  tax_id : STRING
+  email : STRING
+}
+
+entity "PURCHASE_ORDER" as PURCHASE_ORDER {
+  *id : INT
+  --
+  company_id : INT <<FK>>
+  supplier_id : INT <<FK>>
+  issue_date : DATE
+  net : DECIMAL
+  tax : DECIMAL
+  total : DECIMAL
+}
+
+entity "PO_ITEM" as PO_ITEM {
+  *id : INT
+  --
+  purchase_order_id : INT <<FK>>
+  car_id : INT <<FK>>
+  description : STRING
+  qty : INT
+  unit_price : DECIMAL
+  line_total : DECIMAL
+}
+
+entity "INVOICE" as INVOICE {
+  *id : INT
+  --
+  supplier_id : INT <<FK>>
+  company_id : INT <<FK>>
+  purchase_order_id : INT <<FK>>
+  issue_date : DATE
+  net : DECIMAL
+  tax : DECIMAL
+  total : DECIMAL
+  due_date : DATE
+  alert_sent : BOOLEAN
+}
+
+entity "PAYMENT" as PAYMENT {
+  *id : INT
+  --
+  invoice_id : INT <<FK>>
+  paid_at : DATE
+  amount : DECIMAL
+  method : STRING
+}
+
+entity "BUDGET" as BUDGET {
+  *id : INT
+  --
+  company_id : INT <<FK>>
+  year : INT
+  month : INT
+  amount : DECIMAL
+}
+
+COMPANY ||--o{ CAR : owns
+CAR ||--o{ MAINTENANCE : has
+CAR ||--o{ CAR_DOCUMENT : has
+SUPPLIER ||--o{ MAINTENANCE : provides
+SUPPLIER ||--o{ INVOICE : bills
+INVOICE ||--o{ PAYMENT : has
+COMPANY ||--o{ BUDGET : allocates
+COMPANY ||--o{ PURCHASE_ORDER : issues
+SUPPLIER ||--o{ PURCHASE_ORDER : receives
+PURCHASE_ORDER ||--o{ PO_ITEM : includes
+PO_ITEM }o--|| CAR : references
+MAINTENANCE ||--o{ MAINTENANCE_REPORT : logs
+MAINTENANCE ||--o{ MAINTENANCE_DOCUMENT : has
+
+@enduml
+

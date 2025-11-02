@@ -1,0 +1,77 @@
+@startuml ER - Bombero Accidentado
+
+hide circle
+skinparam linetype ortho
+
+entity "USER" as USER {
+  *id : INT
+  --
+  name : STRING
+  email : STRING
+  role : STRING
+  company_id : INT <<FK>>
+}
+
+entity "COMPANY" as COMPANY {
+  *id : INT
+  --
+  name : STRING
+  code : STRING
+}
+
+entity "VOLUNTEER" as VOLUNTEER {
+  *id : INT
+  --
+  user_id : INT <<FK>>
+  registry_number : STRING
+  rank : STRING
+}
+
+entity "ACCIDENT_PROCESS" as ACCIDENT_PROCESS {
+  *id : INT
+  --
+  volunteer_id : INT <<FK>>
+  incident_date : DATE
+  status : STRING
+  created_at : DATETIME
+}
+
+entity "DOCUMENT" as DOCUMENT {
+  *id : INT
+  --
+  accident_process_id : INT <<FK>>
+  uploaded_by_user_id : INT <<FK>>
+  type : STRING
+  file_path : STRING
+  mime : STRING
+  size : INT
+  due_days : INT
+  required : BOOLEAN
+  within_deadline : BOOLEAN
+  alert_sent : BOOLEAN
+  uploaded_at : DATETIME
+}
+
+entity "EMAIL_NOTIFICATION" as EMAIL_NOTIFICATION {
+  *id : INT
+  --
+  accident_process_id : INT <<FK>>
+  document_id : INT <<FK>>
+  to_group : STRING
+  subject : STRING
+  body : TEXT
+  sent : BOOLEAN
+  sent_at : DATETIME
+  error_log : TEXT
+}
+
+USER ||--o{ ACCIDENT_PROCESS : creates_or_manages
+USER ||--o{ DOCUMENT : uploads
+USER ||--o{ EMAIL_NOTIFICATION : triggers
+VOLUNTEER ||--o{ ACCIDENT_PROCESS : subject
+COMPANY ||--o{ VOLUNTEER : has
+ACCIDENT_PROCESS ||--o{ DOCUMENT : contains
+ACCIDENT_PROCESS ||--o{ EMAIL_NOTIFICATION : notifies
+
+@enduml
+

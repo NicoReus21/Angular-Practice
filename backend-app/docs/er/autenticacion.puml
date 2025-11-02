@@ -1,0 +1,75 @@
+@startuml ER - Autenticación y Autorización
+
+hide circle
+skinparam linetype ortho
+
+entity "USER" as USER {
+  *id : INT
+  --
+  name : STRING
+  email : STRING
+  password_hash : STRING
+  email_verified_at : DATETIME
+  created_at : DATETIME
+}
+
+entity "COMPANY" as COMPANY {
+  *id : INT
+  --
+  name : STRING
+  code : STRING
+}
+
+entity "USER_COMPANY" as USER_COMPANY {
+  *user_id : INT <<FK>>
+  *company_id : INT <<FK>>
+}
+
+entity "ROLE" as ROLE {
+  *id : INT
+  --
+  name : STRING
+  guard_name : STRING
+}
+
+entity "PERMISSION" as PERMISSION {
+  *id : INT
+  --
+  name : STRING
+  guard_name : STRING
+}
+
+entity "USER_ROLE" as USER_ROLE {
+  *user_id : INT <<FK>>
+  *role_id : INT <<FK>>
+}
+
+entity "ROLE_PERMISSION" as ROLE_PERMISSION {
+  *role_id : INT <<FK>>
+  *permission_id : INT <<FK>>
+}
+
+entity "PERSONAL_ACCESS_TOKEN" as PERSONAL_ACCESS_TOKEN {
+  *id : INT
+  --
+  user_id : INT <<FK>>
+  name : STRING
+  token : STRING
+  last_used_at : DATETIME
+  expires_at : DATETIME
+  created_at : DATETIME
+}
+
+USER ||--o{ PERSONAL_ACCESS_TOKEN : owns
+USER }o--o{ ROLE : has
+ROLE }o--o{ PERMISSION : grants
+USER }o--o{ COMPANY : belongs_to
+USER ||--o{ USER_COMPANY : links
+COMPANY ||--o{ USER_COMPANY : links
+USER ||--o{ USER_ROLE : links
+ROLE ||--o{ USER_ROLE : links
+ROLE ||--o{ ROLE_PERMISSION : links
+PERMISSION ||--o{ ROLE_PERMISSION : links
+
+@enduml
+
