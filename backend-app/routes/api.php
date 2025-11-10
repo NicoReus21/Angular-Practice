@@ -109,7 +109,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Rutas Modulo material Mayor
 
-//TODO: Agregar las rutas del modulo de Material Mayor aqui
 Route::middleware('auth:sanctum')->group(function () {
     // Companies
     Route::apiResource('companies', \App\Http\Controllers\CompanyController::class);
