@@ -13,10 +13,19 @@ return new class extends Migration
     {
         Schema::create('cars', function (Blueprint $table) {
             $table->id();
+            $table->string('name'); 
+            $table->string('plate')->unique();
+            $table->string('model')->nullable();
+            $table->string('company');
+            $table->string('status')->default('En Servicio');
+            $table->string('marca')->nullable();
+            $table->string('chassis_number')->nullable();
+            $table->string('type')->nullable();
+            $table->string('cabin')->nullable(); 
+            $table->integer('mileage')->nullable();
+            $table->integer('hourmeter')->nullable();
+            
             $table->timestamps();
-            $table->string('patente');
-            $table->string('marca');
-            $table->string('model');
         });
     }
 

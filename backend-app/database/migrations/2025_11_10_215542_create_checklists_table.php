@@ -11,20 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('car_documents', function (Blueprint $table) {
+        // Guarda el registro principal (Persona a cargo, fecha, etc.)
+        Schema::create('checklists', function (Blueprint $table) {
             $table->id();
-
             $table->foreignId('car_id')->constrained('cars')->onDelete('cascade');
-
-            $table->decimal('cost', 10, 2)->default(0);
-
-            $table->string('file_name');
-
-            $table->string('path');
-
-            $table->string('file_type', 50)->nullable();
             
-            $table->timestamps(); // "uploadedAt"
+            // Campos del formulario 'create-checklist'
+            $table->string('persona_cargo');
+            $table->date('fecha_realizacion');
+            
+            $table->timestamps();
         });
     }
 
@@ -33,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('car_documents');
+        Schema::dropIfExists('checklists');
     }
 };

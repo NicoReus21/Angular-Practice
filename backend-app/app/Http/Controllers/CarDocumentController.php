@@ -5,49 +5,90 @@ namespace App\Http\Controllers;
 use App\Models\Car;
 use App\Models\CarDocument;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class CarDocumentController extends Controller
 {
-    public function index(Car $car)
-    {
-        return $car->documents()->latest()->get();
-    }
-
+    /**
+     * Almacena un nuevo documento (y gasto) para un carro.
+     * POST /api/cars/{car}/documents
+     */
     public function store(Request $request, Car $car)
     {
-        $data = $request->validate([
-            'type' => 'required|string|max:100',
-            'file_path' => 'required|string',
-            'issue_date' => 'nullable|date',
-            'expires_at' => 'nullable|date',
+        $validator = Validator::make($request->all(), [
+            'cost' => 'required|numeric|min:0',
+            'file' => 'required|file|mimes:pdf,png,jpg,jpeg,doc,docx|max:10240', // 10MB Max
         ]);
-        $data['uploaded_by_user_id'] = $request->user()?->id;
-        $doc = $car->documents()->create($data);
-        return response()->json($doc, 201);
-    }
 
-    public function show(CarDocument $document)
-    {
-        return $document;
-    }
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
 
-    public function update(Request $request, CarDocument $document)
-    {
-        $data = $request->validate([
-            'type' => 'sometimes|required|string|max:100',
-            'file_path' => 'sometimes|required|string',
-            'issue_date' => 'nullable|date',
-            'expires_at' => 'nullable|date',
-            'alert_sent_at' => 'nullable|date',
+        $file = $request->file('file');
+        $originalName = $file->getClientOriginalName();
+        $fileType = $this->getFileType($file->getClientMimeType());
+        
+        // 1. Guardar el archivo en el disco
+        // La ruta será 'storage/app/public/documents/...'
+        $path = $file->store('public/documents');
+
+        if (!$path) {
+            return response()->json(['message' => 'Error al guardar el archivo.'], 500);
+        }
+
+        // 2. Crear el registro en la base de datos
+        $document = $car->documents()->create([
+            'cost' => $request->input('cost'),
+            'file_name' => $originalName,
+            'path' => $path, // Guardamos la ruta interna
+            'file_type' => $fileType,
         ]);
-        $document->update($data);
-        return $document;
+
+        // Devolvemos el documento (que incluirá la 'url' pública gracias al accesor)
+        return response()->json($document, 201);
     }
 
+    /**
+     * Elimina un documento.
+     * DELETE /api/documents/{document}
+     */
     public function destroy(CarDocument $document)
     {
-        $document->delete();
-        return response()->noContent();
+        // (Opcional: Añadir policy para verificar permisos)
+        // $this->authorize('delete', $document);
+
+        try {
+            // 1. Eliminar el archivo del disco
+            Storage::delete($document->path);
+
+            // 2. Eliminar el registro de la base de datos
+            $document->delete();
+
+            return response()->json(null, 204); // 204 = Sin Contenido (Éxito)
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al eliminar el documento.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Helper para determinar el tipo de icono en el frontend.
+     */
+    private function getFileType(string $mimeType): string
+    {
+        if (str_starts_with($mimeType, 'image/')) {
+            return 'img';
+        }
+        if ($mimeType === 'application/pdf') {
+            return 'pdf';
+        }
+        if (str_contains($mimeType, 'word')) {
+            return 'doc';
+        }
+        return 'other';
     }
 }
-

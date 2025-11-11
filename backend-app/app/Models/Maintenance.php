@@ -7,26 +7,36 @@ use Illuminate\Database\Eloquent\Model;
 
 class Maintenance extends Model
 {
-    /** @use HasFactory<\Database\Factories\MaintenanceFactory> */
     use HasFactory;
     protected $fillable = [
-        'car_id','supplier_id','service_date','service_type','location','reported_issue',
-        'activities_detail','pending_work','observations','inspector_name','officer_in_charge',
-        'finalized','finalized_at','final_pdf_path','created_by_user_id','updated_by_user_id'
+        'car_id',
+        'chassis_number',
+        'mileage',
+        'cabin',
+        'filter_code',
+        'hourmeter',
+        'warnings',
+        'service_type',
+        'inspector_name',
+        'service_date',
+        'location',
+        'reported_problem',
+        'activities_detail',
+        'pending_work',
+        'pending_type',
+        'observations',
+        'inspector_signature',
+        'officer_signature',
+        'car_info_annex',
+    ];
+
+    protected $casts = [
+        'service_date' => 'date',
+        'mileage' => 'integer',
     ];
 
     public function car()
     {
         return $this->belongsTo(Car::class);
-    }
-
-    public function supplier()
-    {
-        return $this->belongsTo(Supplier::class);
-    }
-
-    public function documents()
-    {
-        return $this->hasMany(MaintenanceDocument::class);
     }
 }

@@ -4,25 +4,37 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Car;
 
 class CarDocument extends Model
 {
     use HasFactory;
 
-    protected $table = 'car_documents';
     protected $fillable = [
-        'car_id','type','file_path','issue_date','expires_at','alert_sent_at','uploaded_by_user_id'
+        'car_id',
+        'cost',
+        'file_name', 
+        'path',      
+        'file_type',
     ];
 
     protected $casts = [
-        'issue_date' => 'date',
-        'expires_at' => 'date',
-        'alert_sent_at' => 'datetime',
+        'cost' => 'decimal:2',
     ];
 
+    protected $appends = ['url'];
+
+    /**
+     * Un documento pertenece a un Carro.
+     */
     public function car()
     {
         return $this->belongsTo(Car::class);
     }
-}
 
+    public function getUrlAttribute(): string
+    {
+        return Storage::url($this->path);
+    }
+}
