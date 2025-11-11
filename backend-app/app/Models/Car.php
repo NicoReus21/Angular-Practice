@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
-// --- ESTAS SON LAS IMPORTACIONES QUE FALTABAN ANTES ---
 use App\Models\Maintenance;
 use App\Models\CarChecklist;
 use App\Models\CarDocument;
@@ -16,7 +14,6 @@ class Car extends Model
 
     /**
      * The attributes that are mass assignable.
-     * (Esta es la lista que coincide con tu migración y tu controlador)
      */
     protected $fillable = [
         'name',
@@ -33,18 +30,12 @@ class Car extends Model
     ];
 
     /**
-     * Un carro (unidad) tiene muchas mantenciones (reportes).
+     * Un carro de bombas unidad tiene muchos reportes o mantenciones.
      */
     public function maintenances()
     {
         return $this->hasMany(Maintenance::class);
     }
-
-    /**
-     * Un carro tiene muchos checklists.
-     * ESTA ES LA FUNCIÓN IMPORTANTE. 
-     * hasMany(CarChecklist::class) buscará la tabla 'car_checklists'.
-     */
     public function checklists()
     {
         return $this->hasMany(CarChecklist::class);

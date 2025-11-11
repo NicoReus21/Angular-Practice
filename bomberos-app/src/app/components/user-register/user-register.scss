@@ -1,0 +1,29 @@
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 32px;
+    background-color: #f4f7fa;
+    min-height: 100%;
+}
+
+mat-card {
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+mat-card-actions {
+    padding: 0 16px 16px;
+    gap: 8px;
+}

@@ -10,15 +10,11 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        // Guarda las tareas individuales de cada checklist
-        Schema::create('checklist_items', function (Blueprint $table) {
+    {       Schema::create('checklist_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('checklist_id')->constrained('checklists')->onDelete('cascade');
-
-            // Campos del formulario 'create-checklist' (la lista de tareas)
-            $table->string('task_description'); // "Ej: Revisar niveles de aceite"
-            $table->boolean('completed')->default(false); // Siempre empieza como 'no completado'
+            $table->string('task_description');
+            $table->boolean('completed')->default(false);
 
             $table->timestamps();
         });

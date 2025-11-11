@@ -5,6 +5,12 @@ use App\Models\Car;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
+use App\Models\CarChecklist;
+use App\Models\CarChecklistItem;
+use App\Models\CarDocument;
+use App\Models\Maintenance;
+use App\Models\MaintenanceDocument;
 
 // Importante para la validación de 'update'
 
@@ -16,9 +22,8 @@ class CarController extends Controller
      */
     public function index()
     {
-        // Usamos 'with' para cargar las relaciones anidadas
         $cars = Car::with('maintenances', 'checklists.items', 'documents')
-            ->orderBy('name', 'asc') // Opcional: ordenar
+            ->orderBy('name', 'asc') 
             ->get();
 
         return response()->json($cars);
@@ -30,8 +35,6 @@ class CarController extends Controller
      */
     public function store(Request $request)
     {
-        // --- ESTA ES LA PARTE IMPORTANTE ---
-        // 1. Valida que los datos existan
         $validator = Validator::make($request->all(), [
             'name'    => 'required|string|max:255',
             'plate'   => 'required|string|unique:cars,plate',
@@ -40,16 +43,11 @@ class CarController extends Controller
             'status'  => 'required|string|max:255',
         ]);
 
-        // 2. Si falla, devuelve un 422 (error de validación)
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // 3. Solo crea el carro si la validación pasa
         $car = Car::create($validator->validated());
-        // --- FIN DE LA SECCIÓN CRÍTICA ---
-
-        // Devolvemos el carro con sus relaciones (vacías)
         return response()->json($car->load('maintenances', 'checklists.items', 'documents'), 201);
     }
 
@@ -68,7 +66,6 @@ class CarController extends Controller
      */
     public function update(Request $request, Car $car)
     {
-        // Validación para actualizar
         $validator = Validator::make($request->all(), [
             'name'     => 'sometimes|required|string|max:255',
             'plate'    => [

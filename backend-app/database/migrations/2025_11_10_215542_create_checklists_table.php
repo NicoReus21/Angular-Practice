@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Guarda el registro principal (Persona a cargo, fecha, etc.)
         Schema::create('checklists', function (Blueprint $table) {
             $table->id();
             $table->foreignId('car_id')->constrained('cars')->onDelete('cascade');
-            
-            // Campos del formulario 'create-checklist'
             $table->string('persona_cargo');
             $table->date('fecha_realizacion');
             

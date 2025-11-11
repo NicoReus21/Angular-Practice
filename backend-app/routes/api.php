@@ -5,36 +5,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProcessController;
 use App\Http\Controllers\DocumentController;
-// Requerimiento Operativo
-use App\Http\Controllers\BomberoAccidentado\RO\ReporteFlashController;
-use App\Http\Controllers\BomberoAccidentado\RO\DiabController;
-use App\Http\Controllers\BomberoAccidentado\RO\ObacController;
-use App\Http\Controllers\BomberoAccidentado\RO\DeclaracionTestigoController;
-use App\Http\Controllers\BomberoAccidentado\RO\CopiaLibroGuardiaController;
-// Antecedentes Generales
-use App\Http\Controllers\BomberoAccidentado\AG\CertificadoCarabineroController;
-use App\Http\Controllers\BomberoAccidentado\AG\DauController;
-use App\Http\Controllers\BomberoAccidentado\AG\CertificadoMedicoAtencionEspecialController;
-use App\Http\Controllers\BomberoAccidentado\AG\InformeMedicoController;
-use App\Http\Controllers\BomberoAccidentado\AG\OtroDocumentoMedicoController;
-// Documentos del Cuerpo de Bomberos
-use App\Http\Controllers\BomberoAccidentado\CB\CertificadoAcreditacionVoluntarioController;
-use App\Http\Controllers\BomberoAccidentado\CB\CopiaLibroLlamadaController;
-use App\Http\Controllers\BomberoAccidentado\CB\AvisoCitacionController;
-use App\Http\Controllers\BomberoAccidentado\CB\CopiaListaAsistenciaController;
-use App\Http\Controllers\BomberoAccidentado\CB\InformeEjecutivoController;
-// Prestaciones Médicas
-use App\Http\Controllers\BomberoAccidentado\PM\FacturaPrestacionController;
-use App\Http\Controllers\BomberoAccidentado\PM\BoletaHonorarioVisadaController;
-use App\Http\Controllers\BomberoAccidentado\PM\BoletaMedicamentoController;
-use App\Http\Controllers\BomberoAccidentado\PM\CertificadoMedicoAutorizacionExamenController;
-// Gastos de Traslados y Alimentación
-use App\Http\Controllers\BomberoAccidentado\GV\BoletaFacturaTrasladoController;
-use App\Http\Controllers\BomberoAccidentado\GV\CertificadoMedicoTrasladoController;
-use App\Http\Controllers\BomberoAccidentado\GV\BoletaGastoAcompananteController;
-use App\Http\Controllers\BomberoAccidentado\GV\OtroGastoController;
-use App\Http\Controllers\BomberoAccidentado\GV\CerfiticadoMedicoIncapacidadController;
+use App\Http\Controllers\RolController;
+use App\Http\Controllers\CarController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\UserRolController;
+use App\Http\Controllers\MaintenanceController;
+use App\Http\Controllers\CarDocumentController;
+use App\Http\Controllers\ChecklistController;
 
+
+// ... (código de autenticación y otros procesos) ...
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -55,6 +35,10 @@ Route::middleware('auth:sanctum')->group( function(){
 
     Route::get('/documents/{document}/view', [DocumentController::class, 'view'])->name('documents.view');
     Route::get('/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
+    
+    Route::apiResource('user-rols', UserRolController::class)->only(['store', 'destroy']);
+
+    Route::get('/users/{user}/roles', [UserRolController::class, 'getRolesForUser']);
 });
 
 
@@ -106,37 +90,24 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/groups/{id}', [AuthController::class, 'update']);
     Route::delete('/groups/{id}', [AuthController::class, 'destroy']);
 });
-
-// Rutas Modulo material Mayor
-
-//TODO: Agregar las rutas del modulo de Material Mayor aqui
 Route::middleware('auth:sanctum')->group(function () {
-    // Companies
-    Route::apiResource('companies', \App\Http\Controllers\CompanyController::class);
-
-    // Suppliers
-    Route::apiResource('suppliers', \App\Http\Controllers\SupplierController::class);
-
-    // Cars (ya existe CarController en el proyecto)
-    Route::apiResource('cars', \App\Http\Controllers\CarController::class);
-
-    // Maintenances
-    Route::apiResource('maintenances', \App\Http\Controllers\MaintenanceController::class);
-
-    // Car Documents (nested under cars) con rutas superficiales para show/update/destroy
-    Route::apiResource('cars.documents', \App\Http\Controllers\CarDocumentController::class)->shallow();
-
-    // Maintenance Documents (nested under maintenances)
-    Route::apiResource('maintenances.documents', \App\Http\Controllers\MaintenanceDocumentController::class)->shallow();
-
-    // Purchase Orders y sus Items
-    Route::apiResource('purchase-orders', \App\Http\Controllers\PurchaseOrderController::class);
-    Route::apiResource('purchase-orders.items', \App\Http\Controllers\PoItemController::class)->shallow();
-
-    // Invoices y Payments del módulo Material Mayor
-    Route::apiResource('mm-invoices', \App\Http\Controllers\InvoicesMmController::class);
-    Route::apiResource('mm-payments', \App\Http\Controllers\PaymentsMmController::class);
-
-    // Budgets por compañía y periodo
-    Route::apiResource('budgets', \App\Http\Controllers\BudgetController::class);
+    Route::apiResource('rols', RolController::class);
+    Route::get('/permissions', [PermissionController::class, 'index']);
+    Route::get('/rols/{rol}/permissions', [RolController::class, 'getPermissions']);
+    Route::post('/rols/{rol}/permissions', [RolController::class, 'syncPermissions']);
 });
+
+
+// === RUTAS DEL MÓDULO MATERIAL MAYOR ===
+// Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('cars', CarController::class);
+    // --- Reportes (Mantenciones) ---
+    Route::post('/cars/{car}/maintenances', [MaintenanceController::class, 'store']);
+    // Route::delete('/maintenances/{maintenance}', [MaintenanceController::class, 'destroy']);
+
+    // --- Checklists ---
+    Route::post('/cars/{car}/checklists', [ChecklistController::class, 'store']);
+    // --- Documentos (Gastos) ---
+    Route::post('/cars/{car}/documents', [CarDocumentController::class, 'store']);
+    Route::delete('/documents/{document}', [CarDocumentController::class, 'destroy']);
+// });

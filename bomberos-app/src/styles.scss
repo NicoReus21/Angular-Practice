@@ -22,3 +22,9 @@ body {
     --mdc-theme-primary: #d32f2f;
     --mdc-theme-on-primary: #fff;
 }
+
+/* Agrega esto al final de tu styles.scss */
+app-root {
+  display: block;
+  height: 100%;
+}
