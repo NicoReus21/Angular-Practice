@@ -15,4 +15,9 @@ class Permission extends Model
         'action',
         'description',
     ];
+
+    public function rols()
+    {
+        return $this->belongsToMany(Rol::class, 'rol_permission');
+    }
 }

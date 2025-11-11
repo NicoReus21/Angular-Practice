@@ -8,59 +8,52 @@ use App\Http\Requests\UpdatePermissionRequest;
 
 class PermissionController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Permission::class, 'permission');
+    }
+
     /**
-     * Display a listing of the resource.
+     * Devuelve la lista de TODOS los permisos
      */
     public function index()
     {
-        //
+        return Permission::all();
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Crea un nuevo permiso.
      */
     public function store(StorePermissionRequest $request)
     {
-        //
+        $permission = Permission::create($request->validated());
+        return response()->json($permission, 201);
     }
 
     /**
-     * Display the specified resource.
+     * Muestra un permiso específico.
      */
     public function show(Permission $permission)
     {
-        //
+        return $permission;
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Permission $permission)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Actualiza un permiso.
      */
     public function update(UpdatePermissionRequest $request, Permission $permission)
     {
-        //
+        $permission->update($request->validated());
+        return response()->json($permission);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina un permiso.
      */
     public function destroy(Permission $permission)
     {
-        //
+        $permission->delete();
+        return response()->json(null, 204);
     }
+
 }

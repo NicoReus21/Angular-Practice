@@ -5,62 +5,52 @@ namespace App\Http\Controllers;
 use App\Models\UserRol;
 use App\Http\Requests\StoreUserRolRequest;
 use App\Http\Requests\UpdateUserRolRequest;
+use App\Models\User; 
+use App\Models\Rol; 
 
 class UserRolController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    public function __construct()
     {
-        //
+        $this->authorizeResource(UserRol::class, 'user_rol');
+    }
+    /**
+     * Obtiene los roles asignados a un usuario específico.
+     */
+    public function getRolesForUser(User $user)
+    {
+        $this->authorize('viewAny', UserRol::class);
+        return $user->rols; 
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Asigna un rol a un usuario.
      */
     public function store(StoreUserRolRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        $exists = UserRol::where('user_id', $validated['user_id'])
+                        ->where('rol_id', $validated['rol_id'])
+                        ->exists();
+
+        if ($exists) {
+            return response()->json(['message' => 'El usuario ya tiene este rol.'], 422);
+        }
+
+        $userRol = UserRol::create($validated);
+        return response()->json($userRol, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(UserRol $userRol)
-    {
-        //
-    }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(UserRol $userRol)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateUserRolRequest $request, UserRol $userRol)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
+     * Quita un rol a un usuario.
      */
     public function destroy(UserRol $userRol)
     {
-        //
+        $this->authorize('delete', $userRol);
+        $userRol->delete();
+        return response()->json(null, 204);
     }
 }

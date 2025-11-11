@@ -15,7 +15,6 @@ class MaintenanceController extends Controller
      */
     public function store(Request $request, Car $car)
     {
-        // Validamos los datos del formulario 'create-report'
         $validator = Validator::make($request->all(), [
             'chassis_number' => 'nullable|string|max:255',
             'mileage' => 'required|integer',
@@ -40,13 +39,10 @@ class MaintenanceController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
-        // Creamos la mantención y la asociamos al carro
         $maintenance = $car->maintenances()->create($validator->validated());
 
         return response()->json($maintenance, 201);
     }
 
-    // Nota: Aún no hemos implementado el borrado o subida de archivos,
-    // pero este controlador ya guarda toda la data de texto.
+    // TODO: Aún no he implementado el borrado o subida de archivos,
 }

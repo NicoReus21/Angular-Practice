@@ -13,15 +13,21 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
     
-    $middleware->use([
-        \Illuminate\Http\Middleware\HandleCors::class,
-    ]);
-    // -------------------------
+        $middleware->use([
+            \Illuminate\Http\Middleware\HandleCors::class,
+        ]);
+        // -------------------------
 
-    $middleware->validateCsrfTokens(except: [
+        $middleware->validateCsrfTokens(except: [
             'api/*'
         ]);
     })
+
+
+    ->withProviders([
+        \App\Providers\AuthServiceProvider::class,
+    ], true)
+    
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+
     })->create();
