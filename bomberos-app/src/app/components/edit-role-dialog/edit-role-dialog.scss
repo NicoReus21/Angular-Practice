@@ -1,0 +1,30 @@
+.dialog-content {
+  padding-top: 20px;
+  min-width: 450px;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.permissions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 400px; // Le da scroll si la lista es muy larga
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.permission-checkbox {
+  width: 100%;
+
+  .perm-module {
+    font-weight: bold;
+    color: #c2185b; // (Un color rosado)
+    margin-right: 8px;
+  }
+}

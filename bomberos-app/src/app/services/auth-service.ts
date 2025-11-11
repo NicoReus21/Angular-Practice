@@ -23,6 +23,17 @@ export class AuthService {
     );
   }
 
+  register(name: string, email: string, password: string): Observable<any> {
+    const userCredentials = { name, email, password };
+
+    return this.http.post<any>(`${this.apiUrl}/register`, userCredentials).pipe(
+      tap(response => {
+        if (response && response.token) {
+          this.saveToken(response.token);
+        }
+      })
+    );
+  }
 
   saveToken(token: string): void {
     localStorage.setItem('authToken', token);
@@ -34,10 +45,8 @@ export class AuthService {
 
 
   logout(): void {
-    // Para un logout completo, deberíamos llamar al endpoint /api/logout
-    // pero por ahora, simplemente borramos el token y redirigimos.
     localStorage.removeItem('authToken');
-    this.router.navigate(['/']); // Redirige a la página de login o inicio
+    this.router.navigate(['/']);
   }
 }
 

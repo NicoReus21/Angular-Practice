@@ -1,0 +1,30 @@
+<h1 mat-dialog-title>Editar Rol: {{ data.role.name }}</h1>
+<mat-divider></mat-divider>
+
+<mat-dialog-content class="dialog-content">
+  @if (isLoading()) {
+  <div class="spinner-container">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  } @else {
+  <h3 class="mat-h3">Permisos</h3>
+  <p>Selecciona los permisos para este rol:</p>
+
+  <div class="permissions-list">
+    @for (perm of allPermissions(); track perm.id) {
+    <mat-checkbox class="permission-checkbox" [(ngModel)]="permissionSelection[perm.id]">
+      <span class="perm-module">[{{ perm.module }}]</span>
+      <span class="perm-name">{{ perm.description }} ({{ perm.action }})</span>
+    </mat-checkbox>
+    }
+  </div>
+  }
+</mat-dialog-content>
+
+<mat-divider></mat-divider>
+<mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="onClose()">Cancelar</button>
+  <button mat-flat-button color="primary" [disabled]="isLoading()" (click)="onSave()">
+    {{ isLoading() ? 'Guardando...' : 'Guardar Cambios' }}
+  </button>
+</mat-dialog-actions>

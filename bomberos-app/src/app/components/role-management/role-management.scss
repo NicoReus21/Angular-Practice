@@ -1,0 +1,48 @@
+.role-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 32px;
+    background-color: #f4f7fa;
+    min-height: 100%;
+}
+
+mat-card {
+    max-width: 800px;
+    width: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+.form-container {
+    display: flex;
+    align-items: flex-start; 
+    gap: 16px;
+
+    .form-field-name {
+        flex-grow: 1;
+    }
+
+    .form-button {
+        height: 56px;
+    }
+}
+
+.divider {
+    margin: 24px 0;
+}
+
+.mat-h3 {
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+.role-table {
+    width: 100%;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 32px;
+    color: #757575;
+    font-style: italic;
+}
