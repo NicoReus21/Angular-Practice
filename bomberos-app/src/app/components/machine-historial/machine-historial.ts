@@ -6,8 +6,10 @@ import {
   computed,
   ViewChild,
   ElementRef,
+  OnInit,
 } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -24,48 +26,57 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'; 
+import {
+  MachineHistorialService,
+  CarApiResponse,
+  ApiChecklist,
+  CreateChecklistDto,
+  CreateCarDto,
+  CreateMaintenanceDto,
+  ApiDocument,
+} from '../../services/machine-historial';
 import { CreateFiretruckComponent } from '../create-firetruck/create-firetruck';
 import { CreateReportComponent } from '../create-report/create-report';
-import { CreateChecklistComponent } from '../create-checklist/create-checklist';
+import { CreateChecklistComponent, ChecklistTask } from '../create-checklist/create-checklist';
 
-interface MaintenanceLog {
-  id: string;
-  date: string;
+
+export interface MaintenanceLog {
+  id: number;
+  date: string; 
   technician: string;
   description: string;
 }
 
-interface ChecklistTaskItem {
-  id: string;
-  task: string;
+export interface ChecklistTaskItem {
+  id: number;
+  task_description: string;
   completed: boolean;
 }
 
 export interface ChecklistGroup {
-  id: string;
-  personaCargo: string;
-  fechaRealizacion: string;
+  id: number;
+  persona_cargo: string;
+  fecha_realizacion: string; 
   items: ChecklistTaskItem[];
 }
 
-interface AttachedDocument {
-  id: string;
-  name: string;
+export interface AttachedDocument {
+  id: number;
+  name: string; 
   type: 'pdf' | 'doc' | 'img' | 'other';
   url: string;
-  uploadedAt: string;
-  cost?: number;
+  uploaded_at_formatted: string; 
+  cost: number;
 }
 
 export interface VehicleUnit {
-  id: string;
+  id: number;
   name: string;
   status: 'En Servicio' | 'En Taller' | 'Fuera de Servicio';
-  model: string;
+  model: string | null;
   plate: string;
   company: string;
-  imageUrl: string;
   checklists: ChecklistGroup[];
   documents: AttachedDocument[];
   maintenanceHistory: MaintenanceLog[];
@@ -77,6 +88,8 @@ export interface VehicleUnit {
   imports: [
     CommonModule,
     FormsModule,
+    HttpClientModule, 
+    MatSnackBarModule, 
     MatSidenavModule,
     MatListModule,
     MatCardModule,
@@ -98,119 +111,24 @@ export interface VehicleUnit {
   styleUrls: ['./machine-historial.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MachineHistorialComponent {
+export class MachineHistorialComponent implements OnInit {
   private dialog = inject(MatDialog);
+  private vehicleService = inject(MachineHistorialService); 
+  private snackBar = inject(MatSnackBar); 
 
   @ViewChild('fileInput') fileInputRef!: ElementRef<HTMLInputElement>;
 
-  private allUnits = signal<VehicleUnit[]>([
-    {
-      id: 'b6',
-      name: 'Unidad B6',
-      status: 'En Servicio',
-      model: 'Iveco 160 E30',
-      plate: 'KD-VV-46',
-      company: '6ta-10ma',
-      imageUrl: 'https://placehold.co/600x400/3498db/white?text=Unidad+B6&font=roboto',
-      checklists: [
-        {
-          id: 'cl1',
-          personaCargo: 'Juan Pérez',
-          fechaRealizacion: '10-10-2025',
-          items: [
-            { id: 'c1', task: 'Revisar niveles de aceite', completed: true },
-            { id: 'c2', task: 'Verificar presión de neumáticos', completed: true },
-            { id: 'c3', task: 'Inspección de luces y sirenas', completed: false },
-          ],
-        },
-        {
-          id: 'cl2',
-          personaCargo: 'Ana Gómez',
-          fechaRealizacion: '01-09-2025',
-          items: [
-            { id: 'c4', task: 'Limpieza de cabina', completed: true },
-            { id: 'c5', task: 'Revisión nivel agua estanque', completed: true },
-          ],
-        },
-      ],
-      documents: [
-        {
-          id: 'd1',
-          name: 'Manual_Iveco_E30.pdf',
-          type: 'pdf',
-          url: '#',
-          uploadedAt: '15-01-2025',
-          cost: 0,
-        },
-        {
-          id: 'd2',
-          name: 'Factura_Taller_Mecánico.pdf',
-          type: 'pdf',
-          url: '#',
-          uploadedAt: '05-10-2025',
-          cost: 175500,
-        },
-        {
-          id: 'd3',
-          name: 'Repuesto_Bomba_Agua.png',
-          type: 'img',
-          url: '#',
-          uploadedAt: '02-10-2025',
-          cost: 89990,
-        },
-      ],
-      maintenanceHistory: [
-        {
-          id: 'm1',
-          date: '10-10-2025',
-          technician: 'Juan Pérez',
-          description: 'Cambio de aceite y filtros.',
-        },
-        {
-          id: 'm2',
-          date: '05-09-2025',
-          technician: 'Ana Gómez',
-          description: 'Revisión sistema de frenos.',
-        },
-      ],
-    },
-    {
-      id: 'm1',
-      name: 'Unidad M1',
-      status: 'En Taller',
-      model: 'Mercedes-Benz Atego',
-      plate: 'BC-LR-88',
-      company: '1era-5ta',
-      imageUrl: 'https://placehold.co/600x400/e74c3c/white?text=Unidad+M1&font=roboto',
-      checklists: [],
-      documents: [],
-      maintenanceHistory: [
-        {
-          id: 'm3',
-          date: '15-10-2025',
-          technician: 'Taller Municipal',
-          description: 'Reparación de motor principal.',
-        },
-      ],
-    },
-    {
-      id: 'r3',
-      name: 'Unidad R3',
-      status: 'Fuera de Servicio',
-      model: 'Renault D14',
-      plate: 'XX-YY-ZZ',
-      company: '3ra',
-      imageUrl: 'https://placehold.co/600x400/95a5a6/white?text=Unidad+R3&font=roboto',
-      checklists: [],
-      documents: [],
-      maintenanceHistory: [],
-    },
-  ]); 
-
-  selectedUnitId = signal<string | null>(this.allUnits()[0]?.id || null);
+  private allUnits = signal<VehicleUnit[]>([]);
+  selectedUnitId = signal<number | null>(null);
   currentStatusFilter = signal<'Todos' | 'En Servicio' | 'En Taller' | 'Fuera de Servicio'>(
     'Todos'
-  ); 
+  );
+
+  newDocumentName = signal<string>('');
+  newDocumentCost = signal<number | null>(null);
+  newDocumentFile = signal<File | null>(null); 
+  isUploading = signal(false); 
+
 
   filteredUnits = computed(() => {
     const status = this.currentStatusFilter();
@@ -218,15 +136,12 @@ export class MachineHistorialComponent {
       return this.allUnits();
     }
     return this.allUnits().filter((unit) => unit.status === status);
-  }); 
+  });
 
   selectedUnit = computed(() => {
     const id = this.selectedUnitId();
     return this.allUnits().find((u) => u.id === id) || null;
-  }); 
-
-  newDocumentName = signal<string>('');
-  newDocumentCost = signal<number | null>(null); 
+  });
 
   totalDocumentsCost = computed(() => {
     const unit = this.selectedUnit();
@@ -234,204 +149,284 @@ export class MachineHistorialComponent {
       return 0;
     }
     return unit.documents.reduce((sum, doc) => sum + (doc.cost || 0), 0);
-  }); 
+  });
 
+  // --- INICIALIZACIÓN ---
+  ngOnInit(): void {
+    this.loadUnits();
+  }
+
+  loadUnits(): void {
+    this.vehicleService.getUnits().subscribe({
+      next: (unitsFromApi) => {
+        const mappedUnits: VehicleUnit[] = unitsFromApi.map(car => this.mapApiCarToVehicleUnit(car));
+        
+        this.allUnits.set(mappedUnits);
+        
+        // Auto-seleccionar la primera unidad si no hay ninguna seleccionada
+        if (!this.selectedUnitId() && mappedUnits.length > 0) {
+          this.selectedUnitId.set(mappedUnits[0].id);
+        }
+      },
+      error: (err) => {
+        console.error('Error al cargar unidades:', err);
+        this.snackBar.open('Error al cargar las unidades desde el servidor.', 'Cerrar', {
+          duration: 5000,
+          panelClass: 'error-snackbar'
+        });
+      }
+    });
+  }
+
+  private mapApiCarToVehicleUnit(car: CarApiResponse): VehicleUnit {
+    return {
+      id: car.id,
+      name: car.name,
+      status: car.status, 
+      model: car.model,
+      plate: car.plate,
+      company: car.company,
+      
+      checklists: (car.checklists || []).map(cl => ({
+        id: cl.id,
+        persona_cargo: cl.persona_cargo,
+        fecha_realizacion: new Date(cl.fecha_realizacion).toLocaleDateString('es-CL'),
+        items: (cl.items || []).map(item => ({
+          id: item.id,
+          task_description: item.task_description,
+          completed: item.completed
+        }))
+      })),
+      
+      documents: (car.documents || []).map(doc => this.mapApiDocumentToLocal(doc)),
+      maintenanceHistory: (car.maintenances || []).map(m => ({
+        id: m.id,
+        date: new Date(m.service_date).toLocaleDateString('es-CL'),
+        technician: m.inspector_name,
+        description: m.reported_problem,
+      }))
+    };
+  }
+
+
+  private mapApiDocumentToLocal(doc: ApiDocument): AttachedDocument {
+    return {
+      id: doc.id,
+      name: doc.file_name,
+      type: doc.file_type,
+      url: doc.url,
+      uploaded_at_formatted: new Date(doc.created_at).toLocaleDateString('es-CL'),
+      cost: +doc.cost, 
+    };
+  }
+
+  private getFirstErrorMessage(err: any, defaultMsg: string = 'Error desconocido'): string {
+    if (!err) {
+      return defaultMsg;
+    }
+
+    if (err.error?.errors) {
+      try {
+        const allErrorArrays = Object.values(err.error.errors) as string[][];
+        if (allErrorArrays.length > 0 && allErrorArrays[0].length > 0) {
+          return allErrorArrays[0][0];
+        }
+      } catch (e) {
+        console.error('Error al parsear el objeto de validación:', e);
+      }
+    }
+
+    if (typeof err.error?.message === 'string') {
+      return err.error.message;
+    }
+
+    if (typeof err.message === 'string') {
+      return err.message;
+    }
+    
+    return defaultMsg;
+  }
+
+
+  // --- MANEJO DE EVENTOS (sin cambios) ---
   onFilterChange(status: 'Todos' | 'En Servicio' | 'En Taller' | 'Fuera de Servicio'): void {
     this.currentStatusFilter.set(status);
   }
 
-  onSelectUnit(id: string): void {
+  onSelectUnit(id: number): void {
     this.selectedUnitId.set(id);
   }
 
   getStatusChipClass(status: 'En Servicio' | 'En Taller' | 'Fuera de Servicio'): string {
     switch (status) {
-      case 'En Servicio':
-        return 'status-chip-servicio';
-      case 'En Taller':
-        return 'status-chip-taller';
-      case 'Fuera de Servicio':
-        return 'status-chip-fuera';
+      case 'En Servicio': return 'status-chip-servicio';
+      case 'En Taller': return 'status-chip-taller';
+      case 'Fuera de Servicio': return 'status-chip-fuera';
     }
   }
 
   getDocumentIcon(type: 'pdf' | 'doc' | 'img' | 'other'): string {
     switch (type) {
-      case 'pdf':
-        return 'picture_as_pdf';
-      case 'doc':
-        return 'description';
-      case 'img':
-        return 'image';
-      case 'other':
-        return 'attach_file';
+      case 'pdf': return 'picture_as_pdf';
+      case 'doc': return 'description';
+      case 'img': return 'image';
+      case 'other': return 'attach_file';
     }
   }
 
-  onChecklistItemToggle(checklistGroupId: string, taskId: string): void {
+  // --- LÓGICA DE CHECKLIST (sin cambios en la conexión) ---
+  onChecklistItemToggle(checklistGroupId: number, taskId: number): void {
+    // TODO: Conectar a la API
+    console.warn('TODO: Conectar onChecklistItemToggle a la API');
     this.allUnits.update((units) => {
-      const unit = units.find((u) => u.id === this.selectedUnitId());
-      if (unit) {
-        const checklistGroup = unit.checklists.find((cl) => cl.id === checklistGroupId);
-        if (checklistGroup) {
-          const taskItem = checklistGroup.items.find((item) => item.id === taskId);
-          if (taskItem) {
-            taskItem.completed = !taskItem.completed;
-            console.log(`Checklist item ${taskId} cambiado a: ${taskItem.completed}`);
-          }
-        }
-      }
       return [...units];
     });
   }
 
-  onEditChecklist(checklistId: string, event: MouseEvent): void {
-    event.stopPropagation();
-    const unit = this.selectedUnit();
-    if (!unit) return;
-
-    const checklistToEdit = unit.checklists.find((cl) => cl.id === checklistId);
-    if (!checklistToEdit) return;
-
-    console.log('Intentando editar checklist (requiere lógica de diálogo):', checklistToEdit);
-    console.warn(
-      `Funcionalidad "Editar" (ID: ${checklistId}). Se necesita modificar el diálogo 'CreateChecklistComponent' para poblarlo con datos existentes.`
-    );
+  onEditChecklist(checklistId: number, event: MouseEvent): void {
+    console.warn('TODO: Implementar edición de checklist');
   }
 
-  onDeleteChecklist(checklistId: string, event: MouseEvent): void {
-    event.stopPropagation();
+  onDeleteChecklist(checklistId: number, event: MouseEvent): void {
+    // TODO: Conectar a la API
+    console.warn('TODO: Conectar onDeleteChecklist a la API');
 
-    console.log('Eliminando checklist:', checklistId);
-    const unitId = this.selectedUnitId();
-    if (!unitId) return;
-
-    this.allUnits.update((units) => {
-      return units.map((unit) => {
-        if (unit.id !== unitId) {
-          return unit;
-        }
-        return {
-          ...unit,
-          checklists: unit.checklists.filter((cl) => cl.id !== checklistId),
-        };
-      });
-    });
   }
+
+
   openCreateUnitDialog(): void {
-    try {
-      const dialogRef = this.dialog.open(CreateFiretruckComponent, {
-        width: '500px',
-        autoFocus: false,
-        data: {},
-      });
+    const dialogRef = this.dialog.open(CreateFiretruckComponent, {
+      width: '500px',
+      autoFocus: false,
+    });
 
-      dialogRef.afterClosed().subscribe((result) => {
-        if (result) {
-          console.log('Nueva unidad creada:', result);
-          const newUnit: VehicleUnit = {
-            id: `unit-${Math.random().toString(36).substring(2, 9)}`,
-            name: result.name,
-            status: result.status,
-            model: result.model,
-            plate: result.plate,
-            company: result.company,
-            imageUrl:
-              result.imageUrl ||
-              `https://placehold.co/600x400/cccccc/white?text=${result.name}&font=roboto`,
-            checklists: [],
-            documents: [],
-            maintenanceHistory: [],
-          };
-          this.allUnits.update((units) => [newUnit, ...units]);
-        }
-      });
-    } catch (e) {
-      console.error(
-        'Error al abrir CreateFiretruckComponent. Asegúrate de que esté importado y sea un componente.',
-        e
-      );
-    }
+    dialogRef.afterClosed().subscribe((formData: CreateCarDto) => {
+      if (formData) {
+        this.vehicleService.createUnit(formData).subscribe({
+          next: (newCarFromApi) => {
+            const newUnit = this.mapApiCarToVehicleUnit(newCarFromApi);
+            this.allUnits.update((units) => [newUnit, ...units]);
+            this.selectedUnitId.set(newUnit.id);
+            this.snackBar.open('Unidad creada con éxito', 'Cerrar', {
+              duration: 3000, panelClass: 'success-snackbar'
+            });
+          },
+          error: (err) => {
+            console.error('Error al crear la unidad:', err);
+            const errorMsg = this.getFirstErrorMessage(err);
+            this.snackBar.open(`Error: ${errorMsg}`, 'Cerrar', {
+              duration: 5000, panelClass: 'error-snackbar'
+            });
+          }
+        });
+      }
+    });
   }
 
   openCreateReportDialog(): void {
     const unit = this.selectedUnit();
     if (!unit) return;
 
-    try {
-      const dialogRef = this.dialog.open(CreateReportComponent, {
-        width: '800px',
-        autoFocus: false,
-        data: { unit: { ...unit } },
-      });
+    const dialogRef = this.dialog.open(CreateReportComponent, {
+      width: '800px',
+      autoFocus: false,
+      data: { unit: { ...unit } },
+    });
 
-      dialogRef.afterClosed().subscribe((result) => {
-        if (result) {
-          console.log('Nuevo reporte creado:', result);
-          const newLog: MaintenanceLog = {
-            id: `log-${Math.random().toString(36).substring(2, 9)}`,
-            date: new Date(result.formData.fechaRealizacion).toLocaleDateString('es-CL'),
-            technician: result.formData.inspectorCargo,
-            description: result.formData.problemaReportado,
-          };
-
-          this.allUnits.update((units) => {
-            const unitToUpdate = units.find((u) => u.id === this.selectedUnitId());
-            if (unitToUpdate) {
-              unitToUpdate.maintenanceHistory.unshift(newLog);
+    dialogRef.afterClosed().subscribe((result: { formData: CreateMaintenanceDto, files: File[] }) => {
+      if (result && result.formData) {
+        this.vehicleService.createMaintenance(unit.id, result.formData).subscribe({
+          next: (newMaintenance) => {
+            const newLog: MaintenanceLog = {
+              id: newMaintenance.id,
+              date: new Date(newMaintenance.service_date).toLocaleDateString('es-CL'),
+              technician: newMaintenance.inspector_name,
+              description: newMaintenance.reported_problem,
+            };
+            this.allUnits.update((units) => {
+              const unitToUpdate = units.find((u) => u.id === this.selectedUnitId());
+              if (unitToUpdate) {
+                unitToUpdate.maintenanceHistory.unshift(newLog);
+              }
+              return [...units];
+            });
+            this.snackBar.open('Reporte guardado con éxito', 'Cerrar', {
+              duration: 3000, panelClass: 'success-snackbar'
+            });
+            // TODO: Manejar la subida de 'result.files'
+            if (result.files.length > 0) {
+              console.warn('TODO: Implementar subida de archivos para reportes');
             }
-            return [...units];
-          });
-        }
-      });
-    } catch (e) {
-      console.error('Error al abrir CreateReportComponent.', e);
-    }
+          },
+          error: (err) => {
+            console.error('Error al guardar el reporte:', err);
+            const errorMsg = this.getFirstErrorMessage(err);
+            this.snackBar.open(`Error: ${errorMsg}`, 'Cerrar', {
+              duration: 5000, panelClass: 'error-snackbar'
+            });
+          }
+        });
+      }
+    });
   }
 
   openCreateChecklistDialog(): void {
     const unit = this.selectedUnit();
     if (!unit) return;
 
-    try {
-      const dialogRef = this.dialog.open(CreateChecklistComponent, {
-        width: '600px',
-        autoFocus: false,
-      });
+    const dialogRef = this.dialog.open(CreateChecklistComponent, {
+      width: '600px',
+      autoFocus: false,
+    });
 
-      dialogRef.afterClosed().subscribe((result) => {
-        if (result) {
-          console.log('Nuevo checklist creado:', result);
+    dialogRef.afterClosed().subscribe((result: { formData: any, tasks: ChecklistTask[] }) => {
+      if (result && result.formData && result.tasks.length > 0) {
+        
+        const taskStrings = result.tasks.map(t => t.task);
+        const dto: CreateChecklistDto = {
+          persona_cargo: result.formData.personaCargo,
+          fecha_realizacion: result.formData.fechaRealizacion.toISOString().split('T')[0],
+          tasks: taskStrings,
+        };
 
-          const newChecklistGroup: ChecklistGroup = {
-            id: `cl-${Math.random().toString(36).substring(2, 9)}`,
-            personaCargo: result.formData.personaCargo,
-            fechaRealizacion: new Date(result.formData.fechaRealizacion).toLocaleDateString(
-              'es-CL'
-            ),
-            items: result.tasks.map((task: any) => ({
-              ...task,
-              id: `task-${Math.random().toString(36).substring(2, 9)}`,
-              completed: false,
-            })),
-          };
-
-          this.allUnits.update((units) => {
-            const unitToUpdate = units.find((u) => u.id === this.selectedUnitId());
-            if (unitToUpdate) {
-              unitToUpdate.checklists.unshift(newChecklistGroup);
-            }
-            return [...units];
-          });
-        }
-      });
-    } catch (e) {
-      console.error('Error al abrir CreateChecklistComponent.', e);
-    }
+        this.vehicleService.createChecklist(unit.id, dto).subscribe({
+          next: (newChecklistFromApi) => {
+            const newChecklistGroup: ChecklistGroup = {
+              id: newChecklistFromApi.id,
+              persona_cargo: newChecklistFromApi.persona_cargo,
+              fecha_realizacion: new Date(newChecklistFromApi.fecha_realizacion).toLocaleDateString('es-CL'),
+              items: newChecklistFromApi.items.map(item => ({
+                id: item.id,
+                task_description: item.task_description,
+                completed: item.completed
+              }))
+            };
+            this.allUnits.update((units) => {
+              const unitToUpdate = units.find((u) => u.id === this.selectedUnitId());
+              if (unitToUpdate) {
+                unitToUpdate.checklists.unshift(newChecklistGroup);
+              }
+              return [...units];
+            });
+            this.snackBar.open('Checklist guardado con éxito', 'Cerrar', {
+              duration: 3000, panelClass: 'success-snackbar'
+            });
+          },
+          error: (err) => {
+            console.error('Error al guardar el checklist:', err);
+            const errorMsg = this.getFirstErrorMessage(err);
+            this.snackBar.open(`Error: ${errorMsg}`, 'Cerrar', {
+              duration: 5000, panelClass: 'error-snackbar'
+            });
+          }
+        });
+      }
+    });
   }
 
   clearFileSelection(): void {
     this.newDocumentName.set('');
+    this.newDocumentFile.set(null);
     if (this.fileInputRef && this.fileInputRef.nativeElement) {
       this.fileInputRef.nativeElement.value = '';
     }
@@ -440,70 +435,94 @@ export class MachineHistorialComponent {
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      this.newDocumentName.set(input.files[0].name);
+      const file = input.files[0];
+      this.newDocumentName.set(file.name);
+      this.newDocumentFile.set(file);
     } else {
       this.newDocumentName.set('');
+      this.newDocumentFile.set(null);
     }
   }
 
   onAddDocument(): void {
     const cost = this.newDocumentCost();
-    const name = this.newDocumentName();
+    const file = this.newDocumentFile();
     const unitId = this.selectedUnitId();
 
-    if (!unitId || cost === null || cost < 0 || !name) {
-      console.warn('Faltan datos para añadir el documento (nombre o costo no válido).');
+    if (!unitId || cost === null || cost < 0 || !file) {
+      console.warn('Faltan datos para añadir el documento (archivo o costo no válido).');
+      this.snackBar.open('Debe ingresar un monto y adjuntar un archivo.', 'Cerrar', {
+        duration: 3000, panelClass: 'error-snackbar'
+      });
       return;
     }
 
-    let fileType: 'pdf' | 'doc' | 'img' | 'other' = 'other';
-    if (name.endsWith('.pdf')) fileType = 'pdf';
-    else if (name.endsWith('.doc') || name.endsWith('.docx')) fileType = 'doc';
-    else if (name.endsWith('.png') || name.endsWith('.jpg') || name.endsWith('.jpeg'))
-      fileType = 'img';
+    this.isUploading.set(true);
 
-    const newDoc: AttachedDocument = {
-      id: `doc-${Math.random().toString(36).substring(2, 9)}`,
-      name: name,
-      type: fileType,
-      url: '#',
-      uploadedAt: new Date().toLocaleDateString('es-CL'),
-      cost: cost,
-    };
-
-    this.allUnits.update((units) => {
-
-      return units.map((unit) => {
-
-        if (unit.id !== unitId) {
-          return unit;
-        } 
-        return {
-          ...unit,
-          documents: [...unit.documents, newDoc],
-        };
-      });
+    this.vehicleService.uploadDocument(unitId, cost, file).subscribe({
+      next: (newDocFromApi) => {
+        const newDoc = this.mapApiDocumentToLocal(newDocFromApi);
+        this.allUnits.update((units) => {
+          return units.map((unit) => {
+            if (unit.id !== unitId) {
+              return unit;
+            }
+            return {
+              ...unit,
+              documents: [...unit.documents, newDoc], 
+            };
+          });
+        });
+        this.clearFileSelection();
+        this.newDocumentCost.set(null);
+        this.isUploading.set(false);
+        this.snackBar.open('Documento subido con éxito.', 'Cerrar', {
+          duration: 3000, panelClass: 'success-snackbar'
+        });
+      },
+      error: (err) => {
+        console.error('Error al subir el documento:', err);
+        const errorMsg = this.getFirstErrorMessage(err, 'Error al subir el archivo.');
+        this.snackBar.open(`Error: ${errorMsg}`, 'Cerrar', {
+          duration: 5000, panelClass: 'error-snackbar'
+        });
+        this.isUploading.set(false); 
+      }
     });
-
-    this.clearFileSelection();
-    this.newDocumentCost.set(null);
   }
 
-  onDeleteDocument(docId: string): void {
+  onDeleteDocument(docId: number): void {
     const unitId = this.selectedUnitId();
     if (!unitId) return;
-
-    this.allUnits.update((units) => {
-      return units.map((unit) => {
-        if (unit.id !== unitId) {
-          return unit;
-        }
-        return {
-          ...unit, 
-          documents: unit.documents.filter((doc) => doc.id !== docId),
-        };
-      });
+    this.vehicleService.deleteDocument(docId).subscribe({
+      next: () => {
+        this.allUnits.update((units) => {
+          return units.map((unit) => {
+            if (unit.id !== unitId) {
+              return unit;
+            }
+            return {
+              ...unit,
+              documents: unit.documents.filter((doc) => doc.id !== docId),
+            };
+          });
+        });
+        this.snackBar.open('Documento eliminado.', 'Cerrar', {
+          duration: 3000, panelClass: 'success-snackbar'
+        });
+      },
+      error: (err) => {
+        console.error('Error al eliminar el documento:', err);
+        this.snackBar.open('Error al eliminar el documento.', 'Cerrar', {
+          duration: 5000, panelClass: 'error-snackbar'
+        });
+      }
     });
-    console.log(`Documento ${docId} eliminado.`);
+  }
+
+  onDownloadDocument(url: string): void {
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
   }
 }

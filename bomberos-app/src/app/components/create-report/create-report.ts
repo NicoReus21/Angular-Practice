@@ -1,8 +1,6 @@
-import { Component, ChangeDetectionStrategy, inject, OnInit, signal } from '@angular/core'; 
+import { Component, ChangeDetectionStrategy, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-
-// Importaciones de Angular Material para el formulario
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -10,11 +8,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-// ✅ Importación corregida para incluir el 'provider'
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatListModule } from '@angular/material/list'; 
-import { VehicleUnit } from '../machine-historial/machine-historial'; 
+import { MatListModule } from '@angular/material/list';
+import { VehicleUnit } from '../machine-historial/machine-historial';
 
 @Component({
   selector: 'app-create-report',
@@ -31,7 +28,7 @@ import { VehicleUnit } from '../machine-historial/machine-historial';
     MatDatepickerModule,
     MatNativeDateModule,
     MatDividerModule,
-    MatListModule, 
+    MatListModule,
   ],
   templateUrl: './create-report.html',
   styleUrls: ['./create-report.scss'],
@@ -53,38 +50,38 @@ export class CreateReportComponent implements OnInit {
 
   constructor() {
     this.reportForm = this.fb.group({
-
-      marca: [{ value: '', disabled: true }],
-      patente: [{ value: '', disabled: true }],
-      compania: [{ value: '', disabled: true }],
-      numeroChasis: [''],
     
-      cabina: [''],
-      filtrosCodigo: [''],
-      horometro: [''],
-      senalesAdvertencia: [''],
-      kilometraje: ['', Validators.required],
-      tipoServicio: ['', Validators.required],
-      inspectorCargo: ['', Validators.required],
-      ubicacionEquipo: [''],
-      fechaRealizacion: [new Date(), Validators.required],
-      problemaReportado: ['', Validators.required],
-      detalleActividades: ['', Validators.required],
-      trabajoPendiente: [''],
-      tipoPendiente: ['Ninguno'],
-      observacionesComplementarias: [''],
-      firmaInspector: ['', Validators.required],
-      firmaOficial: ['', Validators.required],
-      anexoInfoCarro: [''],
+      plate: [{ value: '', disabled: true }],
+      company: [{ value: '', disabled: true }],
+      model: [{ value: '', disabled: true }], 
+      chassis_number: [''], 
+      mileage: ['', Validators.required], 
+      cabin: [''], 
+      filter_code: [''], 
+      hourmeter: [''], 
+      warnings: [''], 
+      service_type: ['', Validators.required], 
+      inspector_name: ['', Validators.required], 
+      location: [''], 
+      service_date: [new Date(), Validators.required], 
+      reported_problem: ['', Validators.required], 
+      activities_detail: ['', Validators.required], 
+      pending_work: [''], 
+      pending_type: ['Ninguno'], 
+      observations: [''], 
+      inspector_signature: ['', Validators.required], 
+      officer_signature: ['', Validators.required], 
+      car_info_annex: [''], 
     });
   }
 
   ngOnInit(): void {
     if (this.data.unit) {
+      // Actualizamos los campos al parchear
       this.reportForm.patchValue({
-        marca: this.data.unit.model,
-        patente: this.data.unit.plate,
-        compania: this.data.unit.company,
+        model: this.data.unit.model,
+        plate: this.data.unit.plate,
+        company: this.data.unit.company,
       });
     }
   }
@@ -95,8 +92,14 @@ export class CreateReportComponent implements OnInit {
 
   onSave(): void {
     if (this.reportForm.valid) {
+      const formData = this.reportForm.getRawValue();
+      
+      delete formData.model;
+      delete formData.plate;
+      delete formData.company;
+
       this.dialogRef.close({
-        formData: this.reportForm.getRawValue(), 
+        formData: formData, 
         files: this.selectedFiles()
       });
     } else {
@@ -118,4 +121,3 @@ export class CreateReportComponent implements OnInit {
     );
   }
 }
-

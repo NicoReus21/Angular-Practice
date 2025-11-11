@@ -38,7 +38,6 @@ export class CreateFiretruckComponent {
       model: [''],
       company: ['', Validators.required],
       status: ['En Servicio', Validators.required],
-      imageUrl: ['https_placehold.co/600x400/3498db/white?text=Nueva+Unidad&font=roboto']
     });
   }
 

@@ -53,14 +53,10 @@
       <p class="mat-body-1">Elija una unidad de la lista de la izquierda para ver sus detalles.</p>
     </div>
     } @else {
- 
-    <div class="detail-content">
+   
+    <div class="main-content-area">
 
       <div class="detail-header">
-        <div
-          class="header-image"
-          [style.background-image]="'url(' + selectedUnit()!.imageUrl + ')'"
-        ></div>
         <div class="header-info">
           <h1 class="mat-h1">{{ selectedUnit()!.name }}</h1>
           <mat-chip-listbox>
@@ -114,10 +110,10 @@
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     <mat-icon>fact_check</mat-icon>
-                    Checklist del {{ checklist.fechaRealizacion }}
+                    Checklist del {{ checklist.fecha_realizacion }}
                   </mat-panel-title>
                   <mat-panel-description>
-                    Responsable: {{ checklist.personaCargo }}
+                    Responsable: {{ checklist.persona_cargo }}
                   </mat-panel-description>
 
                   <button
@@ -149,7 +145,7 @@
                       {{ item.completed ? 'check_circle' : 'radio_button_unchecked' }}
                     </mat-icon>
                     <div matListItemTitle [ngClass]="{ 'task-complete-text': item.completed }">
-                      {{ item.task }}
+                      {{ item.task_description }}
                     </div>
                   </mat-list-item>
                   <mat-divider></mat-divider>
@@ -161,14 +157,11 @@
             }
           </div>
         </mat-tab>
-
-
         <mat-tab label="Gastos y Documentos">
           <div class="tab-content">
 
             <div class="add-document-form">
               <h3 class="mat-h3">Añadir Nuevo Gasto/Documento</h3>
-
 
               <mat-form-field appearance="outline" class="cost-input">
                 <mat-label>Monto del Gasto (CLP)</mat-label>
@@ -207,19 +200,23 @@
                   }
                 </div>
               </div>
-
               <button
                 mat-flat-button
                 color="primary"
                 (click)="onAddDocument()"
                 [disabled]="
-                  newDocumentCost() === null || (newDocumentCost() ?? 0) < 0 || !newDocumentName()
+                  newDocumentCost() === null || (newDocumentCost() ?? 0) < 0 || !newDocumentFile() || isUploading()
                 "
                 class="add-button"
                 matTooltip="Debe ingresar un monto (0 o más) y adjuntar un archivo"
               >
-                <mat-icon>add</mat-icon>
-                Añadir Gasto
+                @if (isUploading()) {
+                  <mat-icon>progress_activity</mat-icon>
+                  Subiendo...
+                } @else {
+                  <mat-icon>add</mat-icon>
+                  Añadir Gasto
+                }
               </button>
             </div>
 
@@ -237,7 +234,7 @@
               <mat-list-item class="document-item">
                 <mat-icon matListItemIcon>{{ getDocumentIcon(doc.type) }}</mat-icon>
                 <div matListItemTitle>{{ doc.name }}</div>
-                <div matListItemLine>Subido: {{ doc.uploadedAt }}</div>
+                <div matListItemLine>Subido: {{ doc.uploaded_at_formatted }}</div>
 
                 <span class="document-cost">
                   {{ doc.cost || 0 | currency : 'CLP' : 'symbol-narrow' : '1.0-0' }}
@@ -245,7 +242,7 @@
 
                 <button
                   mat-icon-button
-                  (click)="$event.stopPropagation()"
+                  (click)="onDownloadDocument(doc.url); $event.stopPropagation()"
                   matTooltip="Descargar Archivo"
                 >
                   <mat-icon>download</mat-icon>

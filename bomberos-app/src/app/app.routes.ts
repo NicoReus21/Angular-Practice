@@ -4,7 +4,8 @@ import { HistorialComponent } from './components/historial/historial';
 import { DocumentUploadComponent } from './components/document-upload/document-upload';
 import { MachineHistorialComponent } from './components/machine-historial/machine-historial';
 import { CreateFiretruckComponent } from './components/create-firetruck/create-firetruck';
-
+import { UserRegisterComponent } from './components/user-register/user-register';
+import { RoleManagementComponent } from './components/role-management/role-management';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -13,5 +14,20 @@ export const routes: Routes = [
   { path: 'document-upload', component: DocumentUploadComponent },
   { path: 'document-upload/:id', component: DocumentUploadComponent },
   { path: 'machine-historial', component: MachineHistorialComponent },
-  { path: 'create-firetruck', component: CreateFiretruckComponent }, // <-- AÑADIDO
+  { path: 'create-firetruck', component: CreateFiretruckComponent }, 
+  {path: 'register', component: UserRegisterComponent },
+  { path: 'rols', component: RoleManagementComponent },
+
+
+
+
+  /*TODO, CUANDO SEPA BIEN LOS ROLES QUE SE LLEVARAN ESTO SERIA ASI:
+  {path: 'admin',
+      children: [
+        { path: 'register', component: UserRegisterComponent },
+        { path: 'roles', component: RoleManagementComponent },
+        { path: 'grupos', component: GruposComponent },
+      ]
+    },
+  */
 ];
