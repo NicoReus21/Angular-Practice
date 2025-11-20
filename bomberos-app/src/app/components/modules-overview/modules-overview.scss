@@ -1,0 +1,125 @@
+.modules-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+}
+
+.modules-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+
+  h1 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.modules-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #ff7961;
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+
+.modules-description {
+  color: rgba(0, 0, 0, 0.65);
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.module-card {
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  border-radius: 18px;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+  }
+
+  mat-card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
+
+.module-icon {
+  background: #fff2ef;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  mat-icon {
+    color: #c62828;
+    font-size: 24px;
+  }
+}
+
+.module-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.module-tag {
+  background: #ffe5e0;
+  color: #c62828;
+  border-radius: 999px;
+  padding: 0.1rem 0.8rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.module-card--disabled {
+  border: 1px dashed rgba(0, 0, 0, 0.2);
+  box-shadow: none;
+
+  &:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .module-icon {
+    background: #fff9e6;
+
+    mat-icon {
+      color: #f9a825;
+    }
+  }
+
+  mat-card-subtitle,
+  p {
+    color: rgba(0, 0, 0, 0.55);
+  }
+
+  mat-card-actions {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 599px) {
+  .modules-shell {
+    padding: 1.5rem 1rem 2rem;
+  }
+
+  .module-card {
+    min-height: 0;
+  }
+}
+

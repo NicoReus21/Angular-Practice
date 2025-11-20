@@ -1,0 +1,180 @@
+<section class="auth-dashboard">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <p class="sidebar-eyebrow">Autenticación</p>
+      <h2>Centro de control</h2>
+      <p>Gestiona accesos, equipos y permisos desde un solo lugar.</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button
+        type="button"
+        class="nav-item"
+        *ngFor="let section of sections"
+        [class.nav-item--active]="isActive(section)"
+        (click)="selectSection(section)"
+      >
+        <mat-icon>{{ section.icon }}</mat-icon>
+        <span>{{ section.label }}</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <p>Necesitas crear credenciales?</p>
+      <button mat-stroked-button color="warn">
+        <mat-icon>person_add</mat-icon>
+        Registrar usuario
+      </button>
+    </div>
+  </aside>
+
+  <div class="dashboard-content">
+    <header class="dashboard-header">
+      <div>
+        <p class="header-eyebrow">Módulo de autenticación</p>
+        <h1>{{ selectedSection().label }}</h1>
+        <p>{{ selectedSection().description }}</p>
+      </div>
+      <button mat-flat-button color="warn">
+        <mat-icon>settings</mat-icon>
+        Gestionar {{ selectedSection().label | lowercase }}
+      </button>
+    </header>
+
+    @switch (activeSectionId()) {
+      @case ('usuarios') {
+        <section class="users-section">
+          <div class="stats-grid">
+            <mat-card class="stat-card">
+              <mat-icon>people</mat-icon>
+              <div>
+                <p class="stat-label">Usuarios activos</p>
+                <p class="stat-value">{{ activeUsersCount() }}</p>
+              </div>
+            </mat-card>
+
+            <mat-card class="stat-card stat-card--pending">
+              <mat-icon>hourglass_empty</mat-icon>
+              <div>
+                <p class="stat-label">Pendientes</p>
+                <p class="stat-value">{{ pendingUsersCount() }}</p>
+              </div>
+            </mat-card>
+
+            <mat-card class="stat-card stat-card--attention">
+              <mat-icon>report_gmailerrorred</mat-icon>
+              <div>
+                <p class="stat-label">Revisión</p>
+                <p class="stat-value">{{ suspendedUsersCount() }}</p>
+              </div>
+            </mat-card>
+          </div>
+
+          <mat-card class="users-card">
+            <mat-card-header>
+              <div>
+                <mat-card-title>Usuarios registrados</mat-card-title>
+                <mat-card-subtitle>
+                  Visualiza los grupos y roles asignados para cada persona.
+                </mat-card-subtitle>
+              </div>
+            </mat-card-header>
+
+            <div class="table-wrapper">
+              <table mat-table [dataSource]="users()" class="users-table">
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef>Usuario</th>
+                  <td mat-cell *matCellDef="let element">
+                    <p class="user-name">{{ element.name }}</p>
+                    <span class="user-email">{{ element.email }}</span>
+                    <span class="user-company">{{ element.company }}</span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="groups">
+                  <th mat-header-cell *matHeaderCellDef>Grupos</th>
+                  <td mat-cell *matCellDef="let element">
+                    @for (group of element.groups; track group) {
+                      <span class="chip chip--group">{{ group }}</span>
+                    }
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="roles">
+                  <th mat-header-cell *matHeaderCellDef>Roles</th>
+                  <td mat-cell *matCellDef="let element">
+                    @for (role of element.roles; track role) {
+                      <span class="chip chip--role">{{ role }}</span>
+                    }
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef>Estado</th>
+                  <td mat-cell *matCellDef="let element">
+                    <span class="status" [ngClass]="'status--' + element.status.toLowerCase()">
+                      {{ element.status }}
+                    </span>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+              </table>
+            </div>
+          </mat-card>
+        </section>
+      }
+      @case ('roles') {
+        <section class="roles-section">
+          <app-role-management></app-role-management>
+        </section>
+      }
+      @case ('grupos') {
+        <section class="placeholder-section">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Administración de grupos</mat-card-title>
+              <mat-card-subtitle>
+                Define brigadas, áreas o compañías para organizar los accesos.
+              </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <p>
+                Desde aquí podrás crear nuevos grupos, asignar responsables y vincular
+                usuarios. Esta sección servirá como base para futuras integraciones con
+                el directorio institucional.
+              </p>
+              <button mat-stroked-button color="warn">
+                <mat-icon>group_add</mat-icon>
+                Crear grupo piloto
+              </button>
+            </mat-card-content>
+          </mat-card>
+        </section>
+      }
+      @case ('permisos') {
+        <section class="placeholder-section">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Permisos detallados</mat-card-title>
+              <mat-card-subtitle>
+                Define reglas específicas para cada rol y ajusta el alcance de los módulos.
+              </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <p>
+                Próximamente podrás crear plantillas de permisos, activar revisiones y
+                programar auditorías de acceso para cumplir con protocolos de seguridad.
+              </p>
+              <button mat-stroked-button color="warn">
+                <mat-icon>rule</mat-icon>
+                Diseñar nueva política
+              </button>
+            </mat-card-content>
+          </mat-card>
+        </section>
+      }
+    }
+  </div>
+</section>
