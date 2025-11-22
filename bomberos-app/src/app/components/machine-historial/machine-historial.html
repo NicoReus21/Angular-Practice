@@ -71,13 +71,9 @@
     <div class="no-selection">
       <mat-icon>directions_car</mat-icon>
       <h3 class="mat-h3">Seleccione una unidad</h3>
-      @if (isMobile()) {
       <button mat-raised-button color="primary" (click)="toggleSidenav()">
         Ver Lista de Unidades
       </button>
-      } @else {
-      <p class="mat-body-1">Elija una unidad de la lista de la izquierda para ver sus detalles.</p>
-      }
     </div>
     } @else {
 
@@ -90,7 +86,7 @@
             <mat-chip 
               [ngClass]="getStatusChipClass(selectedUnit()!.status)"
               [matMenuTriggerFor]="statusMenu"
-              matTooltip="Click para cambiar estado"
+              matTooltip="Clic para cambiar estado"
               style="cursor: pointer; padding-right: 8px;">
               
               {{ selectedUnit()!.status }}
@@ -113,7 +109,7 @@
               <span>Fuera de Servicio</span>
             </button>
           </mat-menu>
-          </div>
+        </div>
       </div>
 
       <div class="image-container">

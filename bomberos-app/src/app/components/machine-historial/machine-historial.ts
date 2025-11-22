@@ -232,10 +232,6 @@ export class MachineHistorialComponent implements OnInit {
       next: (unitsFromApi) => {
         const mappedUnits: VehicleUnit[] = unitsFromApi.map(car => this.mapApiCarToVehicleUnit(car));
         this.allUnits.set(mappedUnits);
-
-        if (!this.selectedUnitId() && mappedUnits.length > 0 && !this.isMobile()) {
-          this.selectedUnitId.set(mappedUnits[0].id);
-        }
       },
       error: (err) => {
         console.error('Error al cargar unidades:', err);
@@ -340,6 +336,7 @@ export class MachineHistorialComponent implements OnInit {
       });
     });
 
+    // 2. LLAMADA AL BACKEND
     this.vehicleService.toggleChecklistItem(taskId).subscribe({
       error: (err) => {
         console.error('Error al guardar toggle:', err);
@@ -473,7 +470,6 @@ export class MachineHistorialComponent implements OnInit {
     });
   }
 
-  // --- IMPLEMENTACIÓN DE DELETE REPORT ---
   onDeleteReport(reportId: number, event?: MouseEvent): void {
     if(event) event.stopPropagation();
 
@@ -546,7 +542,6 @@ export class MachineHistorialComponent implements OnInit {
     }
   }
 
-  // --- DIALOG DE UNIDAD RESPONSIVO ---
   openCreateUnitDialog(): void {
     const isMobile = this.isMobile();
     
