@@ -315,7 +315,38 @@ export class MachineHistorialComponent implements OnInit {
   // --- CHECKLISTS, REPORTES, DOCUMENTOS ---
   
   onChecklistItemToggle(checklistGroupId: number, taskId: number): void {
-    this.vehicleService.toggleChecklistItem(taskId).subscribe({});
+    this.allUnits.update((units) => {
+      return units.map((unit) => {
+        if (unit.id === this.selectedUnitId()) {
+          return {
+            ...unit,
+            checklists: unit.checklists.map((cl) => {
+              if (cl.id === checklistGroupId) {
+                return {
+                  ...cl,
+                  items: cl.items.map((item) => {
+                    if (item.id === taskId) {
+                      return { ...item, completed: !item.completed };
+                    }
+                    return item;
+                  })
+                };
+              }
+              return cl;
+            })
+          };
+        }
+        return unit;
+      });
+    });
+
+    this.vehicleService.toggleChecklistItem(taskId).subscribe({
+      error: (err) => {
+        console.error('Error al guardar toggle:', err);
+        this.snackBar.open('Error al guardar estado. Revertiendo...', 'Cerrar', { duration: 3000 });
+        this.loadUnits();
+      }
+    });
   }
 
   openCreateChecklistDialog(): void {
