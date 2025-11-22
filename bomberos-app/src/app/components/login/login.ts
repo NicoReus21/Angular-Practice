@@ -66,7 +66,7 @@ export class LoginComponent {
     this.authService.login(this.loginForm.value).subscribe({
       next: (response) => {
         console.log('Login exitoso!', response);
-        this.router.navigate(['/historial']);
+        this.router.navigate(['/modules']);
       },
       error: (err) => {
         console.error('Error en el login:', err);

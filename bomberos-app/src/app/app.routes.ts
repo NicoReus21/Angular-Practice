@@ -7,10 +7,14 @@ import { CreateFiretruckComponent } from './components/create-firetruck/create-f
 import { UserRegisterComponent } from './components/user-register/user-register';
 import { RoleManagementComponent } from './components/role-management/role-management';
 import { RecoverPasswordComponent } from './components/recover-user-password/recover-user-password';
+import { AuthDashboardComponent } from './components/auth-dashboard/auth-dashboard';
+import { ModulesOverviewComponent } from './components/modules-overview/modules-overview';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
+  { path: 'modules', component: ModulesOverviewComponent },
+  { path: 'app', redirectTo: 'modules', pathMatch: 'full' },
   { path: 'historial', component: HistorialComponent },
   { path: 'document-upload', component: DocumentUploadComponent },
   { path: 'document-upload/:id', component: DocumentUploadComponent },
@@ -19,6 +23,8 @@ export const routes: Routes = [
   {path: 'register', component: UserRegisterComponent },
   { path: 'rols', component: RoleManagementComponent },
   { path: 'recover-password', component: RecoverPasswordComponent },
+  { path: 'rols', component: AuthDashboardComponent },
+
 
 
 

@@ -36,7 +36,8 @@ export class AppComponent implements OnInit {
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
       
-      this.showBackButton.set(event.urlAfterRedirects === '/app');
+      // 5. Lógica para el botón de retroceso (usando tu lógica original)
+      this.showBackButton.set(event.urlAfterRedirects === '/modules');
       
       const currentUrl = event.urlAfterRedirects;
       

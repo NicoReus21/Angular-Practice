@@ -1,0 +1,50 @@
+<section class="modules-shell">
+  <header class="modules-header">
+    <p class="modules-eyebrow">Panel principal</p>
+    <h1>Explora los módulos disponibles</h1>
+    <p class="modules-description">
+      Elige el módulo con el que deseas trabajar para continuar con tus tareas operativas.
+    </p>
+  </header>
+
+  <div class="modules-grid">
+    <mat-card
+      class="module-card"
+      *ngFor="let module of modules"
+      [ngClass]="{ 'module-card--disabled': !module.available }"
+    >
+      <mat-card-header>
+        <div mat-card-avatar class="module-icon">
+          <mat-icon>{{ module.icon }}</mat-icon>
+        </div>
+        <mat-card-title>{{ module.title }}</mat-card-title>
+        <mat-card-subtitle>{{ module.subtitle }}</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p>{{ module.description }}</p>
+        <div class="module-tags" *ngIf="module.tags?.length">
+          <span class="module-tag" *ngFor="let tag of module.tags">{{ tag }}</span>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <a
+          *ngIf="module.route; else comingSoon"
+          mat-flat-button
+          color="warn"
+          [routerLink]="module.route"
+        >
+          <mat-icon>open_in_new</mat-icon>
+          {{ module.ctaLabel || 'Ir al módulo' }}
+        </a>
+        <ng-template #comingSoon>
+          <button mat-stroked-button color="warn" disabled>
+            Más próximamente
+          </button>
+        </ng-template>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</section>
+
