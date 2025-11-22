@@ -4,7 +4,6 @@
   height: 100%;
 }
 
-/* --- ESTILOS DEL TOOLBAR --- */
 .main-toolbar {
   height: 80px; 
   padding: 0 24px;
@@ -12,8 +11,6 @@
   top: 0;
   z-index: 1000;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  
-  /* CAMBIO DE COLOR: Ahora usa el rojo brillante del botón */
   background-color: #f44336; 
   color: white;
 }
@@ -25,23 +22,21 @@
   height: 100%; 
 }
 
-/* Estilos para el contenedor del logo */
 .toolbar-logo-container {
-  height: 60%; /* Ajusta la altura relativa a la barra */
+  height: 60%;
   display: flex;
   align-items: center;
-  text-decoration: none; /* Quita subrayado si es un link */
+  text-decoration: none;
   margin-right: 16px;
 }
 
-/* Estilos para la imagen del logo */
 .toolbar-logo {
   height: 100%; 
   width: auto;
   object-fit: contain; 
-  background-color: white; /* Opcional: si el logo es transparente y necesita fondo */
-  border-radius: 50%; /* Opcional: si quieres que sea redondo */
-  padding: 2px; /* Espacio entre la imagen y el borde blanco */
+  background-color: white;
+  border-radius: 50%;
+  padding: 2px; 
 }
 
 .toolbar-title {
@@ -55,39 +50,28 @@
 }
 
 .back-button {
-  background-color: blue !important; 
-  color: #f44336 !important; /* Texto rojo para combinar */
+  background-color: white !important; 
+  color: black !important;
   font-weight: bold;
   
   mat-icon {
-    color: #f44336 !important;
+    color: black !important;
   }
 }
 
-/* =========================================
-   LAYOUT DEL CONTENIDO
-   ========================================= */
-
 .app-container {
   width: 100%;
-  
-  /* MODO DASHBOARD (Centrado y con padding) */
   &.dashboard-layout {
     flex-grow: 1;
     overflow-y: auto; 
     height: calc(100vh - 80px); 
-    
-    padding: 32px; 
-    
-    /* Centrado con Flexbox */
+    padding: 32px;
     display: flex;
     justify-content: center;
     align-items: flex-start; 
-    
     box-sizing: border-box;
   }
 
-  /* MODO LOGIN (Pantalla Completa) */
   &.login-layout {
     padding: 0 !important;
     margin: 0 !important;
@@ -100,7 +84,6 @@
   }
 }
 
-/* Ajustes móviles */
 @media (max-width: 600px) {
   .toolbar-logo-container {
     height: 50%; 
@@ -112,7 +95,7 @@
   }
   
   .app-container.dashboard-layout {
-     padding: 16px;
-     display: block; /* En móvil usamos block para aprovechar el ancho */
+    padding: 16px;
+    display: block;
   }
 }

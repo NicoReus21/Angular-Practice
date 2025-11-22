@@ -29,18 +29,24 @@ export class AppComponent implements OnInit {
   readonly REGISTER_ROUTE = '/register';
   readonly RECOVER_ROUTE = '/recover-password';
 
+  readonly ROUTES_WITH_BACK_BUTTON = [
+    '/historial', 
+    '/machine-historial', 
+    '/rols', 
+    '/document-upload'
+  ];
+
   constructor(private router: Router) {}
 
   ngOnInit() {
     this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
-      
-      // 5. Lógica para el botón de retroceso (usando tu lógica original)
-      this.showBackButton.set(event.urlAfterRedirects === '/modules');
-      
       const currentUrl = event.urlAfterRedirects;
-      
+
+      const shouldShowBack = this.ROUTES_WITH_BACK_BUTTON.some(route => currentUrl.startsWith(route));
+      this.showBackButton.set(shouldShowBack);
+
       const isAuth = currentUrl.startsWith(this.LOGIN_ROUTE) || currentUrl.startsWith(this.REGISTER_ROUTE) ||currentUrl.startsWith(this.RECOVER_ROUTE);
       
       this.isAuthPage.set(isAuth);
