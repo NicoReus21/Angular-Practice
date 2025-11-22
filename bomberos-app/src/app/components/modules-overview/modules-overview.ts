@@ -38,7 +38,7 @@ export class ModulesOverviewComponent {
       description:
         'Inicia nuevos procesos, sube la documentación requerida y sigue el estado de cada caso.',
       icon: 'health_and_safety',
-      route: '/document-upload',
+      route: '/historial',
       ctaLabel: 'Gestionar casos',
       available: true,
       tags: ['Casos activos', 'Expedientes']
