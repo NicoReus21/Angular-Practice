@@ -1,14 +1,16 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon'; // <--- 1. IMPORTAR ESTO
 import { trigger, transition, style, animate } from '@angular/animations';
 import { AuthService } from '../../services/auth-service'; 
 import { HttpClientModule } from '@angular/common/http'; 
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; // Necesario para el spinner en el HTML
 
 @Component({
   selector: 'app-login',
@@ -20,7 +22,10 @@ import { HttpClientModule } from '@angular/common/http';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    HttpClientModule 
+    MatIconModule, // <--- 2. AGREGARLO AQUÍ
+    HttpClientModule,
+    MatProgressSpinnerModule, // Aseguramos que el spinner funcione si se usa en el HTML
+    RouterLink,
   ],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
@@ -60,7 +65,6 @@ export class LoginComponent {
 
     this.authService.login(this.loginForm.value).subscribe({
       next: (response) => {
-
         console.log('Login exitoso!', response);
         this.router.navigate(['/historial']);
       },
@@ -79,4 +83,3 @@ export class LoginComponent {
     return this.loginForm.get('email');
   }
 }
-

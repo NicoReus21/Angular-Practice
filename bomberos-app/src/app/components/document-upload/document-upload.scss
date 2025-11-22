@@ -1,41 +1,59 @@
+/* --- ESTILOS BASE (Escritorio) --- */
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
+
 .upload-container {
   background-color: #fff;
   padding: 40px 50px;
   border-radius: 12px;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1000px;
   box-sizing: border-box;
   border: 1px solid #e9ecef;
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .page-title {
-  font-size: 45px;
+  font-size: 36px;
   font-weight: 800;
   text-align: center;
   color: #212529;
   line-height: 1.2;
-  margin: 0 0 8px 0;
+  margin: 0 0 16px 0;
 }
 
+.page-subtitle {
+  text-align: center;
+  color: #6c757d;
+  margin-bottom: 32px;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+/* Estilos del formulario preliminar */
 .preliminary-form {
   display: flex;
   flex-direction: column;
   gap: 20px;
   max-width: 500px;
   margin: 0 auto;
-}
+  width: 100%;
 
-.completion-message {
-  display: flex;
-  align-items: center;
-  justify-content: right;
-  padding: 16px;
-  background-color: #f0fff4;
-  color: #28a745;
-  border: 1px solid #28a745;
-  border-radius: 8px;
-  margin-bottom: 32px;
-  font-weight: 500;
+  mat-form-field {
+    width: 100%;
+  }
+
+  button {
+    margin-top: 10px;
+    padding: 12px;
+    font-size: 1.1rem;
+  }
 }
 
 .checklist-title {
@@ -48,58 +66,72 @@
 }
 
 .checklist {
+  display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
+/* --- Estilos de los Pasos (Steps) --- */
 .step-item {
   background-color: #f8f9fa;
   border: 1px solid #dee2e6;
   border-radius: 8px;
   padding: 16px 24px;
   transition: all 0.3s ease-in-out;
-}
 
-.step-item.active {
-  border-color: #d32f2f;
-  background-color: #fff;
-}
+  &.active {
+    border-color: #d32f2f;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
 
-.step-item.completed {
-  background-color: #f0fff4;
-  border-color: #a3d9b1;
-  color: #155724;
+  &.completed {
+    background-color: #f0fff4;
+    border-color: #a3d9b1;
+    color: #155724;
+  }
+
+  &.hidden-step {
+    display: none;
+  }
 }
 
 .step-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .step-info {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .step-number {
   font-weight: 700;
-  color: black; // <-- CAMBIO DE COLOR: Un gris más claro como en tu imagen
+  color: #333;
   font-size: 1.2em;
+  margin-right: 8px;
 }
 
 .step-title {
   font-weight: 600;
   color: #212529;
-  font-size: 1.2em;
+  font-size: 1.1em;
+  margin-right: 10px;
 }
 
 .optional-badge {
-  font-size: 15px;
-  font-weight: 500;
-  color: black;
+  font-size: 12px;
+  font-weight: 600;
+  color: #495057;
   background-color: #e9ecef;
   padding: 4px 8px;
   border-radius: 4px;
+  text-transform: uppercase;
 }
 
 .completion-icon {
@@ -112,6 +144,7 @@
   border-top: 1px solid #e9ecef;
 }
 
+/* Área de Carga */
 .drag-area {
   border: 2px dashed #ced4da;
   border-radius: 8px;
@@ -127,18 +160,26 @@
     width: 40px;
     height: 40px;
     margin-bottom: 8px;
+    color: #adb5bd;
   }
 
-  &:hover, &.drag-over {
+  &:hover,
+  &.drag-over {
     background-color: #fff0f0;
-    border-color: #e57373;
+    border-color: #ef5350;
+    color: #d32f2f;
+
+    mat-icon {
+      color: #d32f2f;
+    }
   }
 }
 
+/* Lista de Archivos */
 .file-list {
   list-style-type: none;
   padding: 0;
-  margin: 0;
+  margin: 10px 0;
   text-align: left;
   font-size: 0.9rem;
   color: #333;
@@ -147,10 +188,20 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 4px;
-    border-bottom: 1px solid #eee;
-    &:last-child {
-      border-bottom: none;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 8px;
+
+    a {
+      text-decoration: none;
+      color: #1976d2;
+      font-weight: 500;
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 }
@@ -158,6 +209,11 @@
 .file-actions {
   display: inline-flex;
   align-items: center;
+  gap: 4px;
+}
+
+.delete-file-btn {
+  color: #d32f2f;
 }
 
 .paid-checkbox {
@@ -170,91 +226,252 @@
   justify-content: flex-end;
   gap: 12px;
   margin-top: 20px;
+  flex-wrap: wrap;
 }
 
+/* Paneles de Acordeón */
 .section-panel {
   box-shadow: none !important;
   border: 1px solid #e0e0e0;
   margin-bottom: 16px;
   border-radius: 8px !important;
 
-  &:first-of-type {
-    border-top: 1px solid #e0e0e0;
-  }
-}
-
-.section-title {
-  font-size: 22px;
-  font-weight:800;
-  text-transform: uppercase;
-  color: #343a40;
-  display: flex;
-  align-items: left;
-}
-
-.finish-flow-container {
-  display: flex;
-  justify-content: center;
-  padding: 24px 0 8px 0;
-  margin-top: 8px;
-  border-top: 1px solid #e9ecef;
-
-  button {
-    padding: 12px 24px;
-    font-size: 18px;
-    line-height: 1.5;
-    font-weight: 400;
-    border-radius: 8px;
-  }
-}
-
-::ng-deep .mat-expansion-panel-body {
-  padding: 0 24px 16px 24px !important;
-}
-
-.page-header-edit {
-  position: relative;
-  display: flex;
-  align-items: left;
-  justify-content: left; 
-  padding: 1rem;
-
-  .page-title {
-    margin: 0;
-  }
-
-  .back-button {
-    position: absolute;
-    top: 50%;
-    left: 1rem;
-    transform: translateY(-50%);
-  }
-}
-
-.section-panel {
   &.locked {
     .mat-expansion-panel-header {
-      background-color: #f5f5f5; 
-      color: #aaa; 
-      cursor: not-allowed; 
+      background-color: #f5f5f5;
+      color: #aaa;
+      cursor: not-allowed;
+    }
+
+    .section-title {
+      color: #999;
     }
 
     .section-title mat-icon {
+      color: #aaa;
       margin-right: 8px;
     }
   }
 }
 
-.step-item {
-  &.hidden-step {
-    display: none; 
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #343a40;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.next-section-container,
+.finish-flow-container {
+  display: flex;
+  justify-content: center;
+  padding: 24px 0 8px 0;
+  margin-top: 20px;
+  border-top: 1px solid #e9ecef;
+
+  button {
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 30px;
+    height: 50px;
   }
 }
 
 .next-section-container {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid #eee;
+  justify-content: flex-end;
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #d32f2f;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+::ng-deep .mat-expansion-panel-body {
+  padding: 0 24px 24px 24px !important;
+}
+
+/* --- TABLA RESPONSIVA --- */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+
+  table {
+    width: 100%;
+    min-width: 800px;
+  }
+}
+
+/* =========================================
+/* =========================================
+   --- SOLUCIÓN DEFINITIVA RESPONSIVE ---
+   ========================================= */
+@media (max-width: 768px) {
+
+  /* 1. CONTENEDOR GENERAL */
+  .upload-container {
+    padding: 15px;
+    width: 100%;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+  }
+
+  /* 2. TITULOS */
+  .page-title {
+    margin-bottom: 20px;
+  }
+
+  /* 3. TARJETA DEL PASO (EL ARREGLO DEL HUECO GIGANTE) */
+  .step-item {
+    /* Forzamos que se comporte como un bloque normal, NO flex */
+    display: block !important;
+    height: auto !important;
+    /* Esto elimina el espacio blanco extra */
+    min-height: 0 !important;
+    padding: 20px 15px;
+    margin-bottom: 15px;
+  }
+
+  /* 4. CABECERA DEL PASO (ARREGLO DEL "2." ENCIMA DEL TEXTO) */
+  .step-header {
+    /* Forzamos fila para que el número y título estén lado a lado */
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    /* Alineado arriba */
+    justify-content: flex-start !important;
+    /* Todo a la izquierda */
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 15px;
+    /* Espacio antes del área de carga */
+  }
+
+  .step-info {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    width: 100%;
+    flex-wrap: nowrap !important;
+  }
+
+  .step-number {
+    font-size: 16px;
+    font-weight: 800;
+    min-width: 20px;
+    margin-top: 2px;
+    /* Ajuste óptico */
+    text-align: left;
+  }
+
+  .step-title {
+    font-size: 15px;
+    /* Un pelín más pequeño para títulos largos (DIAB...) */
+    font-weight: 700;
+    line-height: 1.3;
+    text-align: left !important;
+    /* Forzar alineación izquierda */
+    margin: 0;
+    white-space: normal;
+  }
+
+  /* CONTENIDO INTERNO */
+  .step-content {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    border: none !important;
+  }
+
+  /* 5. ÁREA DE CARGA */
+  .drag-area {
+    padding: 25px 10px !important;
+    margin-top: 5px;
+    min-height: 0 !important;
+
+    mat-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 13px;
+      line-height: 1.4;
+    }
+  }
+
+  /* 6. ARREGLO DEL BOTÓN FINAL (Texto partido) */
+  .finish-flow-container button {
+    width: 100%;
+    height: auto;
+    min-height: 48px;
+    padding: 10px 20px;
+
+    /* Asegura que icono y texto estén en línea */
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px;
+  }
+
+  .finish-flow-container button mat-icon {
+    margin: 0 !important;
+    /* Quita márgenes extra del icono */
+  }
+
+  .finish-flow-container button span {
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    /* Intenta mantenerlo en una línea */
+    text-align: center;
+  }
+
+  /* Si la pantalla es MUY pequeña, permite salto de línea controlado */
+  @media (max-width: 360px) {
+    .finish-flow-container button span {
+      white-space: normal;
+      font-size: 13px;
+    }
+  }
+
+  /* 7. AJUSTES GENERALES DE ACORDEONES */
+  .section-panel {
+    margin-bottom: 8px !important;
+  }
+
+  ::ng-deep .mat-expansion-panel-header {
+    padding: 10px 16px !important;
+    height: auto !important;
+    min-height: 56px;
+  }
+
+  .section-title {
+    font-size: 13px !important;
+    line-height: 1.3 !important;
+    white-space: normal !important;
+    text-align: left;
+  }
+
+  /* Arreglo lista de archivos */
+  .file-list a {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }

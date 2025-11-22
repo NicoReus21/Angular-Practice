@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core'; // signal AÑADIDO
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-create-firetruck',
-  standalone: true, 
+  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -31,6 +31,9 @@ export class CreateFiretruckComponent {
   public dialogRef = inject(MatDialogRef<CreateFiretruckComponent>);
   unitForm: FormGroup;
 
+  private selectedImageFile: File | null = null;
+  public selectedImageName = signal<string | null>(null);
+
   constructor() {
     this.unitForm = this.fb.group({
       name: ['', Validators.required],
@@ -45,12 +48,25 @@ export class CreateFiretruckComponent {
     this.dialogRef.close();
   }
 
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedImageFile = input.files[0];
+      this.selectedImageName.set(this.selectedImageFile.name);
+    } else {
+      this.selectedImageFile = null;
+      this.selectedImageName.set(null);
+    }
+  }
+
   onSave(): void {
     if (this.unitForm.valid) {
-      this.dialogRef.close(this.unitForm.value);
+      this.dialogRef.close({
+        formData: this.unitForm.value,
+        imageFile: this.selectedImageFile 
+      });
     } else {
       this.unitForm.markAllAsTouched();
     }
   }
 }
-

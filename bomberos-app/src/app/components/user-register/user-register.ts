@@ -6,14 +6,14 @@ import {
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink} from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AuthService } from '../../services/auth-service'
+import { AuthService } from '../../services/auth-service';
 import { HttpErrorResponse } from '@angular/common/http';
 
 export function passwordsMatchValidator(
@@ -38,6 +38,7 @@ export function passwordsMatchValidator(
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    RouterLink
   ],
   templateUrl: './user-register.html',
   styleUrl: './user-register.scss',
@@ -47,6 +48,7 @@ export class UserRegisterComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
+  
   hidePassword = signal(true);
   isSubmitting = signal(false);
   
@@ -62,13 +64,15 @@ export class UserRegisterComponent {
     }
   );
 
-
   togglePasswordVisibility(event: MouseEvent): void {
     event.stopPropagation(); 
     this.hidePassword.set(!this.hidePassword());
   }
 
-  // Método para manejar el envío del formulario
+  goToLogin(): void {
+    this.router.navigate(['/login']);
+  }
+
   onSubmit(): void {
     if (this.registerForm.invalid || this.isSubmitting()) {
       return;

@@ -53,11 +53,13 @@
     <ng-container *ngIf="preliminaryDataCompleted()">
            
       <h1 class="page-title">
-                <span *ngIf="editMode()">Completando Documentación</span>        
-        <span *ngIf="!editMode()">Flujo de Ingreso de Documentos</span>         <br />{{
-          preliminaryForm.get('bomberoNombre')?.value
-        }}
-             
+        <span class="title-main">
+          <span *ngIf="editMode()">Completando Documentación</span>
+          <span *ngIf="!editMode()">Flujo de Ingreso de Documentos</span>
+        </span>
+        <div class="title-user">
+          {{ preliminaryForm.get('bomberoNombre')?.value | titlecase }}
+        </div>
       </h1>
                  
       <div *ngIf="uploadError()" class="error-message">
@@ -108,7 +110,8 @@
                 >
                                                      
                   <div class="step-header">
-                     <div class="step-info">
+                     
+                    <div class="step-info">
                                            
                       <span class="step-number"
                         >{{ getFlatIndex(sectionIndex, stepIndex) + 1 }}.</span

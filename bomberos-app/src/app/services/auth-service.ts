@@ -16,7 +16,6 @@ export class AuthService {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
         if (response && response.token) {
-
           this.saveToken(response.token);
         }
       })
@@ -35,6 +34,10 @@ export class AuthService {
     );
   }
 
+  recoverPassword(email: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/recover-password`, { email });
+  }
+
   saveToken(token: string): void {
     localStorage.setItem('authToken', token);
   }
@@ -43,10 +46,8 @@ export class AuthService {
     return localStorage.getItem('authToken');
   }
 
-
   logout(): void {
     localStorage.removeItem('authToken');
-    this.router.navigate(['/']);
+    this.router.navigate(['/login']);
   }
 }
-

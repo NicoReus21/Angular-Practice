@@ -1,11 +1,19 @@
-<mat-sidenav-container class="dashboard-container">
-  <mat-sidenav mode="side" opened class="dashboard-sidenav">
+<mat-sidenav-container class="dashboard-container" autosize>
+  <mat-sidenav
+    #sidenav
+    [mode]="isMobile() ? 'over' : 'side'"
+    [opened]="sidenavOpened()"
+    (closedStart)="sidenavOpened.set(false)"
+    class="dashboard-sidenav"
+    [fixedInViewport]="false"
+  >
     <div class="sidenav-header">
       <h2 class="mat-h2">Unidades</h2>
       <button mat-icon-button (click)="openCreateUnitDialog()" matTooltip="Crear nueva unidad">
         <mat-icon>add</mat-icon>
       </button>
     </div>
+
     <mat-button-toggle-group
       class="status-filter"
       [value]="currentStatusFilter()"
@@ -14,7 +22,7 @@
       <mat-button-toggle value="Todos">Todos</mat-button-toggle>
       <mat-button-toggle value="En Servicio">En Servicio</mat-button-toggle>
       <mat-button-toggle value="En Taller">En Taller</mat-button-toggle>
-      <mat-button-toggle value="Fuera de Servicio">Fuera de Servicio</mat-button-toggle>
+      <mat-button-toggle value="Fuera de Servicio">Fuera</mat-button-toggle>
     </mat-button-toggle-group>
 
     <mat-list role="list" class="unit-list">
@@ -23,9 +31,11 @@
         role="listitem"
         (click)="onSelectUnit(unit.id)"
         [activated]="unit.id === selectedUnitId()"
+        class="unit-item-custom"
         mat-ripple
       >
         <span
+          matListItemIcon
           class="status-indicator"
           [ngClass]="{
             'status-servicio': unit.status === 'En Servicio',
@@ -35,36 +45,83 @@
         >
         </span>
 
-        <div class="unit-list-item-content">
-          <span class="unit-name">{{ unit.name }}</span>
-          <span class="unit-patent">{{ unit.plate }}</span>
-        </div>
+        <span matListItemTitle class="unit-name">
+          {{ unit.name }}
+        </span>
+
+        <span matListItemLine class="unit-meta">
+          <span class="patent-badge">{{ unit.plate }}</span>
+        </span>
       </mat-list-item>
+
+      <mat-divider></mat-divider>
       }
     </mat-list>
   </mat-sidenav>
 
   <mat-sidenav-content class="dashboard-content">
-
-    @if (!selectedUnit()) {
+    @if (isMobile()) {
+    <mat-toolbar color="primary" class="mobile-toolbar">
+      <button mat-icon-button (click)="toggleSidenav()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span>Gestión Bomberos</span>
+    </mat-toolbar>
+    } @if (!selectedUnit()) {
     <div class="no-selection">
       <mat-icon>directions_car</mat-icon>
       <h3 class="mat-h3">Seleccione una unidad</h3>
+      @if (isMobile()) {
+      <button mat-raised-button color="primary" (click)="toggleSidenav()">
+        Ver Lista de Unidades
+      </button>
+      } @else {
       <p class="mat-body-1">Elija una unidad de la lista de la izquierda para ver sus detalles.</p>
+      }
     </div>
     } @else {
-   
-    <div class="main-content-area">
 
+    <div class="main-content-area">
       <div class="detail-header">
         <div class="header-info">
           <h1 class="mat-h1">{{ selectedUnit()!.name }}</h1>
+          
           <mat-chip-listbox>
-            <mat-chip [ngClass]="getStatusChipClass(selectedUnit()!.status)">
+            <mat-chip 
+              [ngClass]="getStatusChipClass(selectedUnit()!.status)"
+              [matMenuTriggerFor]="statusMenu"
+              matTooltip="Click para cambiar estado"
+              style="cursor: pointer; padding-right: 8px;">
+              
               {{ selectedUnit()!.status }}
+              
+              <mat-icon matChipTrailingIcon>arrow_drop_down</mat-icon>
             </mat-chip>
           </mat-chip-listbox>
-        </div>
+
+          <mat-menu #statusMenu="matMenu">
+            <button mat-menu-item (click)="onChangeStatus('En Servicio')">
+              <mat-icon style="color: #2ecc71">check_circle</mat-icon>
+              <span>En Servicio</span>
+            </button>
+            <button mat-menu-item (click)="onChangeStatus('En Taller')">
+              <mat-icon style="color: #f39c12">build</mat-icon>
+              <span>En Taller</span>
+            </button>
+            <button mat-menu-item (click)="onChangeStatus('Fuera de Servicio')">
+              <mat-icon style="color: #e74c3c">block</mat-icon>
+              <span>Fuera de Servicio</span>
+            </button>
+          </mat-menu>
+          </div>
+      </div>
+
+      <div class="image-container">
+        <img
+          [src]="selectedUnit()!.imageUrl || 'assets/images/default-truck-large.png'"
+          class="unit-image"
+          [alt]="'Foto de ' + selectedUnit()!.name"
+        />
       </div>
 
       <mat-card class="info-card">
@@ -89,15 +146,13 @@
         </mat-card-content>
       </mat-card>
 
-
-      <mat-tab-group class="detail-tabs" animationDuration="0ms">
+      <mat-tab-group class="detail-tabs" animationDuration="0ms" dynamicHeight>
         <mat-tab label="Checklist">
           <div class="tab-content">
             <div class="tab-header">
               <h3 class="mat-h3">Checklists Realizados</h3>
               <button mat-flat-button color="primary" (click)="openCreateChecklistDialog()">
-                <mat-icon>add</mat-icon>
-                Crear Checklist
+                <mat-icon>add</mat-icon> Crear Checklist
               </button>
             </div>
 
@@ -110,25 +165,23 @@
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     <mat-icon>fact_check</mat-icon>
-                    Checklist del {{ checklist.fecha_realizacion }}
+                    {{ checklist.fecha_realizacion }}
                   </mat-panel-title>
                   <mat-panel-description>
-                    Responsable: {{ checklist.persona_cargo }}
+                    {{ checklist.persona_cargo }}
                   </mat-panel-description>
 
                   <button
                     mat-icon-button
                     class="edit-button"
-                    matTooltip="Editar Checklist"
-                    (click)="onEditChecklist(checklist.id, $event); $event.stopPropagation()"
+                    (click)="onEditChecklist(checklist.id, $event)"
                   >
                     <mat-icon>edit</mat-icon>
                   </button>
                   <button
                     mat-icon-button
                     class="delete-button"
-                    matTooltip="Eliminar Checklist"
-                    (click)="onDeleteChecklist(checklist.id, $event); $event.stopPropagation()"
+                    (click)="onDeleteChecklist(checklist.id, $event)"
                   >
                     <mat-icon>delete</mat-icon>
                   </button>
@@ -157,18 +210,16 @@
             }
           </div>
         </mat-tab>
+
         <mat-tab label="Gastos y Documentos">
           <div class="tab-content">
-
             <div class="add-document-form">
-              <h3 class="mat-h3">Añadir Nuevo Gasto/Documento</h3>
-
+              <h3 class="mat-h3" style="width: 100%">Añadir Nuevo Gasto</h3>
               <mat-form-field appearance="outline" class="cost-input">
-                <mat-label>Monto del Gasto (CLP)</mat-label>
+                <mat-label>Monto (CLP)</mat-label>
                 <input
                   matInput
                   type="number"
-                  placeholder="Ej: 25000"
                   [ngModel]="newDocumentCost()"
                   (ngModelChange)="newDocumentCost.set($event ? +$event : null)"
                   min="0"
@@ -178,56 +229,43 @@
 
               <div class="file-button-container">
                 <input type="file" #fileInput hidden (change)="onFileSelected($event)" />
-
                 <button mat-stroked-button (click)="fileInput.click()" class="file-button">
-                  <mat-icon>attach_file</mat-icon>
-                  Adjuntar Archivo (Factura, Boleta...)
+                  <mat-icon>attach_file</mat-icon> Adjuntar
                 </button>
-
                 <div class="file-name-container">
-                  <span class="file-name">{{
-                    newDocumentName() || 'Ningún archivo seleccionado'
-                  }}</span>
+                  <span class="file-name">{{ newDocumentName() || 'Sin archivo' }}</span>
                   @if (newDocumentName()) {
-                  <button
-                    mat-icon-button
-                    (click)="clearFileSelection()"
-                    class="clear-file-button"
-                    matTooltip="Quitar archivo"
-                  >
+                  <button mat-icon-button (click)="clearFileSelection()">
                     <mat-icon>close</mat-icon>
                   </button>
                   }
                 </div>
               </div>
+
               <button
                 mat-flat-button
                 color="primary"
                 (click)="onAddDocument()"
                 [disabled]="
-                  newDocumentCost() === null || (newDocumentCost() ?? 0) < 0 || !newDocumentFile() || isUploading()
+                  newDocumentCost() === null ||
+                  (newDocumentCost() ?? 0) < 0 ||
+                  !newDocumentFile() ||
+                  isUploading()
                 "
                 class="add-button"
-                matTooltip="Debe ingresar un monto (0 o más) y adjuntar un archivo"
               >
                 @if (isUploading()) {
-                  <mat-icon>progress_activity</mat-icon>
-                  Subiendo...
+                <ng-container> <mat-icon>progress_activity</mat-icon> Subiendo... </ng-container>
                 } @else {
-                  <mat-icon>add</mat-icon>
-                  Añadir Gasto
+                <ng-container> <mat-icon>add</mat-icon> Añadir </ng-container>
                 }
               </button>
             </div>
 
             <mat-divider class="form-divider"></mat-divider>
 
-            <div class="tab-header">
-              <h3 class="mat-h3">Historial de Gastos y Archivos</h3>
-            </div>
-
             @if (selectedUnit()!.documents.length === 0) {
-            <p class="empty-state">No hay gastos ni documentos registrados.</p>
+            <p class="empty-state">No hay gastos registrados.</p>
             } @else {
             <mat-list>
               @for (doc of selectedUnit()!.documents; track doc.id) {
@@ -240,32 +278,31 @@
                   {{ doc.cost || 0 | currency : 'CLP' : 'symbol-narrow' : '1.0-0' }}
                 </span>
 
-                <button
-                  mat-icon-button
-                  (click)="onDownloadDocument(doc.url); $event.stopPropagation()"
-                  matTooltip="Descargar Archivo"
-                >
-                  <mat-icon>download</mat-icon>
-                </button>
-
-                <button
-                  mat-icon-button
-                  (click)="onDeleteDocument(doc.id); $event.stopPropagation()"
-                  matTooltip="Eliminar Gasto"
-                  class="delete-button"
-                >
-                  <mat-icon>delete</mat-icon>
-                </button>
+                <div class="action-buttons">
+                  <button
+                    mat-icon-button
+                    (click)="onDownloadDocument(doc.url); $event.stopPropagation()"
+                  >
+                    <mat-icon>download</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    (click)="onDeleteDocument(doc.id); $event.stopPropagation()"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
               </mat-list-item>
               <mat-divider></mat-divider>
               }
             </mat-list>
 
             <div class="total-cost">
-              <span class="total-label">Total Gastos Registrados:</span>
-              <span class="total-amount">
-                {{ totalDocumentsCost() | currency : 'CLP' : 'symbol-narrow' : '1.0-0' }}
-              </span>
+              <span class="total-label">Total:</span>
+              <span class="total-amount">{{
+                totalDocumentsCost() | currency : 'CLP' : 'symbol-narrow' : '1.0-0'
+              }}</span>
             </div>
             }
           </div>
@@ -274,17 +311,58 @@
         <mat-tab label="Reportes">
           <div class="tab-content">
             <div class="tab-header">
-              <h3 class="mat-h3">Crear Nuevo Reporte</h3>
+              <h3 class="mat-h3">Historial</h3>
               <button mat-flat-button color="primary" (click)="openCreateReportDialog()">
-                <mat-icon>add</mat-icon>
-                Crear Reporte
+                <mat-icon>add</mat-icon> Crear
               </button>
             </div>
-            <p class="mat-body-1 create-report-description">
-              Utilice el botón "Crear Reporte" para registrar un nuevo servicio o mantención
-              realizado a esta unidad. La información básica del vehículo se cargará automáticamente
-              en el formulario.
-            </p>
+
+            @if (!selectedUnit() || selectedUnit()!.maintenanceHistory.length === 0) {
+            <p class="empty-state">No hay reportes creados.</p>
+            } @else {
+            <mat-list>
+              @for (report of selectedUnit()!.maintenanceHistory; track report.id) {
+              <mat-list-item class="document-item">
+                <mat-icon matListItemIcon>{{
+                  report.status === 'draft' ? 'edit_note' : 'description'
+                }}</mat-icon>
+                <div matListItemTitle>
+                  {{ report.service_type }}
+                  @if (report.status === 'draft') { <span class="draft-badge">BORRADOR</span> }
+                </div>
+                <div matListItemLine>{{ report.date }} | {{ report.technician }}</div>
+
+                <div class="action-buttons">
+                  @if (report.status === 'draft') {
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    (click)="onEditReportDraft(report); $event.stopPropagation()"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  } @else {
+                  <button
+                    mat-icon-button
+                    (click)="onDownloadReport(report.pdf_url)"
+                    [disabled]="!report.pdf_url"
+                  >
+                    <mat-icon>download</mat-icon>
+                  </button>
+                  }
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    (click)="onDeleteReport(report.id); $event.stopPropagation()"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </mat-list-item>
+              <mat-divider></mat-divider>
+              }
+            </mat-list>
+            }
           </div>
         </mat-tab>
       </mat-tab-group>

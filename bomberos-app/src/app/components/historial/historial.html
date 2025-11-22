@@ -14,8 +14,9 @@
 
   <h2 class="section-title">Registro de Solicitudes</h2>
 
-  <div class="table-container">
+  <div class="table-container table-responsive">
     <mat-table [dataSource]="dataSource()">
+      
       <ng-container matColumnDef="id">
         <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
         <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
@@ -23,7 +24,6 @@
 
       <ng-container matColumnDef="nombre">
         <mat-header-cell *matHeaderCellDef> NOMBRE BOMBERO </mat-header-cell>
-
         <mat-cell *matCellDef="let element"> {{element.bombero_name}} </mat-cell>
       </ng-container>
 
@@ -47,7 +47,6 @@
       <ng-container matColumnDef="acciones">
         <mat-header-cell *matHeaderCellDef> ACCIONES </mat-header-cell>
         <mat-cell *matCellDef="let element">
-
           <a mat-icon-button color="primary" [routerLink]="['/document-upload', element.id]" aria-label="Modificar">
             <mat-icon>edit</mat-icon>
           </a>
@@ -62,4 +61,3 @@
     </mat-table>
   </div>
 </div>
-

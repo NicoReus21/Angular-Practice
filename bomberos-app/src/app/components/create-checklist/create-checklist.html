@@ -1,9 +1,9 @@
-<h2 mat-dialog-title class="dialog-title">Crear Nuevo Checklist</h2>
+<h2 mat-dialog-title class="dialog-title">{{ dialogTitle }}</h2>
 
 <mat-dialog-content class="dialog-content">
   <form [formGroup]="checklistForm">
     <div class="form-row">
-      <mat-form-field class="form-field-half">
+      <mat-form-field class="form-field-half" appearance="outline">
         <mat-label>Persona a Cargo</mat-label>
         <input matInput formControlName="personaCargo" placeholder="Ej: Juan Pérez" />
         @if (checklistForm.get('personaCargo')?.hasError('required')) {
@@ -11,10 +11,9 @@
         }
       </mat-form-field>
 
-      <mat-form-field class="form-field-half">
+      <mat-form-field class="form-field-half" appearance="outline">
         <mat-label>Fecha de Realización</mat-label>
         <input matInput [matDatepicker]="picker" formControlName="fechaRealizacion" />
-        <mat-hint>DD/MM/YYYY</mat-hint>
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
         @if (checklistForm.get('fechaRealizacion')?.hasError('required')) {
@@ -28,7 +27,7 @@
   <h3 class="section-title">Tareas del Checklist</h3>
 
   <div class="add-task-row">
-    <mat-form-field class="add-task-field">
+    <mat-form-field class="add-task-field" appearance="outline">
       <mat-label>Nueva Tarea</mat-label>
       <input
         matInput
@@ -41,6 +40,7 @@
     <button
       mat-flat-button
       color="primary"
+      class="add-btn"
       (click)="onAddTask()"
       [disabled]="!newTaskName().trim()"
     >
@@ -51,23 +51,31 @@
 
   <div class="task-list-container">
     @if (tasks().length === 0) {
-    <p class="empty-state">Aún no se han añadido tareas.</p>
+      <div class="empty-state-container">
+        <mat-icon>assignment</mat-icon>
+        <p>Aún no se han añadido tareas.</p>
+      </div>
     } @else {
-    <mat-list class="task-list">
-      @for (task of tasks(); track task.id) {
-      <mat-list-item class="task-item">
-        <span matListItemTitle>{{ task.task }}</span>
-        <button
-          mat-icon-button
-          color="warn"
-          class="remove-task-btn"
-          (click)="onRemoveTask(task.id)"
-        >
-          <mat-icon>delete_outline</mat-icon>
-        </button>
-      </mat-list-item>
-      }
-    </mat-list>
+      <mat-list class="task-list">
+        @for (task of tasks(); track task.id) {
+          <mat-list-item class="task-item">
+            <div class="item-content">
+              <span class="task-text">{{ task.task }}</span>
+              
+              <button
+                mat-icon-button
+                color="warn"
+                class="remove-task-btn"
+                (click)="onRemoveTask(task.id)"
+                matTooltip="Eliminar tarea"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </mat-list-item>
+          <mat-divider></mat-divider>
+        }
+      </mat-list>
     }
   </div>
 </mat-dialog-content>
@@ -80,6 +88,6 @@
     (click)="onSave()"
     [disabled]="checklistForm.invalid || tasks().length === 0"
   >
-    Guardar Checklist
+    {{ submitButtonLabel }}
   </button>
 </mat-dialog-actions>

@@ -6,6 +6,7 @@ import { MachineHistorialComponent } from './components/machine-historial/machin
 import { CreateFiretruckComponent } from './components/create-firetruck/create-firetruck';
 import { UserRegisterComponent } from './components/user-register/user-register';
 import { RoleManagementComponent } from './components/role-management/role-management';
+import { RecoverPasswordComponent } from './components/recover-user-password/recover-user-password';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -17,7 +18,7 @@ export const routes: Routes = [
   { path: 'create-firetruck', component: CreateFiretruckComponent }, 
   {path: 'register', component: UserRegisterComponent },
   { path: 'rols', component: RoleManagementComponent },
-
+  { path: 'recover-password', component: RecoverPasswordComponent },
 
 
 

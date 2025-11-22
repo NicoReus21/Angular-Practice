@@ -1,33 +1,53 @@
 :host {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
 }
 
+/* --- ESTILOS DEL TOOLBAR --- */
 .main-toolbar {
   height: 80px; 
   padding: 0 24px;
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  
+  /* CAMBIO DE COLOR: Ahora usa el rojo brillante del botón */
+  background-color: #f44336; 
+  color: white;
 }
 
 .toolbar-content {
   display: flex;
   align-items: center;
   width: 100%;
-  height: 100%; /* ¡Añadir esta línea! */
+  height: 100%; 
 }
 
-/* Nuevos estilos para el logo */
-.toolbar-logo, .toolbar-logo-container {
-  height: 100%; /* Asegura que el contenedor y la imagen se ajusten a la altura del toolbar */
-}
-
-.toolbar-logo {
+/* Estilos para el contenedor del logo */
+.toolbar-logo-container {
+  height: 60%; /* Ajusta la altura relativa a la barra */
+  display: flex;
+  align-items: center;
+  text-decoration: none; /* Quita subrayado si es un link */
   margin-right: 16px;
-  object-fit: contain; /* Evita que la imagen se distorsione */
+}
+
+/* Estilos para la imagen del logo */
+.toolbar-logo {
+  height: 100%; 
+  width: auto;
+  object-fit: contain; 
+  background-color: white; /* Opcional: si el logo es transparente y necesita fondo */
+  border-radius: 50%; /* Opcional: si quieres que sea redondo */
+  padding: 2px; /* Espacio entre la imagen y el borde blanco */
+}
+
+.toolbar-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: 1px;
 }
 
 .toolbar-spacer {
@@ -35,28 +55,64 @@
 }
 
 .back-button {
-  background-color: white !important; 
-  color: black !important;          
+  background-color: blue !important; 
+  color: #f44336 !important; /* Texto rojo para combinar */
+  font-weight: bold;
+  
   mat-icon {
-    color: black !important;
+    color: #f44336 !important;
   }
 }
 
-.content-wrapper {
-  flex-grow: 1;
-  overflow-y: auto;
-  padding: 32px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+/* =========================================
+   LAYOUT DEL CONTENIDO
+   ========================================= */
+
+.app-container {
+  width: 100%;
+  
+  /* MODO DASHBOARD (Centrado y con padding) */
+  &.dashboard-layout {
+    flex-grow: 1;
+    overflow-y: auto; 
+    height: calc(100vh - 80px); 
+    
+    padding: 32px; 
+    
+    /* Centrado con Flexbox */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; 
+    
+    box-sizing: border-box;
+  }
+
+  /* MODO LOGIN (Pantalla Completa) */
+  &.login-layout {
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden; 
+    display: flex;    
+    justify-content: center;
+    align-items: center;
+  }
 }
 
+/* Ajustes móviles */
 @media (max-width: 600px) {
-  .toolbar-logo {
-    height: 30px; /* Tamaño más pequeño para móviles */
-    margin-right: 4px;
+  .toolbar-logo-container {
+    height: 50%; 
+    margin-right: 8px;
   }
+  
   .toolbar-title {
     font-size: 1.2rem;
+  }
+  
+  .app-container.dashboard-layout {
+     padding: 16px;
+     display: block; /* En móvil usamos block para aprovechar el ancho */
   }
 }

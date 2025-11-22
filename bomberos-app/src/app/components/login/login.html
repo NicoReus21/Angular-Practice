@@ -1,47 +1,75 @@
+<div class="main-login-container">
+  <div class="background-pattern"></div>
 
-<div class="main-container">
-  
-  <div class="image-container">
-    <img 
-      src="/logo_150.jpg" 
-      alt="Logo 150 Años Bomba Antofagasta" 
-      class="large-logo">
-  </div>
-
-  <div class="login-container">
-    <mat-card class="login-card" [@slideIn]>
-    
-      <div class="header-logo">
-        <img src="/logo_bomberos.png" alt="SIGBA Logo" class="sigba-logo">
-        <span class="sigba-text">SIGBA</span>
+  <mat-card class="login-card">
+    <div class="top-institutional-panel">
+      <div class="logo-container">
+        <img src="/logo_bomberos.png" alt="Escudo Institucional" class="logo-img">
       </div>
+      
+      <div class="institution-titles">
+        <h1 class="welcome-title">SIGBA</h1>
+        <p class="welcome-subtitle">Cuerpo de Bomberos de Antofagasta</p>
+      </div>
+    </div>
 
-      <mat-card-content>
-        <h2 class="login-title">Login</h2>
+    <div class="bottom-form-panel">
+      <h2 class="form-title">INICIAR SESIÓN</h2>
+      <p class="form-instruction">Ingrese sus credenciales para acceder.</p>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <div class="error-message" *ngIf="errorMessage">
+          <mat-icon class="error-icon">error_outline</mat-icon>
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <mat-form-field appearance="outline" class="login-form-field">
+          <mat-label>Email o Usuario</mat-label>
+          <mat-icon matPrefix>person_outline</mat-icon>
+          <input matInput formControlName="email" type="email">
+          <mat-error *ngIf="emailControl?.invalid && emailControl?.touched">
+            Email inválido.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="login-form-field">
+          <mat-label>Contraseña</mat-label>
+          <mat-icon matPrefix>lock_outline</mat-icon>
+          <input matInput formControlName="password" type="password">
+          <mat-error *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+            Contraseña requerida.
+          </mat-error>
+        </mat-form-field>
         
-        <mat-error class="error-message" *ngIf="errorMessage">{{ errorMessage }}</mat-error>
+        <div class="form-actions">
+          <a routerLink="/recover-password" class="forgot-password-link">¿Olvidó su contraseña?</a>
+        </div>
 
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-actions-column">
+          <button 
+            mat-flat-button 
+            type="submit" 
+            [disabled]="loginForm.invalid || isLoading"
+            class="login-button"
+          >
+            @if (isLoading) {
+              <mat-spinner diameter="20" color="accent"></mat-spinner>
+              <span>VALIDANDO...</span>
+            } @else {
+              <span>INGRESAR</span>
+            }
+          </button>
 
-          <mat-form-field appearance="fill" class="custom-input-field">
-            <mat-label>Email</mat-label> 
-            <input matInput formControlName="email" placeholder="hola@tuemail.com"> 
-          </mat-form-field>
+          <button type="button" class="register-button" routerLink="/register">
+            CREAR CUENTA
+          </button>
+        </div>
 
-          <mat-form-field appearance="fill" class="custom-input-field">
-            <mat-label>Contraseña</mat-label>
-            <input matInput formControlName="password" type="password">
-          </mat-form-field>
-
-          <div class="button-container">
-            <button class="custom-login-button" type="submit" [disabled]="loginForm.invalid">
-              Iniciar Sesión
-            </button>
-          </div>
-        </form>
-      </mat-card-content>
-    </mat-card>
-  </div>
-
+      </form>
+    </div>
+    
+    <div class="card-footer">
+      <p>© 2025 Compañía de Bomberos de Antofagasta</p>
+    </div>
+  </mat-card>
 </div>
-

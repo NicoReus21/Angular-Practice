@@ -1,6 +1,6 @@
-<form [formGroup]="reportForm" (ngSubmit)="onSave()">
-  <h1 mat-dialog-title class="dialog-title">
-    Reporte de Servicio/Mantención
+<form [formGroup]="reportForm">
+  <h1 mat-dialog-title class="dialog-title-container">
+    <span class="title-text">Reporte de Servicio</span>
     <button
       mat-icon-button
       class="close-button"
@@ -30,7 +30,6 @@
     </div>
 
     <div class="form-row">
-
       <mat-form-field appearance="outline" class="form-field-half">
         <mat-label>N° de Chasis</mat-label>
         <input matInput formControlName="chassis_number" />
@@ -39,14 +38,14 @@
         <mat-label>Kilometraje</mat-label>
         <input matInput formControlName="mileage" type="number" required />
         @if (reportForm.get('mileage')?.hasError('required')) {
-        <mat-error>El kilometraje es obligatorio</mat-error>
+        <mat-error>Obligatorio</mat-error>
         }
       </mat-form-field>
     </div>
 
     <mat-divider class="section-divider"></mat-divider>
+    
     <h3 class="section-title">Detalles de Inspección</h3>
-
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field-third">
         <mat-label>Cabina</mat-label>
@@ -62,67 +61,69 @@
       </mat-form-field>
     </div>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Señales de Advertencia (Informar cada compañía)</mat-label>
-      <textarea matInput formControlName="warnings"></textarea>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Señales de Advertencia</mat-label>
+      <textarea matInput formControlName="warnings" rows="2"></textarea>
     </mat-form-field>
 
     <mat-divider class="section-divider"></mat-divider>
+
     <h3 class="section-title">Detalles del Servicio</h3>
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field-third">
         <mat-label>Tipo de Servicio</mat-label>
         <mat-select formControlName="service_type" required>
-          <mat-option value="Mantención Preventiva">Mantención Preventiva</mat-option>
-          <mat-option value="Mantención Correctiva">Mantención Correctiva</mat-option>
-          <mat-option value="Revisión General">Revisión General</mat-option>
+          <mat-option value="Mantención Preventiva">M. Preventiva</mat-option>
+          <mat-option value="Mantención Correctiva">M. Correctiva</mat-option>
+          <mat-option value="Revisión General">Rev. General</mat-option>
           <mat-option value="Reparación">Reparación</mat-option>
+          <mat-option value="Otros">Otros</mat-option>
         </mat-select>
         @if (reportForm.get('service_type')?.hasError('required')) {
-        <mat-error>El tipo de servicio es obligatorio</mat-error>
+        <mat-error>Obligatorio</mat-error>
         }
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field-third">
-        <mat-label>Inspector a Cargo</mat-label>
+        <mat-label>Inspector</mat-label>
         <input matInput formControlName="inspector_name" required />
         @if (reportForm.get('inspector_name')?.hasError('required')) {
-        <mat-error>El inspector es obligatorio</mat-error>
+        <mat-error>Obligatorio</mat-error>
         }
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field-third">
-        <mat-label>Fecha de Realización</mat-label>
+        <mat-label>Fecha</mat-label>
         <input matInput [matDatepicker]="picker" formControlName="service_date" required />
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
     </div>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="full-width">
       <mat-label>Ubicación del Equipo</mat-label>
       <input matInput formControlName="location" />
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="full-width">
       <mat-label>Problema Reportado</mat-label>
       <textarea matInput formControlName="reported_problem" rows="3" required></textarea>
       @if (reportForm.get('reported_problem')?.hasError('required')) {
-      <mat-error>El problema reportado es obligatorio</mat-error>
+      <mat-error>Obligatorio</mat-error>
       }
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Detalle de Actividades Desarrolladas</mat-label>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Detalle Actividades</mat-label>
       <textarea matInput formControlName="activities_detail" rows="5" required></textarea>
       @if (reportForm.get('activities_detail')?.hasError('required')) {
-      <mat-error>El detalle de actividades es obligatorio</mat-error>
+      <mat-error>Obligatorio</mat-error>
       }
     </mat-form-field>
 
     <mat-divider class="section-divider"></mat-divider>
-    <h3 class="section-title">Cierre y Pendientes</h3>
 
+    <h3 class="section-title">Cierre y Pendientes</h3>
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field-half">
         <mat-label>Trabajo Pendiente</mat-label>
@@ -130,7 +131,7 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field-half">
-        <mat-label>Tipo de Pendiente</mat-label>
+        <mat-label>Criticidad</mat-label>
         <mat-select formControlName="pending_type">
           <mat-option value="Ninguno">Ninguno</mat-option>
           <mat-option value="Crítico">Crítico</mat-option>
@@ -140,37 +141,31 @@
       </mat-form-field>
     </div>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Observaciones Complementarias</mat-label>
-      <textarea matInput formControlName="observations" rows="3"></textarea>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Observaciones</mat-label>
+      <textarea matInput formControlName="observations" rows="2"></textarea>
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Anexo Información del Carro</mat-label>
-      <textarea matInput formControlName="car_info_annex" rows="3"></textarea>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Anexo Información</mat-label>
+      <textarea matInput formControlName="car_info_annex" rows="2"></textarea>
     </mat-form-field>
 
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field-half">
-        <mat-label>Firma Inspector Responsable</mat-label>
+        <mat-label>Firma Inspector</mat-label>
         <input matInput formControlName="inspector_signature" required />
-        @if (reportForm.get('inspector_signature')?.hasError('required')) {
-        <mat-error>La firma del inspector es obligatoria</mat-error>
-        }
       </mat-form-field>
       <mat-form-field appearance="outline" class="form-field-half">
-        <mat-label>Firma Oficial a Cargo</mat-label>
+        <mat-label>Firma Oficial</mat-label>
         <input matInput formControlName="officer_signature" required />
-        @if (reportForm.get('officer_signature')?.hasError('required')) {
-        <mat-error>La firma del oficial es obligatoria</mat-error>
-        }
       </mat-form-field>
     </div>
 
-    <div>
+    <div class="file-section">
       <label for="file-upload" class="file-upload-label">
         <mat-icon>attach_file</mat-icon>
-        Subir Documentos (PDF, Imágenes, etc.)
+        Adjuntar Documentos/Fotos
       </label>
       <input
         id="file-upload"
@@ -178,15 +173,33 @@
         multiple
         (change)="onFileSelected($event)"
         class="file-input"
+        #fileUploadInput
       />
-      <!-- TODO: Mostrar los archivos seleccionados (selectedFiles()) con un botón para eliminarlos -->
+
+      @if (selectedFiles().length > 0) {
+      <mat-list class="file-preview-list">
+        @for (file of selectedFiles(); track $index) {
+        <mat-list-item class="file-preview-item">
+          <mat-icon matListItemIcon>description</mat-icon>
+          <div matListItemTitle>{{ file.name }}</div>
+          <div matListItemLine>{{ file.size / 1024 | number : '1.0-1' }} KB</div>
+          <button mat-icon-button (click)="onRemoveFile(file); fileUploadInput.value = ''" type="button" color="warn">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-list-item>
+        }
+      </mat-list>
+      }
     </div>
   </div>
 
   <div mat-dialog-actions class="dialog-actions" align="end">
-    <button mat-stroked-button (click)="onCancel()" type="button">Cancelar</button>
-    <button mat-flat-button color="primary" type="submit" [disabled]="reportForm.invalid">
-      Guardar Reporte
+    <button mat-stroked-button (click)="onCancel()" type="button" class="action-btn">Cancelar</button>
+    <button mat-button color="accent" (click)="onSave('draft')" type="button" class="action-btn draft-btn">
+      <mat-icon>save</mat-icon> Guardar Borrador
+    </button>
+    <button mat-flat-button color="primary" (click)="onSave('completed')" type="button" class="action-btn">
+      <mat-icon>check_circle</mat-icon> Finalizar Reporte
     </button>
   </div>
 </form>

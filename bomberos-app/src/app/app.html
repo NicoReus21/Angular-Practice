@@ -1,10 +1,13 @@
-<mat-toolbar color="warn" class="main-toolbar" *ngIf="!isLoginPage()">
+<mat-toolbar class="main-toolbar" *ngIf="!isAuthPage()">
   <div class="toolbar-content">
     <a routerLink="/" class="toolbar-logo-container"> 
-        <img src="/logo_bomberos.png" alt="Logo de SIGBA" class="toolbar-logo">
+        <img src="/logo_bomberos.png" alt="Logo SIGBA" class="toolbar-logo">
     </a>
+    
     <span class="toolbar-title">SIGBA</span>
+    
     <span class="toolbar-spacer"></span>
+    
     <a *ngIf="showBackButton()" mat-flat-button class="back-button" routerLink="/historial">
       <mat-icon>arrow_back</mat-icon>
       Volver
@@ -12,6 +15,8 @@
   </div>
 </mat-toolbar>
 
-<div class="content-wrapper">
+<div class="app-container" 
+     [class.login-layout]="isAuthPage()" 
+     [class.dashboard-layout]="!isAuthPage()">
   <router-outlet></router-outlet>
 </div>

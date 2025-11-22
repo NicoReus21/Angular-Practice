@@ -11,7 +11,10 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
-import { VehicleUnit } from '../machine-historial/machine-historial';
+import { MatTooltipModule } from '@angular/material/tooltip'; // Importante para el matTooltip
+
+// Importamos ApiMaintenance del servicio para los datos del reporte
+import { ApiMaintenance } from '../../services/machine-historial';
 
 @Component({
   selector: 'app-create-report',
@@ -29,31 +32,36 @@ import { VehicleUnit } from '../machine-historial/machine-historial';
     MatNativeDateModule,
     MatDividerModule,
     MatListModule,
+    MatTooltipModule
   ],
   templateUrl: './create-report.html',
   styleUrls: ['./create-report.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    provideNativeDateAdapter()
-  ]
+  providers: [provideNativeDateAdapter()]
 })
 export class CreateReportComponent implements OnInit {
 
   private fb = inject(FormBuilder);
   public dialogRef = inject(MatDialogRef<CreateReportComponent>);
   
-  public data: { unit: VehicleUnit } = inject(MAT_DIALOG_DATA);
+  // DEFINIMOS EL TIPO DE DATOS AQUÍ EN LÍNEA PARA EVITAR ERRORES DE IMPORTACIÓN
+  public data: { 
+    unit: { id: number; model: string | null; plate: string; company: string }; 
+    editMode?: boolean; 
+    reportData?: ApiMaintenance 
+  } = inject(MAT_DIALOG_DATA);
 
   reportForm: FormGroup;
-
   selectedFiles = signal<File[]>([]);
+  
+  dialogTitle = 'Crear Nuevo Reporte'; // Variable para el título dinámico
 
   constructor() {
     this.reportForm = this.fb.group({
-    
       plate: [{ value: '', disabled: true }],
       company: [{ value: '', disabled: true }],
       model: [{ value: '', disabled: true }], 
+      
       chassis_number: [''], 
       mileage: ['', Validators.required], 
       cabin: [''], 
@@ -76,12 +84,44 @@ export class CreateReportComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // 1. Cargar datos de la unidad
     if (this.data.unit) {
-      // Actualizamos los campos al parchear
       this.reportForm.patchValue({
         model: this.data.unit.model,
         plate: this.data.unit.plate,
         company: this.data.unit.company,
+      });
+    }
+
+    // 2. Cargar datos del BORRADOR (Si estamos editando)
+    if (this.data.editMode && this.data.reportData) {
+      this.dialogTitle = 'Editar Borrador de Reporte'; // Cambiar título
+      const r = this.data.reportData;
+
+      let fecha = new Date();
+      if (r.service_date) {
+         fecha = new Date(r.service_date + 'T00:00:00');
+      }
+
+      this.reportForm.patchValue({
+        chassis_number: r.car_info_annex ? '' : '', // Ojo: chassis_number no está en ApiMaintenance por defecto, verifica tu API
+        mileage: r.mileage,
+        cabin: r.cabin,
+        filter_code: r.filter_code,
+        hourmeter: r.hourmeter,
+        warnings: r.warnings,
+        service_type: r.service_type,
+        inspector_name: r.inspector_name,
+        location: r.location,
+        service_date: fecha,
+        reported_problem: r.reported_problem,
+        activities_detail: r.activities_detail,
+        pending_work: r.pending_work,
+        pending_type: r.pending_type || 'Ninguno',
+        observations: r.observations,
+        inspector_signature: r.inspector_signature,
+        officer_signature: r.officer_signature,
+        car_info_annex: r.car_info_annex
       });
     }
   }
@@ -90,21 +130,33 @@ export class CreateReportComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  onSave(): void {
-    if (this.reportForm.valid) {
-      const formData = this.reportForm.getRawValue();
-      
-      delete formData.model;
-      delete formData.plate;
-      delete formData.company;
-
-      this.dialogRef.close({
-        formData: formData, 
-        files: this.selectedFiles()
-      });
+  onSave(status: string): void {
+    if (status === 'completed') {
+      if (this.reportForm.invalid) {
+        this.reportForm.markAllAsTouched();
+        return;
+      }
     } else {
-      this.reportForm.markAllAsTouched();
+      if (this.reportForm.get('service_date')?.invalid) {
+        this.reportForm.get('service_date')?.markAsTouched();
+        return;
+      }
     }
+
+    const formData = this.reportForm.getRawValue();
+    delete formData.model;
+    delete formData.plate;
+    delete formData.company;
+
+    const resultData = {
+      ...formData,
+      status: status
+    };
+
+    this.dialogRef.close({
+      formData: resultData, 
+      files: this.selectedFiles()
+    });
   }
 
   onFileSelected(event: Event): void {

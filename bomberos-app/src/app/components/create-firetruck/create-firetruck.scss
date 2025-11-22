@@ -9,28 +9,71 @@
   margin-bottom: 16px;
   padding-bottom: 16px;
   border-bottom: 1px solid #e0e0e0;
+  
+  
+  margin-right: 30px; 
 }
 
 .close-button {
-  margin-top: -8px;
-  margin-right: -16px;
+  position: absolute;
+  top: 12px;
+  right: 12px;
 }
 
 .dialog-content {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  max-height: 75vh;
+  overflow-y: auto
 }
 
 .form-row {
   display: flex;
   gap: 12px;
+  width: 100%;
 }
 
 .form-field-half {
   flex: 1;
+  width: 100%;
+}
+
+.file-button {
+  width: 100%;
+  padding: 8px 0;
+  margin-bottom: 8px;
+}
+
+.file-name-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #3f51b5;
+  margin-bottom: 12px;
+  font-size: 14px;
 }
 
 .dialog-actions {
-  padding-top: 24px;
+  padding-top: 16px;
+}
+@media (max-width: 600px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .form-field-half {
+    width: 100%;
+  }
+
+  .dialog-actions {
+    flex-direction: column-reverse;
+    gap: 12px;
+    
+    button {
+      width: 100%; 
+      margin-left: 0 !important; 
+    }
+  }
 }

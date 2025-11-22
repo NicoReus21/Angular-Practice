@@ -1,79 +1,99 @@
-<div class="register-container">
-<mat-card>
-    <mat-card-header>
-    <mat-card-title>Registrar Nuevo Usuario</mat-card-title>
-    <br>
-    </mat-card-header>
+<div class="main-login-container">
+  <div class="background-pattern"></div>
 
-    <mat-card-content>
-    <form class="form-container" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-        <mat-form-field appearance="outline">
-        <mat-label>Nombre Completo</mat-label>
-        <input matInput formControlName="name" required />
-        <mat-icon matSuffix>person</mat-icon>
-        @if (registerForm.get('name')?.hasError('required')) {
-        <mat-error>El nombre es requerido.</mat-error>
-        } @if (registerForm.get('name')?.hasError('minlength')) {
-        <mat-error>Debe tener al menos 3 caracteres.</mat-error>
-        }
+  <div class="login-card">
+    <div class="top-institutional-panel">
+      <div class="logo-container">
+        <img
+          src="logo_bomberos.png"
+          alt="Logo Bomberos"
+          class="logo-img"
+          onerror="this.style.display='none'"
+        />
+      </div>
+      <div class="institution-titles">
+        <h1 class="welcome-title">SIGBA</h1>
+        <p class="welcome-subtitle">CUERPO DE BOMBEROS DE ANTOFAGASTA</p>
+      </div>
+    </div>
+
+    <div class="bottom-form-panel">
+      <h2 class="form-title">REGISTRAR USUARIO</h2>
+      <p class="form-instruction">Complete los datos para crear su cuenta.</p>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="login-form">
+        <mat-form-field appearance="outline" class="login-form-field">
+          <mat-label>Nombre Completo</mat-label>
+          <input matInput formControlName="name" required />
+          <mat-icon matSuffix>person</mat-icon>
+          @if (registerForm.get('name')?.hasError('required')) {
+          <mat-error>El nombre es requerido.</mat-error>
+          } @if (registerForm.get('name')?.hasError('minlength')) {
+          <mat-error>Mínimo 3 caracteres.</mat-error>
+          }
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
-        <mat-label>Correo Electrónico</mat-label>
-        <input matInput formControlName="email" type="email" required />
-        <mat-icon matSuffix>email</mat-icon>
-        @if (registerForm.get('email')?.hasError('required')) {
-        <mat-error>El correo es requerido.</mat-error>
-        } @if (registerForm.get('email')?.hasError('email')) {
-        <mat-error>Ingrese un correo válido.</mat-error>
-        }
+        <mat-form-field appearance="outline" class="login-form-field">
+          <mat-label>Correo Electrónico</mat-label>
+          <input matInput formControlName="email" type="email" required />
+          <mat-icon matSuffix>email</mat-icon>
+          @if (registerForm.get('email')?.hasError('required')) {
+          <mat-error>El correo es requerido.</mat-error>
+          } @if (registerForm.get('email')?.hasError('email')) {
+          <mat-error>Correo inválido.</mat-error>
+          }
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
-        <mat-label>Contraseña</mat-label>
-        <input
+        <mat-form-field appearance="outline" class="login-form-field">
+          <mat-label>Contraseña</mat-label>
+          <input
             matInput
             formControlName="password"
             [type]="hidePassword() ? 'password' : 'text'"
             required
-        />
-        <button
+          />
+          <button
             mat-icon-button
             matSuffix
             (click)="togglePasswordVisibility($event)"
             type="button"
-        >
+          >
             <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
-        </button>
-        @if (registerForm.get('password')?.hasError('required')) {
-        <mat-error>La contraseña es requerida.</mat-error>
-        } @if (registerForm.get('password')?.hasError('minlength')) {
-        <mat-error>Debe tener al menos 6 caracteres.</mat-error>
-        }
+          </button>
+          @if (registerForm.get('password')?.hasError('required')) {
+          <mat-error>Requerida.</mat-error>
+          } @if (registerForm.get('password')?.hasError('minlength')) {
+          <mat-error>Mínimo 6 caracteres.</mat-error>
+          }
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
-        <mat-label>Confirmar Contraseña</mat-label>
-        <input matInput formControlName="confirmPassword" type="password" required />
-        @if (registerForm.hasError('passwordsMismatch') &&
-        registerForm.get('confirmPassword')?.touched) {
-        <mat-error>Las contraseñas no coinciden.</mat-error>
-        }
+        <mat-form-field appearance="outline" class="login-form-field">
+          <mat-label>Confirmar Contraseña</mat-label>
+          <input matInput formControlName="confirmPassword" type="password" required />
+          <mat-icon matSuffix>lock</mat-icon>
+          @if (registerForm.hasError('passwordsMismatch') &&
+          registerForm.get('confirmPassword')?.touched) {
+          <mat-error>Las contraseñas no coinciden.</mat-error>
+          }
         </mat-form-field>
-    </form>
-    </mat-card-content>
 
-    <mat-card-actions align="end">
-    <button mat-stroked-button routerLink="../">Cancelar</button>
+        <div class="form-actions-column">
+          <button
+            mat-flat-button
+            class="login-button"
+            type="submit"
+            [disabled]="registerForm.invalid || isSubmitting()"
+          >
+            {{ isSubmitting() ? 'PROCESANDO...' : 'REGISTRARME' }}
+          </button>
 
-    <button
-        mat-flat-button
-        color="warn"
-        (click)="onSubmit()"
-        [disabled]="registerForm.invalid || isSubmitting()"
-    >
-        {{ isSubmitting() ? 'Registrando...' : 'Registrar Usuario' }}
-    </button>
-    </mat-card-actions>
-</mat-card>
+          <button type="button" class="cancel-button" routerLink="/login">Volver al Inicio</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card-footer">
+      <p>© 2025 COMPAÑÍA DE BOMBEROS DE ANTOFAGASTA</p>
+    </div>
+  </div>
 </div>

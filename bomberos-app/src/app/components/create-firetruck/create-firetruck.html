@@ -1,62 +1,103 @@
 <form [formGroup]="unitForm" (ngSubmit)="onSave()">
-<h1 mat-dialog-title class="dialog-title">
-    Crear Nueva Unidad
+  
+  <div mat-dialog-title class="dialog-title-container">
+    <span class="title-text">Crear Nueva Unidad</span>
     <button
-    mat-icon-button
-    class="close-button"
-    (click)="onCancel()"
-    type="button"
-    matTooltip="Cerrar"
+      mat-icon-button
+      class="close-button"
+      (click)="onCancel()"
+      type="button"
+      matTooltip="Cerrar"
     >
-    <mat-icon>close</mat-icon>
+      <mat-icon>close</mat-icon>
     </button>
-</h1>
-<div mat-dialog-content class="dialog-content">
-    <mat-form-field appearance="outline">
-    <mat-label>Nombre de la Unidad (Ej: B6)</mat-label>
-    <input matInput formControlName="name" cdkFocusInitial />
-    @if (unitForm.get('name')?.hasError('required')) {
-    <mat-error>El nombre es obligatorio</mat-error>
-    }
+  </div>
+
+  <div mat-dialog-content class="dialog-content">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nombre de la Unidad (Ej: B6)</mat-label>
+      <input matInput formControlName="name" cdkFocusInitial />
+      @if (unitForm.get('name')?.hasError('required')) {
+      <mat-error>El nombre es obligatorio</mat-error>
+      }
     </mat-form-field>
 
     <div class="form-row">
-    <mat-form-field appearance="outline" class="form-field-half">
+      <mat-form-field appearance="outline" class="form-field-half">
         <mat-label>Patente (Ej: KD-VV-46)</mat-label>
         <input matInput formControlName="plate" />
         @if (unitForm.get('plate')?.hasError('required')) {
         <mat-error>La patente es obligatoria</mat-error>
         }
-    </mat-form-field>
+      </mat-form-field>
 
-    <mat-form-field appearance="outline" class="form-field-half">
+      <mat-form-field appearance="outline" class="form-field-half">
         <mat-label>Modelo</mat-label>
         <input matInput formControlName="model" />
-    </mat-form-field>
+      </mat-form-field>
     </div>
 
-    <mat-form-field appearance="outline">
-    <mat-label>Compañía (Ej: 6ta-10ma)</mat-label>
-    <input matInput formControlName="company" />
-    @if (unitForm.get('company')?.hasError('required')) {
-    <mat-error>La compañía es obligatoria</mat-error>
-    }
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Compañía (Ej: 6ta-10ma)</mat-label>
+      <input matInput formControlName="company" />
+      @if (unitForm.get('company')?.hasError('required')) {
+      <mat-error>La compañía es obligatoria</mat-error>
+      }
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
-    <mat-label>Estado Inicial</mat-label>
-    <mat-select formControlName="status">
-        <mat-option value="En Servicio">En Servicio</mat-option>
-        <mat-option value="En Taller">En Taller</mat-option>
-        <mat-option value="Fuera de Servicio">Fuera de Servicio</mat-option>
-    </mat-select>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Estado Inicial</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="En Servicio">
+          <mat-icon style="color: #2ecc71; margin-right: 8px">check_circle</mat-icon>
+          En Servicio
+        </mat-option>
+        <mat-option value="En Taller">
+          <mat-icon style="color: #f39c12; margin-right: 8px">build</mat-icon>
+          En Taller
+        </mat-option>
+        <mat-option value="Fuera de Servicio">
+          <mat-icon style="color: #e74c3c; margin-right: 8px">block</mat-icon>
+          Fuera de Servicio
+        </mat-option>
+      </mat-select>
     </mat-form-field>
-</div>
 
-<div mat-dialog-actions class="dialog-actions" align="end">
+    <div class="image-upload-section">
+      <input
+        type="file"
+        #imageInput
+        hidden
+        (change)="onImageSelected($event)"
+        accept="image/png, image/jpeg, image/webp"
+      />
+
+      <button 
+        mat-stroked-button 
+        type="button" 
+        (click)="imageInput.click()" 
+        class="file-button"
+        color="primary">
+        <mat-icon>upload_file</mat-icon>
+        Subir Foto (Opcional)
+      </button>
+
+      @if (selectedImageName()) {
+      <div class="file-name-container">
+        <mat-icon>image</mat-icon>
+        <span class="file-name">{{ selectedImageName() }}</span>
+        <button mat-icon-button color="warn" (click)="selectedImageName.set('')" type="button">
+            <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+      }
+    </div>
+  </div>
+
+  <div mat-dialog-actions class="dialog-actions" align="end">
     <button mat-stroked-button (click)="onCancel()" type="button">Cancelar</button>
     <button mat-flat-button color="primary" type="submit" [disabled]="unitForm.invalid">
-    Guardar Unidad
+      Guardar Unidad
     </button>
-</div>
+  </div>
 </form>

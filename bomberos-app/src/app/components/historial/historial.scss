@@ -6,6 +6,8 @@
   width: 100%;
   max-width: 1200px;
   box-sizing: border-box;
+  // Añadido para centrar si es necesario
+  margin: 0 auto; 
 }
 
 .page-header {
@@ -52,7 +54,21 @@
 .table-container {
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  overflow: hidden;
+  overflow: hidden; 
+  // IMPORTANTE: Esto asegura que el borde redondeado se respete
+  background-color: white;
+}
+
+/* CLASE NUEVA PARA RESPONSIVE TABLE */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto; /* Habilita el scroll horizontal */
+  -webkit-overflow-scrolling: touch; /* Suavidad en iOS */
+
+  mat-table {
+    // Forzamos un ancho mínimo para que las columnas no se aplasten
+    min-width: 800px; 
+  }
 }
 
 mat-header-cell {
@@ -67,6 +83,7 @@ mat-header-cell {
   border-radius: 16px;
   font-size: 12px;
   font-weight: 500;
+  white-space: nowrap; // Evita que el estado se parta en dos líneas
 }
 
 .completado {
@@ -77,4 +94,41 @@ mat-header-cell {
 .en-revisión {
   background-color: #fef3c7;
   color: #92400e;
+}
+
+/* --- RESPONSIVE (MÓVIL) --- */
+@media (max-width: 768px) {
+  
+  // 1. Reducir padding del contenedor principal
+  .historial-container {
+    padding: 20px 16px;
+    width: 100%; // Asegura que use todo el ancho disponible
+    border: none; // Opcional: quitar borde en móvil para look más limpio
+    box-shadow: none; // Opcional: quitar sombra en móvil
+    border-radius: 0;
+  }
+
+  // 2. Ajustar textos de cabecera
+  .page-title {
+    font-size: 24px;
+  }
+  
+  .page-subtitle {
+    font-size: 0.9rem;
+  }
+
+  // 3. Ajustar caja de nuevo proceso
+  .new-process-box {
+    padding: 16px;
+    margin-bottom: 32px;
+    
+    a[mat-flat-button] {
+      width: 100%; // Botón ancho completo
+      white-space: normal; // Permitir que el texto baje de línea si es largo
+      line-height: 1.2;
+      padding: 8px 16px;
+      height: auto;
+      min-height: 48px;
+    }
+  }
 }

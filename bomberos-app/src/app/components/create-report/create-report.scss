@@ -1,162 +1,150 @@
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 @keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 :host {
   display: block;
 }
 
-.dialog-title {
+.dialog-title-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  padding-bottom: 16px;
+  margin: 0;
+  padding: 16px 24px;
   border-bottom: 1px solid #e0e0e0;
+
+  .title-text {
+    font-size: 20px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .close-button {
-  margin-top: -8px;
-  margin-right: -16px;
+  color: #757575;
+  margin-right: -8px;
 }
 
 .dialog-content {
   display: flex;
   flex-direction: column;
   gap: 12px; 
-  max-height: 70vh; 
+  max-height: 75vh; 
   overflow-y: auto; 
-  padding-right: 8px;
-
-  ::ng-deep .mat-mdc-form-field,
-  .section-title,
-  .file-upload-label,
-  .file-list-container {
-    animation: slideInUp 0.4s ease-out forwards;
-    opacity: 0;
-  }
-
-  @for $i from 1 through 20 {
-    ::ng-deep .mat-mdc-form-field:nth-child(#{$i}),
-    .section-title:nth-child(#{$i}),
-    .file-upload-label:nth-child(#{$i}),
-    .file-list-container:nth-child(#{$i}) {
-      animation-delay: #{$i * 0.04}s;
-    }
+  padding: 20px 24px;
+  
+  /* Animación de entrada suave */
+  ::ng-deep .mat-mdc-form-field, .section-title {
+    animation: slideInUp 0.3s ease-out forwards;
   }
 }
-
 
 .section-title {
   font-weight: 500;
   color: #3f51b5; 
-  margin-top: 8px;
-  margin-bottom: 0;
+  margin: 16px 0 8px 0;
+  font-size: 16px;
 }
 
 .section-divider {
-  margin-top: 8px;
-  margin-bottom: 4px;
+  margin: 8px 0;
 }
 
+/* --- SISTEMA DE REJILLA FLEXIBLE --- */
 .form-row {
   display: flex;
-  gap: 12px;
+  gap: 16px;
+  width: 100%;
 }
 
 .form-field-half {
   flex: 1; 
+  width: 100%;
 }
 
 .form-field-third {
   flex: 1; 
+  width: 100%;
 }
 
-.dialog-actions {
-  padding-top: 24px;
-  border-top: 1px solid #e0e0e0;
-  margin-top: 16px;
+.full-width {
+  width: 100%;
+}
+
+/* --- ARCHIVOS --- */
+.file-section {
+  margin-top: 12px;
+  padding: 12px;
+  background-color: #fafafa;
+  border-radius: 8px;
+  border: 1px dashed #ccc;
 }
 
 .file-upload-label {
-  display: inline-flex;
-  align-items: center;
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  color: #333;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: #f4f4f4;
-  }
-
-  mat-icon {
-    margin-right: 8px;
-  }
-}
-
-.file-input {
-  display: none;
-}
-
-.file-list-container {
-  margin-top: 16px;
-  .file-list {
-    padding-top: 0;
-  }
-  .file-item {
-    padding: 8px 0;
-    .file-name {
-      font-size: 14px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-left: 8px;
-      color: #333;
-    }
-    .remove-file-btn {
-      margin-left: auto;
-    }
-  }
-}
-
-.signature-field-content {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 0;
-  height: 100%; 
+  justify-content: center;
+  padding: 12px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #555;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:hover { background-color: #eeeeee; border-radius: 4px; }
+  mat-icon { margin-right: 8px; }
 }
 
-.signature-preview {
-  max-height: 40px; 
-  width: auto;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  object-fit: contain;
+.file-input { display: none; }
+
+/* --- ACCIONES --- */
+.dialog-actions {
+  padding: 16px 24px;
+  border-top: 1px solid #e0e0e0;
+  margin: 0;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap; /* Permite que los botones bajen si no caben */
 }
 
+/* =========================================
+   RESPONSIVE (MÓVIL)
+   ========================================= */
+@media (max-width: 600px) {
+  
+  .dialog-title-container {
+    padding: 16px;
+    .title-text { font-size: 18px; }
+  }
 
-.signature-placeholder {
-  font-size: 14px;
-  color: #757575;
+  .dialog-content {
+    padding: 16px; /* Menos padding lateral */
+  }
+
+  /* 1. Convertir filas en columnas */
+  .form-row {
+    flex-direction: column;
+    gap: 0; /* Material inputs ya tienen margen inferior natural */
+  }
+
+  /* 2. Botones de acción apilados */
+  .dialog-actions {
+    flex-direction: column-reverse; /* Cancelar al final */
+    align-items: stretch;
+    gap: 12px;
+    padding: 16px;
+
+    .action-btn {
+      width: 100%;
+      margin: 0 !important;
+      height: 48px; /* Altura táctil cómoda */
+    }
+    
+    /* Opcional: Darle orden visual específico */
+    .draft-btn { order: 2; }
+  }
 }
