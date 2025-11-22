@@ -13,6 +13,7 @@ class Maintenance extends Model
         'chassis_number',
         'mileage',
         'cabin',
+        'status',
         'filter_code',
         'hourmeter',
         'warnings',

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Car;
-use App\Models\CarChecklistItem;
+use App\Models\CarChecklistItems;
 
 class CarChecklist extends Model
 {
@@ -36,6 +36,6 @@ class CarChecklist extends Model
      */
     public function items()
     {
-        return $this->hasMany(CarChecklistItem::class, 'checklist_id');
+        return $this->hasMany(CarChecklistItems::class, 'checklist_id');
     }
 }

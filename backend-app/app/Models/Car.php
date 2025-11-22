@@ -4,9 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Maintenance;
-use App\Models\CarChecklist;
-use App\Models\CarDocument;
 
 class Car extends Model
 {
@@ -14,6 +11,8 @@ class Car extends Model
 
     /**
      * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
      */
     protected $fillable = [
         'name',
@@ -21,6 +20,7 @@ class Car extends Model
         'model',
         'company',
         'status',
+        'imageUrl',
         'marca',
         'chassis_number',
         'type',
@@ -30,22 +30,26 @@ class Car extends Model
     ];
 
     /**
-     * Un carro de bombas unidad tiene muchos reportes o mantenciones.
+     * Get the maintenances for the car.
      */
     public function maintenances()
     {
-        return $this->hasMany(Maintenance::class);
-    }
-    public function checklists()
-    {
-        return $this->hasMany(CarChecklist::class);
+        return $this->hasMany(Maintenance::class)->orderBy('service_date', 'desc');
     }
 
     /**
-     * Un carro tiene muchos documentos.
+     * Get the checklists for the car.
+     */
+    public function checklists()
+    {
+        return $this->hasMany(CarChecklist::class)->orderBy('fecha_realizacion', 'desc');
+    }
+
+    /**
+     * Get the documents for the car.
      */
     public function documents()
     {
-        return $this->hasMany(CarDocument::class);
+        return $this->hasMany(CarDocument::class)->orderBy('created_at', 'desc');
     }
 }

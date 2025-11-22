@@ -11,10 +11,33 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserRolController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\CarDocumentController;
-use App\Http\Controllers\ChecklistController;
+use App\Http\Controllers\CarChecklistController;
+use App\Http\Controllers\BomberoAccidentado\RO\ReporteFlashController;
+use App\Http\Controllers\BomberoAccidentado\RO\DiabController;
+use App\Http\Controllers\BomberoAccidentado\RO\ObacController;
+use App\Http\Controllers\BomberoAccidentado\RO\CopiaLibroGuardiaController;
+use App\Http\Controllers\BomberoAccidentado\RO\DeclaracionTestigoController;
+use App\Http\Controllers\BomberoAccidentado\AG\CertificadoCarabineroController;
+use App\Http\Controllers\BomberoAccidentado\AG\DauController;
+use App\Http\Controllers\BomberoAccidentado\AG\InformeMedicoController;
+use App\Http\Controllers\BomberoAccidentado\AG\OtroDocumentoMedicoController;
+use App\Http\Controllers\BomberoAccidentado\AG\CertificadoMedicoAtencionEspecialController;
+use App\Http\Controllers\BomberoAccidentado\CB\CertificadoAcreditacionVoluntarioController;
+use App\Http\Controllers\BomberoAccidentado\CB\CopiaLibroLlamadaController;
+use App\Http\Controllers\BomberoAccidentado\CB\AvisoCitacionController;
+use App\Http\Controllers\BomberoAccidentado\CB\CopiaListaAsistenciaController;
+use App\Http\Controllers\BomberoAccidentado\CB\InformeEjecutivoController;
+use App\Http\Controllers\BomberoAccidentado\PM\FacturaPrestacionController;
+use App\Http\Controllers\BomberoAccidentado\PM\BoletaHonorarioVisadaController;
+use App\Http\Controllers\BomberoAccidentado\PM\BoletaMedicamentoController;
+use App\Http\Controllers\BomberoAccidentado\PM\CertificadoMedicoAutorizacionExamenController;
+use App\Http\Controllers\BomberoAccidentado\GV\BoletaFacturaTrasladoController;
+use App\Http\Controllers\BomberoAccidentado\GV\CertificadoMedicoTrasladoController;
+use App\Http\Controllers\BomberoAccidentado\GV\BoletaGastoAcompananteController;
+use App\Http\Controllers\BomberoAccidentado\GV\CerfiticadoMedicoIncapacidadController;
+use App\Http\Controllers\BomberoAccidentado\GV\OtroGastoController;
+use App\Http\Controllers\CarChecklistItemsController;
 
-
-// ... (código de autenticación y otros procesos) ...
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -103,11 +126,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('cars', CarController::class);
     // --- Reportes (Mantenciones) ---
     Route::post('/cars/{car}/maintenances', [MaintenanceController::class, 'store']);
-    // Route::delete('/maintenances/{maintenance}', [MaintenanceController::class, 'destroy']);
+    Route::delete('/maintenances/{maintenance}', [MaintenanceController::class, 'destroy']);
 
     // --- Checklists ---
-    Route::post('/cars/{car}/checklists', [ChecklistController::class, 'store']);
+    Route::post('/cars/{car}/checklists', [CarChecklistController::class, 'store']);
+    Route::put('/checklists/{checklist}', [CarChecklistController::class, 'update']);
+    Route::delete('/checklists/{checklist}', [CarChecklistController::class, 'destroy']);
+    Route::patch('/checklist-items/{item}/toggle', [CarChecklistController::class, 'toggleItem']);
     // --- Documentos (Gastos) ---
     Route::post('/cars/{car}/documents', [CarDocumentController::class, 'store']);
     Route::delete('/documents/{document}', [CarDocumentController::class, 'destroy']);
+    
 // });

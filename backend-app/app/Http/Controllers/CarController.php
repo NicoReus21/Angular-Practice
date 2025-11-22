@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Car;
@@ -6,31 +7,25 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
-use App\Models\CarChecklist;
-use App\Models\CarChecklistItem;
-use App\Models\CarDocument;
-use App\Models\Maintenance;
-use App\Models\MaintenanceDocument;
-
-// Importante para la validación de 'update'
+use Illuminate\Support\Facades\Storage; 
 
 class CarController extends Controller
 {
     /**
-     * Muestra una lista de todas las unidades (carros).
+     * Muestra una lista de todas las unidadees.
      * GET /api/cars
      */
     public function index()
     {
         $cars = Car::with('maintenances', 'checklists.items', 'documents')
-            ->orderBy('name', 'asc') 
+            ->orderBy('name', 'asc')
             ->get();
 
         return response()->json($cars);
     }
 
     /**
-     * Almacena una nueva unidad (carro).
+     * Almacena una nueva unidad.
      * POST /api/cars
      */
     public function store(Request $request)
@@ -41,20 +36,26 @@ class CarController extends Controller
             'model'   => 'nullable|string|max:255',
             'company' => 'required|string|max:255',
             'status'  => 'required|string|max:255',
+            'image'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', 
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $car = Car::create($validator->validated());
+        $validatedData = $validator->validated();
+    
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('car_images', 'public');
+            $url = Storage::url($path);
+            $validatedData['imageUrl'] = $url;
+        }
+
+        $car = Car::create($validatedData);
+        
         return response()->json($car->load('maintenances', 'checklists.items', 'documents'), 201);
     }
 
-    /**
-     * Muestra una unidad (carro) específica.
-     * GET /api/cars/{id}
-     */
     public function show(Car $car)
     {
         return $car;
@@ -89,12 +90,13 @@ class CarController extends Controller
         return response()->json($car);
     }
 
-    /**
-     * Elimina una unidad (carro).
-     * DELETE /api/cars/{id}
-     */
     public function destroy(Car $car)
     {
+        if ($car->imageUrl) {
+            $path = str_replace(Storage::url(''), '', $car->imageUrl);
+            Storage::disk('public')->delete($path);
+        }
+        
         $car->delete();
 
         return response()->json(null, 204);
