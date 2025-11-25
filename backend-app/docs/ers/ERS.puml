@@ -1,0 +1,55 @@
+@startmindmap
+* ERS
+** Correos
+*** COR-01 - Enviar correo
+** Material Mayor
+*** MM-01 - Adjuntar documento de orden de pago con expiración
+*** MM-02 - Pago a proveedores
+*** MM-03 - Cambiar tipo de estado (botón)
+*** MM-04 - Carros de Comandancia
+*** MM-05 - Registro histórico de Material Mayor (no eliminar)
+*** MM-06 - Alertas para facturas, órdenes de pago y compra
+*** MM-07 - Subir orden de compra, registrar gasto y presupuesto
+*** MM-08 - Filtros de búsqueda por compañía y fecha
+*** MM-09 - Integración con MoreApp para formularios
+*** MM-10 - Generar reporte por correo y por proveedor
+*** MM-11 - Checklist con tiempos y alertas
+*** MM-12 - Reporte de servicio/mantención (borrador y PDF final)
+*** MM-13 - Campos de reporte de servicio/mantención
+*** MM-14 - Subir documentos finales (imágenes, PDF)
+*** MM-15 - Definir tipo de pendiente
+*** MM-16 - Roles y permisos de Material Mayor
+*** MM-17 - Estadísticas de gastos y dashboard
+*** MM-18 - Historial de gastos por compañía
+*** MM-19 - Estado urgente para mantención
+*** MM-20 - Reporte semanal de horómetro
+** Proceso Bombero Accidentado
+*** PBA-01 - Crear Proceso Bombero Accidentado
+*** PBA-02 - Listar procesos de bombero accidentado
+** Seguimiento de Accidentes
+*** SAP-01 - Subir reporte flash
+*** SAP-02 - Subir DIAB
+*** SAP-03 - Subir Informe OBAC
+*** SAP-04 - Subir declaración de testigos
+*** SAP-05 - Incidente sin lesiones
+*** SAP-06 - Subir certificado carabineros
+*** SAP-07 - Subir informe DAU (Dato de Atención de Urgencia)
+*** SAP-08 - Subir informe médico
+*** SAP-09 - Subir informes médicos adicionales
+*** SAP-10 - Subir certificado médico atención especial
+*** SAP-11 - Subir certificado acreditación voluntario
+*** SAP-12 - Subir copia libro llamada
+*** SAP-13 - Subir copia aviso citación
+*** SAP-14 - Subir copia libro asistencia
+*** SAP-15 - Subir informe ejecutivo
+*** SAP-16 - Subir factura prestaciones
+*** SAP-17 - Subir boleta honorarios visada
+*** SAP-18 - Subir boleta medicamentos
+*** SAP-19 - Subir certificado médico autorización examen
+*** SAP-20 - Subir boleta factura traslado
+*** SAP-21 - Subir certificado médico traslado
+*** SAP-22 - Subir boleta gastos acompañante
+*** SAP-23 - Subir certificado médico incapacidad
+*** SAP-24 - Subir boleta alimentación acompañante
+*** SAP-25 - Subir otros gastos
+@endmindmap

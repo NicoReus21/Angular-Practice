@@ -1,0 +1,46 @@
+name: Generate ERS
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "docs/requirements/**"
+      - "docs/ers/rnf.md"
+      - "tools/generate-ers.mjs"
+      - ".github/workflows/generate-ers.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate ERS (Markdown y PlantUML)
+        run: node tools/generate-ers.mjs
+
+      - name: Render PlantUML a PNG
+        uses: plantuml/plantuml-action@v1.7.0
+        with:
+          render: |
+            docs/ers/ERS.puml
+          output: docs/ers
+
+      - name: Publicar artefactos ERS
+        uses: actions/upload-artifact@v4
+        with:
+          name: ers
+          path: |
+            docs/ers/ERS.md
+            docs/ers/ERS.puml
+            docs/ers/ERS.png
+            docs/ers/ERS.pdf
