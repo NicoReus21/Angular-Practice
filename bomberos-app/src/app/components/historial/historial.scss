@@ -6,7 +6,6 @@
   width: 100%;
   max-width: 1200px;
   box-sizing: border-box;
-  // Añadido para centrar si es necesario
   margin: 0 auto; 
 }
 
@@ -130,5 +129,19 @@ mat-header-cell {
       height: auto;
       min-height: 48px;
     }
+  }
+}
+
+.warning-snackbar {
+  --mdc-snackbar-container-color: #ff9800;
+  --mdc-snackbar-supporting-text-color: #000;
+  --mat-snack-bar-button-color: #000000; 
+  background-color: #ff9800 !important;
+  color: black !important;
+  
+  button {
+    color: white !important;
+    font-weight: bold;
+    background: rgba(0,0,0,0.2);
   }
 }
