@@ -127,7 +127,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // --- Reportes (Mantenciones) ---
     Route::post('/cars/{car}/maintenances', [MaintenanceController::class, 'store']);
     Route::delete('/maintenances/{maintenance}', [MaintenanceController::class, 'destroy']);
-
+    Route::put('/maintenances/{maintenance}', [MaintenanceController::class, 'update']);
     // --- Checklists ---
     Route::post('/cars/{car}/checklists', [CarChecklistController::class, 'store']);
     Route::put('/checklists/{checklist}', [CarChecklistController::class, 'update']);
@@ -136,5 +136,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // --- Documentos (Gastos) ---
     Route::post('/cars/{car}/documents', [CarDocumentController::class, 'store']);
     Route::delete('/documents/{document}', [CarDocumentController::class, 'destroy']);
+    Route::patch('/documents/{document}/toggle-payment', [CarDocumentController::class, 'togglePayment']);
     
 // });

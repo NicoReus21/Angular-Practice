@@ -40,8 +40,21 @@ class CarDocumentController extends Controller
             'file_name' => $originalName,
             'path' => $path, 
             'file_type' => $fileType,
+            'is_paid' => false, 
         ]);
         return response()->json($document, 201);
+    }
+
+    /**
+     * Alterna el estado de pago de un documento.
+     * PATCH /api/documents/{document}/toggle-payment
+     */
+    public function togglePayment(CarDocument $document)
+    {
+        $document->is_paid = !$document->is_paid;
+        $document->save();
+
+        return response()->json($document);
     }
 
     /**

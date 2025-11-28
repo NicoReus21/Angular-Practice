@@ -4,25 +4,64 @@
     <meta charset="UTF-8">
     <title>Reporte de Mantenimiento</title>
     <style>
-        body { font-family: 'Helvetica', sans-serif; line-height: 1.6; }
-        h1 { color: #b71c1c; } /* Color rojo de bomberos */
+        body { font-family: 'Helvetica', sans-serif; line-height: 1.6; font-size: 14px; }
+        h1 { color: #b71c1c; text-align: center; margin-bottom: 30px; }
         .content { margin: 20px; }
-        .section { margin-bottom: 20px; }
-        .section-title { font-weight: bold; font-size: 1.2em; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
-        .field { margin-bottom: 10px; }
-        .field label { font-weight: bold; color: #333; }
-        .field span { color: #555; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        .signatures { margin-top: 50px; }
-        .signature-box { 
-            display: inline-block; 
-            width: 45%; 
-            margin-top: 40px; 
+        
+        .section { margin-bottom: 25px; }
+        .section-title { 
+            font-weight: bold; 
+            font-size: 1.1em; 
+            color: #333;
+            border-bottom: 2px solid #b71c1c; 
+            margin-bottom: 10px; 
+            padding-bottom: 5px; 
+        }
+        
+        .field { margin-bottom: 8px; }
+        .field label { font-weight: bold; color: #444; margin-right: 5px; }
+        .field span, .field p { display: inline; color: #000; margin: 0; }
+        
+        .signatures { 
+            margin-top: 60px; 
+            width: 100%;
+            height: 150px;
+        }
+        
+        .signature-wrapper {
+            width: 45%;
             text-align: center;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .signature-image {
+            height: 80px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: end;
+            justify-content: center;
+        }
+
+        .signature-image img {
+            max-height: 80px;
+            max-width: 100%;
+        }
+
+        .signature-line {
             border-top: 1px solid #000;
             padding-top: 5px;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+        
+        .float-right { float: right; }
+        .float-left { float: left; }
+        
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
         }
     </style>
 </head>
@@ -47,34 +86,74 @@
 
         <div class="section">
             <div class="section-title">Descripción del Trabajo</div>
+            
             <div class="field">
                 <label>Problema Reportado:</label>
-                <p><span>{{ $maintenance->reported_problem }}</span></p>
+                <p>{{ $maintenance->reported_problem }}</p>
             </div>
+            <br>
             <div class="field">
                 <label>Actividades Desarrolladas:</label>
-                <p><span>{{ $maintenance->activities_detail }}</span></p>
+                <p>{{ $maintenance->activities_detail }}</p>
             </div>
+            <br>
             <div class="field">
                 <label>Trabajo Pendiente:</label>
-                <p><span>{{ $maintenance->pending_work ?? 'Ninguno' }} ({{ $maintenance->pending_type ?? 'N/A' }})</span></p>
+                <p>{{ $maintenance->pending_work ?? 'Ninguno' }} (Tipo: {{ $maintenance->pending_type ?? 'N/A' }})</p>
             </div>
+            <br>
             <div class="field">
                 <label>Observaciones:</label>
-                <p><span>{{ $maintenance->observations ?? 'Ninguna' }}</span></p>
+                <p>{{ $maintenance->observations ?? 'Ninguna' }}</p>
             </div>
         </div>
 
-        <div class="signatures">
-            <div class="signature-box" style="float: left;">
-                {{ $maintenance->inspector_signature }}<br>
-                Firma Inspector Responsable
+        <div class="signatures clearfix">
+            <div class="signature-wrapper float-left">
+                <div class="signature-image">
+                    @if($maintenance->inspector_signature)
+                        <img src="{{ $maintenance->inspector_signature }}" alt="Firma Inspector">
+                    @else
+                        <br><br><br>
+                    @endif
+                </div>
+                <div class="signature-line">
+                    Firma Inspector Responsable
+                </div>
             </div>
-            <div class="signature-box" style="float: right;">
-                {{ $maintenance->officer_signature }}<br>
-                Firma Oficial a Cargo
+
+            <div class="signature-wrapper float-right">
+                <div class="signature-image">
+                    @if($maintenance->officer_signature)
+                        <img src="{{ $maintenance->officer_signature }}" alt="Firma Oficial">
+                    @else
+                        <br><br><br>
+                    @endif
+                </div>
+                <div class="signature-line">
+                    Firma Oficial a Cargo
+                </div>
             </div>
         </div>
+
+        <!-- ANEXOS FOTOGRÁFICOS -->
+        @if(isset($attachedImages) && count($attachedImages) > 0)
+            <div style="page-break-before: always;"></div>
+            
+            <div class="section">
+                <div class="section-title">Anexos Fotográficos</div>
+                <br>
+                <div style="text-align: center;">
+                    @foreach($attachedImages as $imgData)
+                        <div style="margin-bottom: 20px; border: 1px solid #ddd; padding: 5px; display: inline-block;">
+                            <!-- Aquí se renderiza el base64 directamente -->
+                            <img src="{{ $imgData }}" style="max-width: 100%; max-height: 400px;">
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
     </div>
 </body>
 </html>

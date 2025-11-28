@@ -17,6 +17,7 @@ class CarDocument extends Model
         'file_name', 
         'path',      
         'file_type',
+        'maintenance_id',
     ];
 
     protected $casts = [
