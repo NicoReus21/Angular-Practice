@@ -48,7 +48,7 @@ export class ModulesOverviewComponent {
       subtitle: 'Control del parque automotriz',
       description:
         'Consulta y actualiza el historial del material mayor para asegurar la disponibilidad de equipos.',
-      icon: 'local_fire_truck',
+      icon: 'fire_truck',
       route: '/machine-historial',
       ctaLabel: 'Revisar unidades',
       available: true,

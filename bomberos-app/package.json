@@ -22,6 +22,7 @@
   },
   "private": true,
   "dependencies": {
+    "@almothafar/angular-signature-pad": "^6.0.0",
     "@angular/animations": "^20.2.3",
     "@angular/cdk": "^20.2.1",
     "@angular/common": "^20.2.0",

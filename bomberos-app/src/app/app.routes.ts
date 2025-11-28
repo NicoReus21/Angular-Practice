@@ -21,7 +21,7 @@ export const routes: Routes = [
   { path: 'machine-historial', component: MachineHistorialComponent },
   { path: 'create-firetruck', component: CreateFiretruckComponent }, 
   {path: 'register', component: UserRegisterComponent },
-  { path: 'rols', component: RoleManagementComponent },
+  //{ path: 'rols', component: RoleManagementComponent },
   { path: 'recover-password', component: RecoverPasswordComponent },
   { path: 'rols', component: AuthDashboardComponent },
 

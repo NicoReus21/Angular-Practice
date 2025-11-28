@@ -32,8 +32,7 @@ export class AppComponent implements OnInit {
   readonly ROUTES_WITH_BACK_BUTTON = [
     '/historial', 
     '/machine-historial', 
-    '/rols', 
-    '/document-upload'
+    '/rols',
   ];
 
   constructor(private router: Router) {}

@@ -4,14 +4,13 @@ import { Observable } from 'rxjs';
 
 const API_URL = 'http://127.0.0.1:8000/api';
 
-// --- INTERFACES DE LA API ---
-
 export interface ApiMaintenance {
   id: number;
   car_id: number;
   service_date: string;
+  chassis_number?: string;
   status: 'draft' | 'completed';
-  pdf_url?: string | null
+  pdf_url?: string | null;
   service_type?: string;
   inspector_name?: string;
   reported_problem?: string;
@@ -28,6 +27,7 @@ export interface ApiMaintenance {
   inspector_signature?: string;
   officer_signature?: string;
   car_info_annex?: string;
+  maintenance_id?: number;
 }
 
 export interface ApiChecklistItem {
@@ -54,9 +54,10 @@ export interface ApiDocument {
   file_type: 'pdf' | 'img' | 'doc' | 'other';
   url: string;
   created_at: string;
+  is_paid: boolean;
+  maintenance_id?: number;
+  
 }
-
-// --- INTERFACES COMPARTIDAS ---
 
 export interface ChecklistTaskItem {
   id: number;
@@ -126,7 +127,6 @@ export class MachineHistorialService {
   private http = inject(HttpClient);
   private apiUrl = API_URL;
 
-  // --- GESTIÓN DE UNIDADES (CARS) ---
 
   getUnits(): Observable<CarApiResponse[]> {
     return this.http.get<CarApiResponse[]>(`${this.apiUrl}/cars`);
@@ -154,18 +154,23 @@ export class MachineHistorialService {
     return this.http.patch<CarApiResponse>(`${this.apiUrl}/cars/${carId}`, { status });
   }
 
-  // --- MANTENCIONES / REPORTES ---
-
-  createMaintenance(carId: number, maintenanceData: CreateMaintenanceDto): Observable<ApiMaintenance> {
+  createMaintenance(carId: number, maintenanceData: any): Observable<ApiMaintenance> {
     return this.http.post<ApiMaintenance>(
       `${this.apiUrl}/cars/${carId}/maintenances`,
       maintenanceData
     );
   }
 
-  updateMaintenance(maintenanceId: number, maintenanceData: CreateMaintenanceDto): Observable<ApiMaintenance> {
+  updateMaintenance(maintenanceId: number, maintenanceData: any): Observable<ApiMaintenance> {
     return this.http.put<ApiMaintenance>(
       `${this.apiUrl}/maintenances/${maintenanceId}`,
+      maintenanceData
+    );
+  }
+
+  updateMaintenanceWithFiles(maintenanceId: number, maintenanceData: FormData): Observable<ApiMaintenance> {
+    return this.http.post<ApiMaintenance>(
+      `${this.apiUrl}/maintenances/${maintenanceId}`, 
       maintenanceData
     );
   }
@@ -173,8 +178,6 @@ export class MachineHistorialService {
   deleteMaintenance(maintenanceId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/maintenances/${maintenanceId}`);
   }
-
-  // --- CHECKLISTS ---
 
   createChecklist(carId: number, checklistData: CreateChecklistDto): Observable<ApiChecklist> {
     return this.http.post<ApiChecklist>(
@@ -198,8 +201,6 @@ export class MachineHistorialService {
     return this.http.patch(`${this.apiUrl}/checklist-items/${itemId}/toggle`, {});
   }
 
-  // --- DOCUMENTOS ---
-
   uploadDocument(carId: number, cost: number, file: File): Observable<ApiDocument> {
     const formData = new FormData();
     formData.append('cost', cost.toString());
@@ -213,5 +214,9 @@ export class MachineHistorialService {
 
   deleteDocument(documentId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/documents/${documentId}`);
+  }
+
+  toggleDocumentPayment(documentId: number): Observable<ApiDocument> {
+    return this.http.patch<ApiDocument>(`${this.apiUrl}/documents/${documentId}/toggle-payment`, {});
   }
 }
