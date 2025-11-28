@@ -40,7 +40,7 @@
       <ng-container matColumnDef="estado">
         <mat-header-cell *matHeaderCellDef> ESTADO </mat-header-cell>
         <mat-cell *matCellDef="let element">
-          <span class="status" [ngClass]="element.estado ? element.estado.toLowerCase().replace(' ', '-') : ''">{{element.estado}}</span>
+          <span class="status" [ngClass]="element.status ? element.status.toLowerCase().replace(' ', '-') : ''">{{element.status}}</span>
         </mat-cell>
       </ng-container>
 

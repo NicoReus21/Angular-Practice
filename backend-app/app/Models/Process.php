@@ -24,9 +24,9 @@ class Process extends Model
 
     ];
     // ------------------------------------
-    protected $casts = [
-        'sections_data' => 'array', 
-    ];
+    //protected $casts = [
+    //    'sections_data' => 'array', 
+    //];
     /**
      * Get the documents for the process.
      */

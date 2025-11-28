@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('bombero_name');
             $table->string('company');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->enum('status',['started',''])->default('started');
+            $table->enum('status', ['Pendiente', 'Finalizado'])->default('Pendiente');
             $table->foreignId('reporte_flash_id')->nullable();
             $table->foreignId('dau_id')->nullable();
             $table->foreignId('certificado_medico_atencion_especial_id')->nullable();

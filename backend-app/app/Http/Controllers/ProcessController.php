@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use App\Models\Process;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -29,7 +31,7 @@ class ProcessController extends Controller
             'bombero_name' => $validatedData['bombero_name'],
             'company' => $validatedData['company'],
             'user_id' => $userId,
-            'sections_data' => '[]',
+            'status' => 'Pendiente',
         ]);
 
         return response()->json($process, 201);
@@ -49,9 +51,9 @@ class ProcessController extends Controller
     public function update(Request $request, Process $process)
     {
         $validatedData = $request->validate([
-            'bombero_nombre' => 'sometimes|required|string|max:255',
-            'compania' => 'sometimes|required|string|max:255',
-            'estado' => 'sometimes|required|string',
+            'bombero_name' => 'sometimes|required|string|max:255', 
+            'company' => 'sometimes|required|string|max:255',      
+            'status' => 'sometimes|required|string',              
         ]);
 
         $process->update($validatedData);
@@ -60,13 +62,34 @@ class ProcessController extends Controller
     }
 
     /**
+     * NUEVO MÉTODO: Finaliza el proceso de documentación.
+     */
+    public function finalize($id)
+    {
+        try {
+            $process = Process::findOrFail($id);
+            
+            $process->status = 'Finalizado';
+            $process->save();
+
+            return response()->json([
+                'message' => 'Documentación finalizada correctamente',
+                'process' => $process
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error al finalizar el proceso: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al finalizar el proceso'], 500);
+        }
+    }
+
+    /**
      * Elimina el proceso.
      */
     public function destroy(Process $process)
     {
         try {
-        $process->delete();
-        return response()->json(null, 204);
+            $process->delete();
+            return response()->json(null, 204);
         } catch (\Exception $e) {
             Log::error('Error al eliminar el proceso: ' . $e->getMessage());
             return response()->json(['message' => 'Error al eliminar el registro.'], 500);
