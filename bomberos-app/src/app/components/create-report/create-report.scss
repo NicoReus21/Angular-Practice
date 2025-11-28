@@ -37,7 +37,6 @@
   overflow-y: auto; 
   padding: 20px 24px;
   
-  /* Animación de entrada suave */
   ::ng-deep .mat-mdc-form-field, .section-title {
     animation: slideInUp 0.3s ease-out forwards;
   }
@@ -54,31 +53,113 @@
   margin: 8px 0;
 }
 
-/* --- SISTEMA DE REJILLA FLEXIBLE --- */
 .form-row {
   display: flex;
   gap: 16px;
   width: 100%;
 }
 
-.form-field-half {
-  flex: 1; 
+.form-field-half { flex: 1; width: 100%; }
+.form-field-third { flex: 1; width: 100%; }
+.full-width { width: 100%; }
+
+/* --- FIRMAS DIGITALES --- */
+.signatures-container {
+  display: flex;
+  gap: 16px;
   width: 100%;
 }
 
-.form-field-third {
-  flex: 1; 
-  width: 100%;
+.signature-box {
+  flex: 1;
+  min-width: 0; 
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
+  padding: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-.full-width {
+.signature-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.signature-pad-wrapper {
+  border: 1px dashed #999;
+  background-color: #fff;
+  overflow: hidden;
+  cursor: crosshair;
+  height: 150px;
+  width: 100%; 
+  position: relative;
+  border-radius: 4px;
+  
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+    touch-action: none; 
+  }
+}
+
+/* Estilo para firma guardada */
+.saved-signature-preview {
+  height: 150px;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  
+  img {
+    max-width: 90%;
+    max-height: 100px;
+    object-fit: contain;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+  }
+
+  .saved-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #2e7d32;
+    background-color: #e8f5e9;
+    padding: 4px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+  }
+}
+
+.signature-help {
+  font-size: 11px;
+  color: #999;
+  text-align: center;
+  margin: 8px 0 0 0;
+  font-style: italic;
 }
 
 /* --- ARCHIVOS --- */
 .file-section {
   margin-top: 12px;
-  padding: 12px;
+  padding: 16px;
   background-color: #fafafa;
   border-radius: 8px;
   border: 1px dashed #ccc;
@@ -94,57 +175,47 @@
   color: #555;
   width: 100%;
   box-sizing: border-box;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  transition: background-color 0.2s;
 
-  &:hover { background-color: #eeeeee; border-radius: 4px; }
-  mat-icon { margin-right: 8px; }
+  &:hover { background-color: #f0f0f0; }
+  mat-icon { margin-right: 8px; color: #3f51b5; }
 }
 
 .file-input { display: none; }
 
-/* --- ACCIONES --- */
+.subsection-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    margin: 0 0 8px 0;
+}
+
+.saved-item {
+    background-color: #e3f2fd;
+    border-radius: 4px;
+    margin-bottom: 4px;
+}
+
 .dialog-actions {
   padding: 16px 24px;
   border-top: 1px solid #e0e0e0;
   margin: 0;
   display: flex;
   gap: 12px;
-  flex-wrap: wrap; /* Permite que los botones bajen si no caben */
+  flex-wrap: wrap; 
 }
 
-/* =========================================
-   RESPONSIVE (MÓVIL)
-   ========================================= */
 @media (max-width: 600px) {
-  
-  .dialog-title-container {
-    padding: 16px;
-    .title-text { font-size: 18px; }
-  }
-
-  .dialog-content {
-    padding: 16px; /* Menos padding lateral */
-  }
-
-  /* 1. Convertir filas en columnas */
-  .form-row {
-    flex-direction: column;
-    gap: 0; /* Material inputs ya tienen margen inferior natural */
-  }
-
-  /* 2. Botones de acción apilados */
-  .dialog-actions {
-    flex-direction: column-reverse; /* Cancelar al final */
-    align-items: stretch;
-    gap: 12px;
-    padding: 16px;
-
-    .action-btn {
-      width: 100%;
-      margin: 0 !important;
-      height: 48px; /* Altura táctil cómoda */
-    }
-    
-    /* Opcional: Darle orden visual específico */
+  .dialog-title-container { padding: 16px; .title-text { font-size: 18px; } }
+  .dialog-content { padding: 16px; }
+  .form-row { flex-direction: column; gap: 0; }
+  .signatures-container { flex-direction: column; gap: 24px; }
+  .signature-box { width: 100%; }
+  .dialog-actions { flex-direction: column-reverse; align-items: stretch; gap: 12px; padding: 16px; 
+    .action-btn { width: 100%; margin: 0 !important; height: 48px; }
     .draft-btn { order: 2; }
   }
 }

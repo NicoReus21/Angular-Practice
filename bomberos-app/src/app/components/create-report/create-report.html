@@ -37,14 +37,11 @@
       <mat-form-field appearance="outline" class="form-field-half">
         <mat-label>Kilometraje</mat-label>
         <input matInput formControlName="mileage" type="number" required />
-        @if (reportForm.get('mileage')?.hasError('required')) {
-        <mat-error>Obligatorio</mat-error>
-        }
       </mat-form-field>
     </div>
 
     <mat-divider class="section-divider"></mat-divider>
-    
+
     <h3 class="section-title">Detalles de Inspección</h3>
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field-third">
@@ -79,17 +76,11 @@
           <mat-option value="Reparación">Reparación</mat-option>
           <mat-option value="Otros">Otros</mat-option>
         </mat-select>
-        @if (reportForm.get('service_type')?.hasError('required')) {
-        <mat-error>Obligatorio</mat-error>
-        }
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field-third">
         <mat-label>Inspector</mat-label>
         <input matInput formControlName="inspector_name" required />
-        @if (reportForm.get('inspector_name')?.hasError('required')) {
-        <mat-error>Obligatorio</mat-error>
-        }
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field-third">
@@ -108,17 +99,11 @@
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Problema Reportado</mat-label>
       <textarea matInput formControlName="reported_problem" rows="3" required></textarea>
-      @if (reportForm.get('reported_problem')?.hasError('required')) {
-      <mat-error>Obligatorio</mat-error>
-      }
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Detalle Actividades</mat-label>
       <textarea matInput formControlName="activities_detail" rows="5" required></textarea>
-      @if (reportForm.get('activities_detail')?.hasError('required')) {
-      <mat-error>Obligatorio</mat-error>
-      }
     </mat-form-field>
 
     <mat-divider class="section-divider"></mat-divider>
@@ -151,26 +136,99 @@
       <textarea matInput formControlName="car_info_annex" rows="2"></textarea>
     </mat-form-field>
 
-    <div class="form-row">
-      <mat-form-field appearance="outline" class="form-field-half">
-        <mat-label>Firma Inspector</mat-label>
-        <input matInput formControlName="inspector_signature" required />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="form-field-half">
-        <mat-label>Firma Oficial</mat-label>
-        <input matInput formControlName="officer_signature" required />
-      </mat-form-field>
+    <h3 class="section-title">Firmas Digitales</h3>
+    <div class="signatures-container">
+      <div class="signature-box">
+        <div class="signature-header">
+          <label>Firma Inspector Responsable</label>
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="clearInspectorSignature()"
+            matTooltip="Borrar y firmar de nuevo"
+            type="button"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        @if (showSavedInspectorSignature()) {
+        <div class="saved-signature-preview">
+          <img [src]="reportForm.get('inspector_signature')?.value" alt="Firma Guardada" />
+          <span class="saved-label">Firma Guardada</span>
+        </div>
+        } @else {
+        <div class="signature-pad-wrapper">
+          <signature-pad
+            #inspectorPad
+            [options]="signaturePadOptions"
+            (drawEnd)="drawComplete('inspector')"
+          ></signature-pad>
+        </div>
+        <p class="signature-help">Dibuje su firma en el recuadro</p>
+        }
+      </div>
+
+      <div class="signature-box">
+        <div class="signature-header">
+          <label>Firma Oficial a Cargo</label>
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="clearOfficerSignature()"
+            matTooltip="Borrar y firmar de nuevo"
+            type="button"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+
+        @if (showSavedOfficerSignature()) {
+        <div class="saved-signature-preview">
+          <img [src]="reportForm.get('officer_signature')?.value" alt="Firma Guardada" />
+          <span class="saved-label">Firma Guardada</span>
+        </div>
+        } @else {
+        <div class="signature-pad-wrapper">
+          <signature-pad
+            #officerPad
+            [options]="signaturePadOptions"
+            (drawEnd)="drawComplete('officer')"
+          ></signature-pad>
+        </div>
+        <p class="signature-help">Dibuje su firma en el recuadro</p>
+        }
+      </div>
     </div>
 
     <div class="file-section">
+      <!-- IMÁGENES GUARDADAS PREVIAMENTE (SOLO EN EDICIÓN) -->
+      @if (existingImages().length > 0) {
+      <h4 class="subsection-title">Imágenes Adjuntas (Guardadas)</h4>
+      <mat-list class="file-preview-list">
+        @for (img of existingImages(); track img.id) {
+        <mat-list-item class="file-preview-item saved-item">
+          <mat-icon matListItemIcon>image</mat-icon>
+          <div matListItemTitle>{{ img.name || img.file_name }}</div>
+          <div matListItemLine>Guardado previamente</div>
+          <a mat-icon-button [href]="img.url" target="_blank" matTooltip="Ver imagen">
+            <mat-icon>visibility</mat-icon>
+          </a>
+        </mat-list-item>
+        }
+      </mat-list>
+      <mat-divider class="section-divider"></mat-divider>
+      }
+
       <label for="file-upload" class="file-upload-label">
-        <mat-icon>attach_file</mat-icon>
-        Adjuntar Documentos/Fotos
+        <mat-icon>add_photo_alternate</mat-icon>
+        Adjuntar Nuevas Fotos
       </label>
+
       <input
         id="file-upload"
         type="file"
         multiple
+        accept="image/*"
         (change)="onFileSelected($event)"
         class="file-input"
         #fileUploadInput
@@ -180,10 +238,15 @@
       <mat-list class="file-preview-list">
         @for (file of selectedFiles(); track $index) {
         <mat-list-item class="file-preview-item">
-          <mat-icon matListItemIcon>description</mat-icon>
+          <mat-icon matListItemIcon>add_a_photo</mat-icon>
           <div matListItemTitle>{{ file.name }}</div>
           <div matListItemLine>{{ file.size / 1024 | number : '1.0-1' }} KB</div>
-          <button mat-icon-button (click)="onRemoveFile(file); fileUploadInput.value = ''" type="button" color="warn">
+          <button
+            mat-icon-button
+            (click)="onRemoveFile(file); fileUploadInput.value = ''"
+            type="button"
+            color="warn"
+          >
             <mat-icon>close</mat-icon>
           </button>
         </mat-list-item>
@@ -194,11 +257,25 @@
   </div>
 
   <div mat-dialog-actions class="dialog-actions" align="end">
-    <button mat-stroked-button (click)="onCancel()" type="button" class="action-btn">Cancelar</button>
-    <button mat-button color="accent" (click)="onSave('draft')" type="button" class="action-btn draft-btn">
+    <button mat-stroked-button (click)="onCancel()" type="button" class="action-btn">
+      Cancelar
+    </button>
+    <button
+      mat-button
+      color="accent"
+      (click)="onSave('draft')"
+      type="button"
+      class="action-btn draft-btn"
+    >
       <mat-icon>save</mat-icon> Guardar Borrador
     </button>
-    <button mat-flat-button color="primary" (click)="onSave('completed')" type="button" class="action-btn">
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="onSave('completed')"
+      type="button"
+      class="action-btn"
+    >
       <mat-icon>check_circle</mat-icon> Finalizar Reporte
     </button>
   </div>

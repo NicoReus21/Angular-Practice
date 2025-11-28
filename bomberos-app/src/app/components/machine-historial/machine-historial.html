@@ -71,6 +71,7 @@
     <div class="no-selection">
       <mat-icon>directions_car</mat-icon>
       <h3 class="mat-h3">Seleccione una unidad</h3>
+      
       <button mat-raised-button color="primary" (click)="toggleSidenav()">
         Ver Lista de Unidades
       </button>
@@ -265,31 +266,59 @@
             } @else {
             <mat-list>
               @for (doc of selectedUnit()!.documents; track doc.id) {
-              <mat-list-item class="document-item">
-                <mat-icon matListItemIcon>{{ getDocumentIcon(doc.type) }}</mat-icon>
-                <div matListItemTitle>{{ doc.name }}</div>
-                <div matListItemLine>Subido: {{ doc.uploaded_at_formatted }}</div>
+              
+              <div class="document-wrapper" [class.unpaid-row]="!doc.is_paid">
+                <mat-list-item class="document-item">
+                  <mat-icon matListItemIcon [class.text-warn]="!doc.is_paid">{{ getDocumentIcon(doc.type) }}</mat-icon>
+                  
+                  <div matListItemTitle class="doc-title-row">
+                    {{ doc.name }}
+                    @if (!doc.is_paid) {
+                      <span class="unpaid-badge">PENDIENTE DE PAGO</span>
+                    }
+                  </div>
+                  <div matListItemLine>Subido: {{ doc.uploaded_at_formatted }}</div>
+  
+                  <span class="document-cost" [class.text-warn]="!doc.is_paid">
+                    {{ doc.cost || 0 | currency : 'CLP' : 'symbol-narrow' : '1.0-0' }}
+                  </span>
+  
+                  <div class="action-buttons">
+                    <!-- BOTÓN DE PAGO -->
+                    <button
+                      mat-icon-button
+                      [matTooltip]="doc.is_paid ? 'Marcar como no pagado' : 'Marcar como pagado'"
+                      (click)="onTogglePayment(doc.id, $event)"
+                    >
+                      <mat-icon [style.color]="doc.is_paid ? '#2ecc71' : '#bdbdbd'">
+                        {{ doc.is_paid ? 'paid' : 'money_off' }}
+                      </mat-icon>
+                    </button>
 
-                <span class="document-cost">
-                  {{ doc.cost || 0 | currency : 'CLP' : 'symbol-narrow' : '1.0-0' }}
-                </span>
+                    <button
+                      mat-icon-button
+                      (click)="onDownloadDocument(doc.url); $event.stopPropagation()"
+                    >
+                      <mat-icon>download</mat-icon>
+                    </button>
+                    <button
+                      mat-icon-button
+                      color="warn"
+                      (click)="onDeleteDocument(doc.id); $event.stopPropagation()"
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </mat-list-item>
 
-                <div class="action-buttons">
-                  <button
-                    mat-icon-button
-                    (click)="onDownloadDocument(doc.url); $event.stopPropagation()"
-                  >
-                    <mat-icon>download</mat-icon>
-                  </button>
-                  <button
-                    mat-icon-button
-                    color="warn"
-                    (click)="onDeleteDocument(doc.id); $event.stopPropagation()"
-                  >
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </div>
-              </mat-list-item>
+                <!-- Alerta de texto explícita -->
+                @if (!doc.is_paid) {
+                  <div class="unpaid-alert">
+                    <mat-icon class="alert-icon">warning</mat-icon>
+                    <span>Este documento no ha sido pagado.</span>
+                  </div>
+                }
+              </div>
               <mat-divider></mat-divider>
               }
             </mat-list>

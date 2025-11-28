@@ -1,4 +1,12 @@
-import { Component, ChangeDetectionStrategy, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  inject,
+  OnInit,
+  signal,
+  ViewChild,
+  AfterViewInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -11,10 +19,14 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
-import { MatTooltipModule } from '@angular/material/tooltip'; // Importante para el matTooltip
-
-// Importamos ApiMaintenance del servicio para los datos del reporte
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ApiMaintenance } from '../../services/machine-historial';
+
+import {
+  AngularSignaturePadModule,
+  NgSignaturePadOptions,
+  SignaturePadComponent,
+} from '@almothafar/angular-signature-pad';
 
 @Component({
   selector: 'app-create-report',
@@ -32,59 +44,72 @@ import { ApiMaintenance } from '../../services/machine-historial';
     MatNativeDateModule,
     MatDividerModule,
     MatListModule,
-    MatTooltipModule
+    MatTooltipModule,
+    AngularSignaturePadModule,
   ],
   templateUrl: './create-report.html',
   styleUrls: ['./create-report.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [provideNativeDateAdapter()]
+  providers: [provideNativeDateAdapter()],
 })
-export class CreateReportComponent implements OnInit {
-
+export class CreateReportComponent implements OnInit, AfterViewInit {
   private fb = inject(FormBuilder);
   public dialogRef = inject(MatDialogRef<CreateReportComponent>);
-  
-  // DEFINIMOS EL TIPO DE DATOS AQUÍ EN LÍNEA PARA EVITAR ERRORES DE IMPORTACIÓN
-  public data: { 
-    unit: { id: number; model: string | null; plate: string; company: string }; 
-    editMode?: boolean; 
-    reportData?: ApiMaintenance 
+
+  public data: {
+    unit: { id: number; model: string | null; plate: string; company: string; documents?: any[] };
+    editMode?: boolean;
+    reportData?: ApiMaintenance;
   } = inject(MAT_DIALOG_DATA);
 
   reportForm: FormGroup;
   selectedFiles = signal<File[]>([]);
-  
-  dialogTitle = 'Crear Nuevo Reporte'; // Variable para el título dinámico
+  dialogTitle = 'Crear Nuevo Reporte';
+
+  existingImages = signal<any[]>([]);
+  showSavedInspectorSignature = signal(false);
+  showSavedOfficerSignature = signal(false);
+
+  @ViewChild('inspectorPad') inspectorPad!: SignaturePadComponent;
+  @ViewChild('officerPad') officerPad!: SignaturePadComponent;
+
+  public signaturePadOptions: NgSignaturePadOptions = {
+    minWidth: 1,
+    canvasWidth: 500,
+    canvasHeight: 150,
+    penColor: 'black',
+    backgroundColor: 'white',
+    dotSize: 1,
+  };
 
   constructor() {
     this.reportForm = this.fb.group({
       plate: [{ value: '', disabled: true }],
       company: [{ value: '', disabled: true }],
-      model: [{ value: '', disabled: true }], 
-      
-      chassis_number: [''], 
-      mileage: ['', Validators.required], 
-      cabin: [''], 
-      filter_code: [''], 
-      hourmeter: [''], 
-      warnings: [''], 
-      service_type: ['', Validators.required], 
-      inspector_name: ['', Validators.required], 
-      location: [''], 
-      service_date: [new Date(), Validators.required], 
-      reported_problem: ['', Validators.required], 
-      activities_detail: ['', Validators.required], 
-      pending_work: [''], 
-      pending_type: ['Ninguno'], 
-      observations: [''], 
-      inspector_signature: ['', Validators.required], 
-      officer_signature: ['', Validators.required], 
-      car_info_annex: [''], 
+      model: [{ value: '', disabled: true }],
+
+      chassis_number: [''],
+      mileage: ['', Validators.required],
+      cabin: [''],
+      filter_code: [''],
+      hourmeter: [''],
+      warnings: [''],
+      service_type: ['', Validators.required],
+      inspector_name: ['', Validators.required],
+      location: [''],
+      service_date: [new Date(), Validators.required],
+      reported_problem: ['', Validators.required],
+      activities_detail: ['', Validators.required],
+      pending_work: [''],
+      pending_type: ['Ninguno'],
+      observations: [''],
+      inspector_signature: [''],
+      officer_signature: [''],
+      car_info_annex: [''],
     });
   }
 
   ngOnInit(): void {
-    // 1. Cargar datos de la unidad
     if (this.data.unit) {
       this.reportForm.patchValue({
         model: this.data.unit.model,
@@ -93,18 +118,16 @@ export class CreateReportComponent implements OnInit {
       });
     }
 
-    // 2. Cargar datos del BORRADOR (Si estamos editando)
     if (this.data.editMode && this.data.reportData) {
-      this.dialogTitle = 'Editar Borrador de Reporte'; // Cambiar título
+      this.dialogTitle = 'Editar Borrador';
       const r = this.data.reportData;
 
       let fecha = new Date();
-      if (r.service_date) {
-         fecha = new Date(r.service_date + 'T00:00:00');
-      }
+      if (r.service_date)
+        fecha = new Date(r.service_date + (r.service_date.includes('T') ? '' : 'T00:00:00'));
 
       this.reportForm.patchValue({
-        chassis_number: r.car_info_annex ? '' : '', // Ojo: chassis_number no está en ApiMaintenance por defecto, verifica tu API
+        chassis_number: r.chassis_number || '',
         mileage: r.mileage,
         cabin: r.cabin,
         filter_code: r.filter_code,
@@ -119,10 +142,53 @@ export class CreateReportComponent implements OnInit {
         pending_work: r.pending_work,
         pending_type: r.pending_type || 'Ninguno',
         observations: r.observations,
+        car_info_annex: r.car_info_annex,
         inspector_signature: r.inspector_signature,
         officer_signature: r.officer_signature,
-        car_info_annex: r.car_info_annex
       });
+
+      if (r.inspector_signature && r.inspector_signature.length > 50) {
+        this.showSavedInspectorSignature.set(true);
+      }
+      if (r.officer_signature && r.officer_signature.length > 50) {
+        this.showSavedOfficerSignature.set(true);
+      }
+
+      const unitDocs = this.data.unit.documents || [];
+      const maintenanceDocs = unitDocs.filter(
+        (doc: any) => doc.maintenance_id === r.id && (doc.type === 'img' || doc.file_type === 'img')
+      );
+      this.existingImages.set(maintenanceDocs);
+    }
+  }
+
+  ngAfterViewInit() {
+    this.inspectorPad?.set('canvasWidth', 300);
+    this.inspectorPad?.clear();
+    this.officerPad?.clear();
+  }
+
+  clearInspectorSignature() {
+    this.inspectorPad?.clear();
+    this.reportForm.patchValue({ inspector_signature: null });
+    this.showSavedInspectorSignature.set(false);
+  }
+
+  clearOfficerSignature() {
+    this.officerPad?.clear();
+    this.reportForm.patchValue({ officer_signature: null });
+    this.showSavedOfficerSignature.set(false);
+  }
+
+  drawComplete(padName: 'inspector' | 'officer') {
+    if (padName === 'inspector') {
+      if (this.inspectorPad && !this.inspectorPad.isEmpty()) {
+        this.reportForm.patchValue({ inspector_signature: this.inspectorPad.toDataURL() });
+      }
+    } else {
+      if (this.officerPad && !this.officerPad.isEmpty()) {
+        this.reportForm.patchValue({ officer_signature: this.officerPad.toDataURL() });
+      }
     }
   }
 
@@ -132,6 +198,20 @@ export class CreateReportComponent implements OnInit {
 
   onSave(status: string): void {
     if (status === 'completed') {
+      const hasInspectorSig =
+        this.showSavedInspectorSignature() || (this.inspectorPad && !this.inspectorPad.isEmpty());
+      const hasOfficerSig =
+        this.showSavedOfficerSignature() || (this.officerPad && !this.officerPad.isEmpty());
+
+      if (!hasInspectorSig) {
+        alert('Falta la firma del Inspector');
+        return;
+      }
+      if (!hasOfficerSig) {
+        alert('Falta la firma del Oficial');
+        return;
+      }
+
       if (this.reportForm.invalid) {
         this.reportForm.markAllAsTouched();
         return;
@@ -144,32 +224,52 @@ export class CreateReportComponent implements OnInit {
     }
 
     const formData = this.reportForm.getRawValue();
+
+    if (!this.showSavedInspectorSignature()) {
+      if (this.inspectorPad && !this.inspectorPad.isEmpty()) {
+        formData.inspector_signature = this.inspectorPad.toDataURL();
+      } else {
+        formData.inspector_signature = null;
+      }
+    }
+
+    if (!this.showSavedOfficerSignature()) {
+      if (this.officerPad && !this.officerPad.isEmpty()) {
+        formData.officer_signature = this.officerPad.toDataURL();
+      } else {
+        formData.officer_signature = null;
+      }
+    }
+
     delete formData.model;
     delete formData.plate;
     delete formData.company;
 
     const resultData = {
       ...formData,
-      status: status
+      status: status,
     };
 
     this.dialogRef.close({
-      formData: resultData, 
-      files: this.selectedFiles()
+      formData: resultData,
+      files: this.selectedFiles(),
     });
   }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files) {
-      const newFiles = Array.from(input.files);
-      this.selectedFiles.update(currentFiles => [...currentFiles, ...newFiles]);
+      const newFiles = Array.from(input.files).filter((file) => file.type.startsWith('image/'));
+      if (newFiles.length < input.files.length) {
+        alert('Solo se permiten imágenes. Otros archivos fueron descartados.');
+      }
+      this.selectedFiles.update((currentFiles) => [...currentFiles, ...newFiles]);
     }
   }
 
   onRemoveFile(fileToRemove: File): void {
-    this.selectedFiles.update(currentFiles => 
-      currentFiles.filter(file => file !== fileToRemove)
+    this.selectedFiles.update((currentFiles) =>
+      currentFiles.filter((file) => file !== fileToRemove)
     );
   }
 }
