@@ -28,8 +28,7 @@ class CarDocumentController extends Controller
         $file = $request->file('file');
         $originalName = $file->getClientOriginalName();
         $fileType = $this->getFileType($file->getClientMimeType());
-        
-        $path = $file->store('public/documents');
+        $path = $file->store('documents', 'public');
 
         if (!$path) {
             return response()->json(['message' => 'Error al guardar el archivo.'], 500);
@@ -42,6 +41,7 @@ class CarDocumentController extends Controller
             'file_type' => $fileType,
             'is_paid' => false, 
         ]);
+
         return response()->json($document, 201);
     }
 
@@ -64,7 +64,10 @@ class CarDocumentController extends Controller
     public function destroy(CarDocument $document)
     {
         try {
-            Storage::delete($document->path);
+            if ($document->path && Storage::disk('public')->exists($document->path)) {
+                Storage::disk('public')->delete($document->path);
+            }
+            
             $document->delete();
             return response()->json(null, 204); 
 

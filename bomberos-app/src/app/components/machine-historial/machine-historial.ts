@@ -38,8 +38,6 @@ import {
   MachineHistorialService,
   CarApiResponse,
   CreateChecklistDto,
-  CreateCarDto,
-  CreateMaintenanceDto,
   ApiDocument,
   ApiMaintenance,
   ChecklistGroup,
@@ -269,7 +267,7 @@ export class MachineHistorialComponent implements OnInit {
         service_type: m.service_type || 'Borrador',
         pdf_url: this.mapApiUrl(m.pdf_url),
         status: m.status,
-        fullData: m,
+        fullData: m, // Ahora 'm' incluye 'documents' correctamente tipado
       })),
     };
   }
@@ -354,6 +352,7 @@ export class MachineHistorialComponent implements OnInit {
       maxWidth: '100vw',
       maxHeight: '95vh',
       autoFocus: false,
+      panelClass: 'custom-dialog-container'
     });
 
     dialogRef.afterClosed().subscribe((result) => {

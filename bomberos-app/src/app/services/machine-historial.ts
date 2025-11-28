@@ -4,6 +4,19 @@ import { Observable } from 'rxjs';
 
 const API_URL = 'http://127.0.0.1:8000/api';
 
+export interface ApiDocument {
+  id: number;
+  car_id?: number;
+  maintenance_id?: number;
+  cost: number;
+  file_name: string;
+  path: string;
+  file_type: 'pdf' | 'img' | 'doc' | 'other';
+  url: string;
+  created_at: string;
+  is_paid: boolean;
+}
+
 export interface ApiMaintenance {
   id: number;
   car_id: number;
@@ -27,7 +40,7 @@ export interface ApiMaintenance {
   inspector_signature?: string;
   officer_signature?: string;
   car_info_annex?: string;
-  maintenance_id?: number;
+  documents?: ApiDocument[];
 }
 
 export interface ApiChecklistItem {
@@ -43,20 +56,6 @@ export interface ApiChecklist {
   persona_cargo: string;
   fecha_realizacion: string;
   items: ApiChecklistItem[];
-}
-
-export interface ApiDocument {
-  id: number;
-  car_id: number;
-  cost: number;
-  file_name: string;
-  path: string;
-  file_type: 'pdf' | 'img' | 'doc' | 'other';
-  url: string;
-  created_at: string;
-  is_paid: boolean;
-  maintenance_id?: number;
-  
 }
 
 export interface ChecklistTaskItem {

@@ -17,11 +17,13 @@ class CarDocument extends Model
         'file_name', 
         'path',      
         'file_type',
+        'is_paid',
         'maintenance_id',
     ];
 
     protected $casts = [
         'cost' => 'decimal:2',
+        'is_paid' => 'boolean',
     ];
 
     protected $appends = ['url'];
@@ -34,8 +36,14 @@ class CarDocument extends Model
         return $this->belongsTo(Car::class);
     }
 
-    public function getUrlAttribute(): string
+    /**
+     * Accessor para la URL pública.
+     */
+    public function getUrlAttribute()
     {
+        if (!$this->path) {
+            return null;
+        }
         return Storage::url($this->path);
     }
 }

@@ -37,6 +37,7 @@
       <mat-form-field appearance="outline" class="form-field-half">
         <mat-label>Kilometraje</mat-label>
         <input matInput formControlName="mileage" type="number" required />
+        <mat-error>El kilometraje es requerido</mat-error>
       </mat-form-field>
     </div>
 
@@ -76,11 +77,13 @@
           <mat-option value="Reparación">Reparación</mat-option>
           <mat-option value="Otros">Otros</mat-option>
         </mat-select>
+        <mat-error>Seleccione un tipo de servicio</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field-third">
         <mat-label>Inspector</mat-label>
         <input matInput formControlName="inspector_name" required />
+        <mat-error>Nombre del inspector requerido</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field-third">
@@ -88,6 +91,7 @@
         <input matInput [matDatepicker]="picker" formControlName="service_date" required />
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
+        <mat-error>Fecha requerida</mat-error>
       </mat-form-field>
     </div>
 
@@ -99,11 +103,14 @@
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Problema Reportado</mat-label>
       <textarea matInput formControlName="reported_problem" rows="3" required></textarea>
+      <mat-error>Este campo es obligatorio</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Detalle Actividades</mat-label>
       <textarea matInput formControlName="activities_detail" rows="5" required></textarea>
+      <!-- Agregado mat-error -->
+      <mat-error>Este campo es obligatorio</mat-error>
     </mat-form-field>
 
     <mat-divider class="section-divider"></mat-divider>
@@ -201,14 +208,13 @@
     </div>
 
     <div class="file-section">
-      <!-- IMÁGENES GUARDADAS PREVIAMENTE (SOLO EN EDICIÓN) -->
       @if (existingImages().length > 0) {
       <h4 class="subsection-title">Imágenes Adjuntas (Guardadas)</h4>
       <mat-list class="file-preview-list">
         @for (img of existingImages(); track img.id) {
         <mat-list-item class="file-preview-item saved-item">
           <mat-icon matListItemIcon>image</mat-icon>
-          <div matListItemTitle>{{ img.name || img.file_name }}</div>
+          <div matListItemTitle>{{ img.file_name || img.name }}</div>
           <div matListItemLine>Guardado previamente</div>
           <a mat-icon-button [href]="img.url" target="_blank" matTooltip="Ver imagen">
             <mat-icon>visibility</mat-icon>

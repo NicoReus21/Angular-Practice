@@ -4,40 +4,46 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\MaintenanceDocument;
 
 class Maintenance extends Model
 {
     use HasFactory;
+
+    protected $with = ['documents'];
+
     protected $fillable = [
         'car_id',
+        'service_date',
         'chassis_number',
         'mileage',
         'cabin',
-        'status',
         'filter_code',
         'hourmeter',
         'warnings',
+        'location',
         'service_type',
         'inspector_name',
-        'service_date',
-        'location',
         'reported_problem',
         'activities_detail',
         'pending_work',
         'pending_type',
         'observations',
+        'car_info_annex',
         'inspector_signature',
         'officer_signature',
-        'car_info_annex',
-    ];
-
-    protected $casts = [
-        'service_date' => 'date',
-        'mileage' => 'integer',
+        'status',
+        'pdf_url'
     ];
 
     public function car()
     {
         return $this->belongsTo(Car::class);
+    }
+
+
+    public function documents()
+    {
+        return $this->hasMany(MaintenanceDocument::class, 'maintenance_id');
     }
 }

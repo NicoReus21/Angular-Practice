@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Car;
 use App\Models\Maintenance;
-use App\Models\CarDocument; 
+use App\Models\MaintenanceDocument;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -74,48 +74,42 @@ class MaintenanceController extends Controller
             $maintenance = $car->maintenances()->create($data);
         }
 
-        $attachedImagesPaths = [];
-        $existingDocs = CarDocument::where('maintenance_id', $maintenance->id)->get();
-        
-        foreach ($existingDocs as $doc) {
-             $absolutePath = Storage::disk('public')->path($doc->path);
-             if (file_exists($absolutePath)) {
-                $type = pathinfo($absolutePath, PATHINFO_EXTENSION);
-                $content = file_get_contents($absolutePath);
-                $base64 = 'data:image/' . $type . ';base64,' . base64_encode($content);
-                $attachedImagesPaths[] = $base64;
-             }
-        }
-
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
                 try {
                     $path = $file->store('documents', 'public');
-                    
-                    $car->documents()->create([
-                        'file_name'      => $file->getClientOriginalName(),
-                        'path'           => $path,
-                        'file_type'      => 'img',
-                        'cost'           => 0,
-                        'is_paid'        => false,
-                        'maintenance_id' => $maintenance->id
+                    $maintenance->documents()->create([
+                        'file_path'           => $path,
+                        'mime'                => $file->getClientMimeType(),
+                        'size'                => $file->getSize(),
+                        'uploaded_by_user_id' => $request->user()?->id
                     ]);
                     
-                    $absolutePath = Storage::disk('public')->path($path);
+                } catch (\Exception $e) {
+                    Log::error("Error subiendo imagen de mantenimiento: " . $e->getMessage());
+                }
+            }
+        }
+
+        // --- GENERACIÓN DE PDF ---
+        if ($status === 'completed') {
+            
+            $existingDocs = $maintenance->documents;
+            $attachedImagesPaths = [];
+
+            foreach ($existingDocs as $doc) {
+                if (Storage::disk('public')->exists($doc->file_path)) {
+                    $absolutePath = Storage::disk('public')->path($doc->file_path);
+                    
                     if (file_exists($absolutePath)) {
                         $type = pathinfo($absolutePath, PATHINFO_EXTENSION);
                         $content = file_get_contents($absolutePath);
                         $base64 = 'data:image/' . $type . ';base64,' . base64_encode($content);
                         $attachedImagesPaths[] = $base64;
                     }
-
-                } catch (\Exception $e) {
-                    Log::error("Error subiendo imagen: " . $e->getMessage());
                 }
             }
-        }
 
-        if ($status === 'completed') {
             $pdf = Pdf::loadView('pdfs.report', [
                 'maintenance' => $maintenance,
                 'attachedImages' => $attachedImagesPaths
@@ -128,6 +122,8 @@ class MaintenanceController extends Controller
             $maintenance->save();
         }
 
+        $maintenance->load('documents');
+
         return response()->json($maintenance, $maintenance->wasRecentlyCreated ? 201 : 200);
     }
 
@@ -136,16 +132,18 @@ class MaintenanceController extends Controller
         try {
             if ($maintenance->pdf_url) {
                 $relativePath = str_replace('/storage/', '', parse_url($maintenance->pdf_url, PHP_URL_PATH));
+                $relativePath = ltrim($relativePath, '/');
 
                 if (Storage::disk('public')->exists($relativePath)) {
                     Storage::disk('public')->delete($relativePath);
                 }
             }
-            $docs = CarDocument::where('maintenance_id', $maintenance->id)->get();
+
+            $docs = $maintenance->documents; 
             
             foreach($docs as $doc) {
-                if (Storage::disk('public')->exists($doc->path)) {
-                    Storage::disk('public')->delete($doc->path);
+                if (Storage::disk('public')->exists($doc->file_path)) {
+                    Storage::disk('public')->delete($doc->file_path);
                 }
                 $doc->delete();
             }

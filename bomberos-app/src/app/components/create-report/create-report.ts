@@ -55,6 +55,7 @@ import {
 export class CreateReportComponent implements OnInit, AfterViewInit {
   private fb = inject(FormBuilder);
   public dialogRef = inject(MatDialogRef<CreateReportComponent>);
+  private backendUrl = 'http://localhost:8000';
 
   public data: {
     unit: { id: number; model: string | null; plate: string; company: string; documents?: any[] };
@@ -154,12 +155,24 @@ export class CreateReportComponent implements OnInit, AfterViewInit {
         this.showSavedOfficerSignature.set(true);
       }
 
-      const unitDocs = this.data.unit.documents || [];
-      const maintenanceDocs = unitDocs.filter(
-        (doc: any) => doc.maintenance_id === r.id && (doc.type === 'img' || doc.file_type === 'img')
-      );
-      this.existingImages.set(maintenanceDocs);
+      if (r.documents && r.documents.length > 0) {
+        const mappedDocs = r.documents.map((doc: any) => ({
+          ...doc,
+          url: this.mapApiUrl(doc.url) 
+        }));
+        this.existingImages.set(mappedDocs);
+      } else {
+        this.existingImages.set([]);
+      }
     }
+  }
+
+  // Función auxiliar para completar la URL
+  private mapApiUrl(url: string | null | undefined): string | null {
+    if (!url) return null;
+    if (url.startsWith('http')) return url;
+    if (url.startsWith('/')) return `${this.backendUrl}${url}`;
+    return `${this.backendUrl}/${url}`;
   }
 
   ngAfterViewInit() {
