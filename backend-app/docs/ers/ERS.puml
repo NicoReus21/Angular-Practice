@@ -1,32 +1,9 @@
 @startmindmap
 * ERS
-** Correos
+** Bombero Accidentado
 *** COR-01 - Enviar correo
-** Material Mayor
-*** MM-01 - Adjuntar documento de orden de pago con expiración
-*** MM-02 - Pago a proveedores
-*** MM-03 - Cambiar tipo de estado (botón)
-*** MM-04 - Carros de Comandancia
-*** MM-05 - Registro histórico de Material Mayor (no eliminar)
-*** MM-06 - Alertas para facturas, órdenes de pago y compra
-*** MM-07 - Subir orden de compra, registrar gasto y presupuesto
-*** MM-08 - Filtros de búsqueda por compañía y fecha
-*** MM-09 - Integración con MoreApp para formularios
-*** MM-10 - Generar reporte por correo y por proveedor
-*** MM-11 - Checklist con tiempos y alertas
-*** MM-12 - Reporte de servicio/mantención (borrador y PDF final)
-*** MM-13 - Campos de reporte de servicio/mantención
-*** MM-14 - Subir documentos finales (imágenes, PDF)
-*** MM-15 - Definir tipo de pendiente
-*** MM-16 - Roles y permisos de Material Mayor
-*** MM-17 - Estadísticas de gastos y dashboard
-*** MM-18 - Historial de gastos por compañía
-*** MM-19 - Estado urgente para mantención
-*** MM-20 - Reporte semanal de horómetro
-** Proceso Bombero Accidentado
 *** PBA-01 - Crear Proceso Bombero Accidentado
 *** PBA-02 - Listar procesos de bombero accidentado
-** Seguimiento de Accidentes
 *** SAP-01 - Subir reporte flash
 *** SAP-02 - Subir DIAB
 *** SAP-03 - Subir Informe OBAC
@@ -52,4 +29,36 @@
 *** SAP-23 - Subir certificado médico incapacidad
 *** SAP-24 - Subir boleta alimentación acompañante
 *** SAP-25 - Subir otros gastos
+** Material Mayor
+*** MM-01 - Adjuntar documento de orden de pago con expiración
+*** MM-02 - Pago a proveedores
+*** MM-03 - Cambiar tipo de estado (botón)
+*** MM-04 - Carros de Comandancia
+*** MM-05 - Registro histórico de Material Mayor (no eliminar)
+*** MM-06 - Alertas para facturas, órdenes de pago y compra
+*** MM-07 - Subir orden de compra, registrar gasto y presupuesto
+*** MM-08 - Filtros de búsqueda por compañía y fecha
+*** MM-09 - Integración con MoreApp para formularios
+*** MM-10 - Generar reporte por correo y por proveedor
+*** MM-11 - Checklist con tiempos y alertas
+*** MM-12 - Reporte de servicio/mantención (borrador y PDF final)
+*** MM-13 - Campos de reporte de servicio/mantención
+*** MM-14 - Subir documentos finales (imágenes, PDF)
+*** MM-15 - Definir tipo de pendiente
+*** MM-16 - Roles y permisos de Material Mayor
+*** MM-17 - Estadísticas de gastos y dashboard
+*** MM-18 - Historial de gastos por compañía
+*** MM-19 - Estado urgente para mantención
+*** MM-20 - Reporte semanal de horómetro
+** Autentificación
+*** AUT-01 - Registrar usuario
+*** AUT-02 - Listar y filtrar usuarios
+*** AUT-03 - CRUD de roles
+*** AUT-04 - CRUD de grupos
+*** AUT-05 - CRUD de permisos base
+*** AUT-06 - Asignar roles a usuarios
+*** AUT-07 - Asignar usuarios a grupos
+*** AUT-08 - Asignar permisos a roles y grupos
+*** AUT-09 - Autenticación y cierre de sesión
+*** AUT-10 - Recuperar contraseña
 @endmindmap
