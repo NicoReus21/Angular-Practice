@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 class CarController extends Controller
 {
     /**
-     * Muestra una lista de todas las unidadees.
+     * Muestra una lista de todas las unidades.
      * GET /api/cars
      */
     public function index()
@@ -50,7 +50,7 @@ class CarController extends Controller
             $url = Storage::url($path);
             $validatedData['imageUrl'] = $url;
         }
-
+        unset($validatedData['image']);
         $car = Car::create($validatedData);
         
         return response()->json($car->load('maintenances', 'checklists.items', 'documents'), 201);
@@ -79,14 +79,29 @@ class CarController extends Controller
             'model'    => 'nullable|string|max:255',
             'company'  => 'sometimes|required|string|max:255',
             'status'   => 'sometimes|required|string|max:255',
-            'imageUrl' => 'nullable|url|max:255',
+            'image'    => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $car->update($validator->validated());
+        $validatedData = $validator->validated();
+        if ($request->hasFile('image')) {
+            if ($car->imageUrl) {
+                $oldPath = str_replace(Storage::url(''), '', $car->imageUrl);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                }
+            }
+            $path = $request->file('image')->store('car_images', 'public');
+            $validatedData['imageUrl'] = Storage::url($path);
+        }
+
+        unset($validatedData['image']);
+
+        $car->update($validatedData);
+        
         return response()->json($car);
     }
 

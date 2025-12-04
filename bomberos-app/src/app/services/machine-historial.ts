@@ -126,27 +126,37 @@ export class MachineHistorialService {
   private http = inject(HttpClient);
   private apiUrl = API_URL;
 
-
   getUnits(): Observable<CarApiResponse[]> {
     return this.http.get<CarApiResponse[]>(`${this.apiUrl}/cars`);
   }
   
   createUnit(data: CreateCarDto, imageFile: File | null): Observable<CarApiResponse> {
     const formData = new FormData();
+    this.appendCarData(formData, data, imageFile);
+    return this.http.post<CarApiResponse>(`${this.apiUrl}/cars`, formData);
+  }
 
+  updateUnit(id: number, data: CreateCarDto, imageFile: File | null): Observable<CarApiResponse> {
+    const formData = new FormData();
+    this.appendCarData(formData, data, imageFile);
+    formData.append('_method', 'PUT'); 
+    return this.http.post<CarApiResponse>(`${this.apiUrl}/cars/${id}`, formData);
+  }
+
+  deleteUnit(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/cars/${id}`);
+  }
+
+  private appendCarData(formData: FormData, data: CreateCarDto, imageFile: File | null) {
     formData.append('name', data.name);
     formData.append('plate', data.plate);
-    if (data.model) {
-      formData.append('model', data.model);
-    }
+    if (data.model) formData.append('model', data.model);
     formData.append('company', data.company);
     formData.append('status', data.status);
-
+    
     if (imageFile) {
       formData.append('image', imageFile, imageFile.name);
     }
-
-    return this.http.post<CarApiResponse>(`${this.apiUrl}/cars`, formData);
   }
 
   updateUnitStatus(carId: number, status: string): Observable<CarApiResponse> {

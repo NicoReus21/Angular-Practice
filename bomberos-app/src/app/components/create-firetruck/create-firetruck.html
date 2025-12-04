@@ -1,7 +1,7 @@
 <form [formGroup]="unitForm" (ngSubmit)="onSave()">
   
   <div mat-dialog-title class="dialog-title-container">
-    <span class="title-text">Crear Nueva Unidad</span>
+    <span class="title-text">{{ isEditMode() ? 'Editar Unidad' : 'Crear Nueva Unidad' }}</span>
     <button
       mat-icon-button
       class="close-button"
@@ -64,6 +64,13 @@
     </mat-form-field>
 
     <div class="image-upload-section">
+      @if (currentImageUrl() && !selectedImageName()) {
+        <div class="current-image-preview">
+          <p class="preview-label">Imagen Actual:</p>
+          <img [src]="currentImageUrl()" alt="Foto actual" class="preview-thumbnail">
+        </div>
+      }
+
       <input
         type="file"
         #imageInput
@@ -79,15 +86,18 @@
         class="file-button"
         color="primary">
         <mat-icon>upload_file</mat-icon>
-        Subir Foto (Opcional)
+        {{ isEditMode() ? 'Cambiar Foto' : 'Subir Foto (Opcional)' }}
       </button>
 
       @if (selectedImageName()) {
       <div class="file-name-container">
-        <mat-icon>image</mat-icon>
-        <span class="file-name">{{ selectedImageName() }}</span>
-        <button mat-icon-button color="warn" (click)="selectedImageName.set('')" type="button">
-            <mat-icon>delete</mat-icon>
+        <mat-icon class="new-file-icon">image</mat-icon>
+        <div class="file-info">
+          <span class="file-label-new">Nueva imagen seleccionada:</span>
+          <span class="file-name">{{ selectedImageName() }}</span>
+        </div>
+        <button mat-icon-button color="warn" (click)="onRemoveNewImage()" type="button" matTooltip="Cancelar subida">
+            <mat-icon>close</mat-icon>
         </button>
       </div>
       }
@@ -97,7 +107,7 @@
   <div mat-dialog-actions class="dialog-actions" align="end">
     <button mat-stroked-button (click)="onCancel()" type="button">Cancelar</button>
     <button mat-flat-button color="primary" type="submit" [disabled]="unitForm.invalid">
-      Guardar Unidad
+      {{ isEditMode() ? 'Actualizar Unidad' : 'Guardar Unidad' }}
     </button>
   </div>
 </form>
