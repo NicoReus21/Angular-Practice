@@ -37,6 +37,8 @@ use App\Http\Controllers\BomberoAccidentado\GV\BoletaGastoAcompananteController;
 use App\Http\Controllers\BomberoAccidentado\GV\CerfiticadoMedicoIncapacidadController;
 use App\Http\Controllers\BomberoAccidentado\GV\OtroGastoController;
 use App\Http\Controllers\CarChecklistItemsController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\GroupController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
@@ -97,16 +99,17 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Mini sistema de usuarios y grupos
-    Route::get('/users', [AuthController::class, 'index']);
-    Route::get('/users/{id}', [AuthController::class, 'show']);
-    Route::put('/users/{id}', [AuthController::class, 'update']);
-    Route::delete('/users/{id}', [AuthController::class, 'destroy']);
+    Route::get('/users', [UserController::class, 'index']);
+    Route::post('/users', [UserController::class, 'store']);
+    Route::get('/users/{id}', [UserController::class, 'show']);
+    Route::put('/users/{id}', [UserController::class, 'update']);
+    Route::delete('/users/{id}', [UserController::class, 'destroy']);
 
-    Route::get('/groups', [AuthController::class, 'index']);
-    Route::get('/groups/{id}', [AuthController::class, 'show']);
-    Route::post('/groups', [AuthController::class, 'store']);
-    Route::put('/groups/{id}', [AuthController::class, 'update']);
-    Route::delete('/groups/{id}', [AuthController::class, 'destroy']);
+    Route::get('/groups', [GroupController::class, 'index']);
+    Route::get('/groups/{id}', [GroupController::class, 'show']);
+    Route::post('/groups', [GroupController::class, 'store']);
+    Route::put('/groups/{id}', [GroupController::class, 'update']);
+    Route::delete('/groups/{id}', [GroupController::class, 'destroy']);
 
     Route::apiResource('rols', RolController::class);
     Route::get('/permissions', [PermissionController::class, 'index']);

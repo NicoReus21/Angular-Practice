@@ -39,4 +39,28 @@ export class AuthDirectoryService {
   getGroups(): Observable<ApiGroup[]> {
     return this.http.get<ApiGroup[]>(`${this.apiUrl}/groups`);
   }
+
+  createGroup(payload: { name: string; description?: string | null }): Observable<ApiGroup> {
+    return this.http.post<ApiGroup>(`${this.apiUrl}/groups`, payload);
+  }
+
+  updateGroup(groupId: number, payload: { name?: string; description?: string | null }): Observable<ApiGroup> {
+    return this.http.put<ApiGroup>(`${this.apiUrl}/groups/${groupId}`, payload);
+  }
+
+  assignUsersToGroup(groupId: number, userIds: number[]): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/groups/${groupId}/users`, { users: userIds });
+  }
+
+  assignPermissionsToGroup(groupId: number, permissionIds: number[]): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/groups/${groupId}/permissions`, { permissions: permissionIds });
+  }
+
+  assignGroupsToUser(userId: number, groupIds: number[]): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/users/${userId}/groups`, { groups: groupIds });
+  }
+
+  assignRolesToUser(userId: number, roleIds: number[]): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/users/${userId}/roles`, { roles: roleIds });
+  }
 }

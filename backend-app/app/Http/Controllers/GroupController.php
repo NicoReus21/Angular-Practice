@@ -3,64 +3,59 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
-use App\Http\Requests\StoreGroupRequest;
-use App\Http\Requests\UpdateGroupRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class GroupController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        return Group::all();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'id_parent_group' => 'nullable|integer|exists:groups,id',
+        ]);
+
+        $group = Group::create([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+            'id_parent_group' => $validated['id_parent_group'] ?? null,
+            'id_user_created' => Auth::id(),
+        ]);
+
+        return response()->json($group, 201);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreGroupRequest $request)
+    public function show(string $id)
     {
-        //
+        return Group::findOrFail($id);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Group $group)
+    public function update(Request $request, string $id)
     {
-        //
+        $group = Group::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'description' => 'nullable|string',
+            'id_parent_group' => 'nullable|integer|exists:groups,id',
+        ]);
+
+        $group->update($validated);
+
+        return response()->json($group);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Group $group)
+    public function destroy(string $id)
     {
-        //
-    }
+        $group = Group::findOrFail($id);
+        $group->delete();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateGroupRequest $request, Group $group)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Group $group)
-    {
-        //
+        return response()->json(null, 204);
     }
 }

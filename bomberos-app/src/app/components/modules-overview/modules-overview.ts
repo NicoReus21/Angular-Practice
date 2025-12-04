@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { AuthService } from '../../services/auth-service';
 
 interface ModuleCard {
   title: string;
@@ -31,6 +32,8 @@ interface ModuleCard {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ModulesOverviewComponent {
+  private authService = inject(AuthService);
+
   readonly modules: ModuleCard[] = [
     {
       title: 'Bombero accidentado',
@@ -66,7 +69,7 @@ export class ModulesOverviewComponent {
       tags: ['Seguridad', 'Permisos']
     },
     {
-      title: 'Más próximamente',
+      title: 'Próximamente más',
       subtitle: 'Nuevos desarrollos en curso',
       description:
         'Estamos preparando más módulos para ampliar el alcance del sistema SIGBA.',
@@ -75,5 +78,9 @@ export class ModulesOverviewComponent {
       tags: ['En diseño']
     }
   ];
+
+  logout(): void {
+    this.authService.logout();
+  }
 }
 

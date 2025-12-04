@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -38,7 +38,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; /
     ])
   ]
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   errorMessage: string | null = null;
   isLoading = false;
@@ -52,6 +52,13 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
+  }
+
+  ngOnInit(): void {
+    const token = this.authService.getToken();
+    if (token) {
+      this.router.navigate(['/modules']);
+    }
   }
 
   onSubmit(): void {

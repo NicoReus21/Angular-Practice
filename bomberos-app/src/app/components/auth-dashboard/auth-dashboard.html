@@ -35,15 +35,94 @@
         <h1>{{ selectedSection().label }}</h1>
         <p>{{ selectedSection().description }}</p>
       </div>
-      <button mat-flat-button color="warn">
-        <mat-icon>settings</mat-icon>
-        Gestionar {{ selectedSection().label | lowercase }}
-      </button>
+      @if (selectedSection().id === 'usuarios' || selectedSection().id === 'grupos') {
+        <button mat-flat-button color="warn" (click)="toggleManagementPanel()">
+          <mat-icon>{{ isManaging() ? 'close' : 'settings' }}</mat-icon>
+          @if (!isManaging()) {
+            Gestionar {{ selectedSection().label | lowercase }}
+          } @else {
+            Ocultar gestion
+          }
+        </button>
+      }
     </header>
 
     @switch (activeSectionId()) {
       @case ('usuarios') {
         <section class="users-section">
+          @if (isManaging()) {
+            <mat-card class="management-card">
+              <mat-card-header>
+                <div>
+                  <mat-card-title>Gestionar usuarios</mat-card-title>
+                  <mat-card-subtitle>
+                    Asigna grupos y roles a un usuario existente.
+                  </mat-card-subtitle>
+                </div>
+              </mat-card-header>
+              <mat-card-content>
+                @if (selectedUser()) {
+                  <div class="context-bar">
+                    <span class="pill">Editando: {{ selectedUser()?.name }}</span>
+                    <span class="pill pill--muted">{{ selectedUser()?.email }}</span>
+                  </div>
+                }
+                <form
+                  class="form-grid"
+                  [formGroup]="userAccessForm"
+                  (ngSubmit)="submitUserAccess()"
+                >
+                  <mat-form-field appearance="outline">
+                    <mat-label>Usuario</mat-label>
+                    <mat-select formControlName="userId" placeholder="Selecciona un usuario">
+                      @for (user of users(); track user.id) {
+                        <mat-option [value]="user.id">{{ user.name }} - {{ user.email }}</mat-option>
+                      }
+                    </mat-select>
+                    @if (userAccessForm.get('userId')?.hasError('required')) {
+                      <mat-error>Selecciona un usuario.</mat-error>
+                    }
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Grupos</mat-label>
+                    <mat-select formControlName="groupIds" multiple placeholder="Grupos">
+                      @for (group of groups(); track group.id) {
+                        <mat-option [value]="group.id">{{ group.name }}</mat-option>
+                      }
+                    </mat-select>
+                    @if (userAccessForm.get('groupIds')?.hasError('required')) {
+                      <mat-error>Selecciona al menos un grupo.</mat-error>
+                    }
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Roles</mat-label>
+                    <mat-select formControlName="roleIds" multiple placeholder="Roles">
+                      @for (role of allRoles(); track role.id) {
+                        <mat-option [value]="role.id">{{ role.name }}</mat-option>
+                      }
+                    </mat-select>
+                    @if (userAccessForm.get('roleIds')?.hasError('required')) {
+                      <mat-error>Selecciona al menos un rol.</mat-error>
+                    }
+                  </mat-form-field>
+
+                  <div class="form-actions">
+                    <button
+                      mat-flat-button
+                      color="warn"
+                      type="submit"
+                      [disabled]="userAccessForm.invalid || isSavingUserAccess()"
+                    >
+                      <mat-icon>save</mat-icon>
+                      {{ isSavingUserAccess() ? 'Guardando...' : 'Guardar cambios' }}
+                    </button>
+                  </div>
+                </form>
+              </mat-card-content>
+            </mat-card>
+          }
           <div class="stats-grid">
             <mat-card class="stat-card">
               <mat-icon>people</mat-icon>
@@ -144,6 +223,16 @@
                     </td>
                   </ng-container>
 
+                  <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                    <td mat-cell *matCellDef="let element">
+                      <button mat-stroked-button color="primary" size="small" (click)="manageUser(element)">
+                        <mat-icon>tune</mat-icon>
+                        Gestionar
+                      </button>
+                    </td>
+                  </ng-container>
+
                   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
                 </table>
@@ -159,6 +248,133 @@
       }
       @case ('grupos') {
         <section class="groups-section">
+          @if (isManaging()) {
+            <mat-card class="management-card">
+              <mat-card-header>
+                <div>
+                  <mat-card-title>Gestionar grupos</mat-card-title>
+                  <mat-card-subtitle>
+                    Crea nuevos grupos, asigna permisos o vincula usuarios.
+                  </mat-card-subtitle>
+                </div>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="form-grid form-grid--split">
+                  <form [formGroup]="groupForm" (ngSubmit)="submitGroup()">
+                    <h4>Crear grupo</h4>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Nombre del grupo</mat-label>
+                      <input matInput formControlName="name" placeholder="Ej. Bravo 5" />
+                      @if (groupForm.get('name')?.hasError('required')) {
+                        <mat-error>El nombre es obligatorio.</mat-error>
+                      }
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Descripcion</mat-label>
+                      <textarea matInput rows="3" formControlName="description"></textarea>
+                    </mat-form-field>
+                    <div class="form-actions">
+                      <button
+                        mat-flat-button
+                        color="warn"
+                        type="submit"
+                        [disabled]="groupForm.invalid || isSavingGroup()"
+                      >
+                        <mat-icon>add</mat-icon>
+                        {{ isSavingGroup() ? 'Creando...' : 'Crear grupo' }}
+                      </button>
+                    </div>
+                  </form>
+
+                  <form [formGroup]="groupPermissionForm" (ngSubmit)="submitGroupPermissions()">
+                    <h4>Permisos por grupo</h4>
+                    @if (selectedGroup()) {
+                      <div class="context-bar">
+                        <span class="pill">Editando: {{ selectedGroup()?.name }}</span>
+                        <span class="pill pill--muted">Usuarios: {{ selectedGroup()?.usersCount ?? '--' }}</span>
+                      </div>
+                    }
+                    <mat-form-field appearance="outline">
+                      <mat-label>Grupo</mat-label>
+                      <mat-select formControlName="groupId" placeholder="Selecciona grupo">
+                        @for (group of groups(); track group.id) {
+                          <mat-option [value]="group.id">{{ group.name }}</mat-option>
+                        }
+                      </mat-select>
+                      @if (groupPermissionForm.get('groupId')?.hasError('required')) {
+                        <mat-error>Selecciona un grupo.</mat-error>
+                      }
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Permisos</mat-label>
+                      <mat-select formControlName="permissionIds" multiple>
+                        @for (permission of permissions(); track permission.id) {
+                          <mat-option [value]="permission.id">{{ permission.name }}</mat-option>
+                        }
+                      </mat-select>
+                      @if (groupPermissionForm.get('permissionIds')?.hasError('required')) {
+                        <mat-error>Selecciona al menos un permiso.</mat-error>
+                      }
+                    </mat-form-field>
+                    <div class="form-actions">
+                      <button
+                        mat-stroked-button
+                        color="primary"
+                        type="submit"
+                        [disabled]="groupPermissionForm.invalid || isSavingGroupPermissions()"
+                      >
+                        <mat-icon>verified_user</mat-icon>
+                        {{ isSavingGroupPermissions() ? 'Asignando...' : 'Asignar permisos' }}
+                      </button>
+                    </div>
+                  </form>
+
+                  <form [formGroup]="groupUsersForm" (ngSubmit)="submitGroupUsers()">
+                    <h4>Usuarios en grupo</h4>
+                    @if (selectedGroup()) {
+                      <div class="context-bar">
+                        <span class="pill">Editando: {{ selectedGroup()?.name }}</span>
+                        <span class="pill pill--muted">Usuarios: {{ selectedGroup()?.usersCount ?? '--' }}</span>
+                      </div>
+                    }
+                    <mat-form-field appearance="outline">
+                      <mat-label>Grupo</mat-label>
+                      <mat-select formControlName="groupId" placeholder="Selecciona grupo">
+                        @for (group of groups(); track group.id) {
+                          <mat-option [value]="group.id">{{ group.name }}</mat-option>
+                        }
+                      </mat-select>
+                      @if (groupUsersForm.get('groupId')?.hasError('required')) {
+                        <mat-error>Selecciona un grupo.</mat-error>
+                      }
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Usuarios</mat-label>
+                      <mat-select formControlName="userIds" multiple>
+                        @for (user of users(); track user.id) {
+                          <mat-option [value]="user.id">{{ user.name }} - {{ user.email }}</mat-option>
+                        }
+                      </mat-select>
+                      @if (groupUsersForm.get('userIds')?.hasError('required')) {
+                        <mat-error>Selecciona al menos un usuario.</mat-error>
+                      }
+                    </mat-form-field>
+                    <div class="form-actions">
+                      <button
+                        mat-stroked-button
+                        color="primary"
+                        type="submit"
+                        [disabled]="groupUsersForm.invalid || isSavingGroupUsers()"
+                      >
+                        <mat-icon>group_add</mat-icon>
+                        {{ isSavingGroupUsers() ? 'Asignando...' : 'Asignar usuarios' }}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          }
           <mat-card>
             <mat-card-header>
               <div>
@@ -173,7 +389,7 @@
               </button>
             </mat-card-header>
 
-            <mat-card-content>
+              <mat-card-content>
               <div class="table-wrapper">
                 @if (isLoadingGroups()) {
                   <div class="state state--loading">
@@ -204,6 +420,7 @@
                         <th>Usuarios</th>
                         <th>Descripcion</th>
                         <th>Creado</th>
+                        <th>Acciones</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -213,6 +430,12 @@
                           <td>{{ group.usersCount ?? '--' }}</td>
                           <td>{{ group.description }}</td>
                           <td>{{ group.createdAt | date: 'shortDate' }}</td>
+                          <td>
+                            <button mat-stroked-button color="primary" size="small" (click)="manageGroup(group)">
+                              <mat-icon>tune</mat-icon>
+                              Gestionar
+                            </button>
+                          </td>
                         </tr>
                       }
                     </tbody>

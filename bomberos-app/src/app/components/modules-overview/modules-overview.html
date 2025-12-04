@@ -1,9 +1,18 @@
 <section class="modules-shell">
+  <div class="modules-topbar">
+    <div class="modules-topbar__left">
+      <p class="modules-eyebrow">Panel principal</p>
+    </div>
+    <button mat-stroked-button color="warn" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      Cerrar sesion
+    </button>
+  </div>
+
   <header class="modules-header">
-    <p class="modules-eyebrow">Panel principal</p>
-    <h1>Explora los módulos disponibles</h1>
+    <h1>Explora los modulos disponibles</h1>
     <p class="modules-description">
-      Elige el módulo con el que deseas trabajar para continuar con tus tareas operativas.
+      Elige el mИdulo con el que deseas trabajar para continuar con tus tareas operativas.
     </p>
   </header>
 
@@ -36,15 +45,14 @@
           [routerLink]="module.route"
         >
           <mat-icon>open_in_new</mat-icon>
-          {{ module.ctaLabel || 'Ir al módulo' }}
+          {{ module.ctaLabel || 'Ir al mИdulo' }}
         </a>
         <ng-template #comingSoon>
           <button mat-stroked-button color="warn" disabled>
-            Más próximamente
+            Próximamente más
           </button>
         </ng-template>
       </mat-card-actions>
     </mat-card>
   </div>
 </section>
-

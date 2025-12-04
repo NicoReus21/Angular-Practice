@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Permission;
 
 class PermissionSeeder extends Seeder
 {
@@ -12,6 +12,36 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $definitions = [
+            // Operativos generales
+            ['module' => 'Bombero Accidentado', 'section' => 'Process', 'actions' => ['create', 'read', 'update', 'delete']],
+
+            // Material Mayor
+            ['module' => 'Material Mayor', 'section' => 'Car', 'actions' => ['create', 'read', 'update', 'delete']],
+            ['module' => 'Material Mayor', 'section' => 'Maintenance', 'actions' => ['create', 'read', 'update', 'delete']],
+            ['module' => 'Material Mayor', 'section' => 'Document', 'actions' => ['create', 'read', 'update', 'delete']],
+            ['module' => 'Material Mayor', 'section' => 'Checklist', 'actions' => ['create', 'read', 'update', 'delete']],
+
+            // Administración
+            ['module' => 'Sistema', 'section' => 'User', 'actions' => ['create', 'read', 'update', 'delete']],
+            ['module' => 'Sistema', 'section' => 'Group', 'actions' => ['create', 'read', 'update', 'delete']],
+            ['module' => 'Sistema', 'section' => 'Rol', 'actions' => ['create', 'read', 'update', 'delete']],
+            ['module' => 'Sistema', 'section' => 'Permission', 'actions' => ['create', 'read', 'update', 'delete']],
+        ];
+
+        foreach ($definitions as $def) {
+            foreach ($def['actions'] as $action) {
+                Permission::updateOrCreate(
+                    [
+                        'module' => $def['module'],
+                        'section' => $def['section'],
+                        'action' => $action,
+                    ],
+                    [
+                        'description' => "{$action} {$def['section']}",
+                    ]
+                );
+            }
+        }
     }
 }

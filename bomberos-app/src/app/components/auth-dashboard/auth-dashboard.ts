@@ -4,9 +4,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { ReactiveFormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { RoleManagementComponent } from '../role-management/role-management';
 import { AuthDirectoryService, ApiGroup, ApiUser } from '../../services/auth-directory.service';
 import { RoleService } from '../../services/role-service';
+import { forkJoin } from 'rxjs';
 
 interface UserRecord {
   id: number;
@@ -15,6 +21,8 @@ interface UserRecord {
   company: string;
   groups: string[];
   roles: string[];
+  groupIds: number[];
+  roleIds: number[];
   status: 'Activo' | 'Suspendido' | 'Pendiente';
 }
 
@@ -48,6 +56,11 @@ interface DashboardSection {
     MatButtonModule,
     MatCardModule,
     MatTableModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+    MatSnackBarModule,
     RoleManagementComponent
   ],
   templateUrl: './auth-dashboard.html',
@@ -57,6 +70,8 @@ interface DashboardSection {
 export class AuthDashboardComponent implements OnInit {
   private authDirectory = inject(AuthDirectoryService);
   private roleService = inject(RoleService);
+  private fb = inject(FormBuilder);
+  private snackBar = inject(MatSnackBar);
 
   readonly sections: DashboardSection[] = [
     {
@@ -88,11 +103,12 @@ export class AuthDashboardComponent implements OnInit {
   readonly selectedSection = signal<DashboardSection>(this.sections[0]);
   readonly activeSectionId = computed(() => this.selectedSection().id);
 
-  readonly displayedColumns = ['name', 'groups', 'roles', 'status'];
+  readonly displayedColumns = ['name', 'groups', 'roles', 'status', 'actions'];
 
   readonly users = signal<UserRecord[]>([]);
   readonly groups = signal<GroupRecord[]>([]);
   readonly permissions = signal<PermissionRecord[]>([]);
+  readonly allRoles = signal<any[]>([]);
 
   readonly isLoadingUsers = signal(false);
   readonly isLoadingGroups = signal(false);
@@ -101,6 +117,36 @@ export class AuthDashboardComponent implements OnInit {
   readonly userError = signal<string | null>(null);
   readonly groupError = signal<string | null>(null);
   readonly permissionError = signal<string | null>(null);
+  readonly isManaging = signal(false);
+
+  readonly isSavingUserAccess = signal(false);
+  readonly isSavingGroup = signal(false);
+  readonly isSavingGroupPermissions = signal(false);
+  readonly isSavingGroupUsers = signal(false);
+
+  readonly selectedUser = signal<UserRecord | null>(null);
+  readonly selectedGroup = signal<GroupRecord | null>(null);
+
+  userAccessForm = this.fb.group({
+    userId: this.fb.control<number | null>(null, Validators.required),
+    groupIds: this.fb.control<number[]>([], Validators.required),
+    roleIds: this.fb.control<number[]>([], Validators.required)
+  });
+
+  groupForm = this.fb.group({
+    name: ['', [Validators.required, Validators.minLength(3)]],
+    description: ['']
+  });
+
+  groupPermissionForm = this.fb.group({
+    groupId: this.fb.control<number | null>(null, Validators.required),
+    permissionIds: this.fb.control<number[]>([], Validators.required)
+  });
+
+  groupUsersForm = this.fb.group({
+    groupId: this.fb.control<number | null>(null, Validators.required),
+    userIds: this.fb.control<number[]>([], Validators.required)
+  });
 
   readonly activeUsersCount = computed(
     () => this.users().filter((user) => user.status === 'Activo').length
@@ -118,6 +164,7 @@ export class AuthDashboardComponent implements OnInit {
     this.loadUsers();
     this.loadGroups();
     this.loadPermissions();
+    this.loadRoles();
   }
 
   selectSection(section: DashboardSection): void {
@@ -182,6 +229,139 @@ export class AuthDashboardComponent implements OnInit {
     });
   }
 
+  loadRoles(): void {
+    this.roleService.getRoles().subscribe({
+      next: (data: any[]) => this.allRoles.set(data || []),
+      error: (err) => {
+        console.error(err);
+        this.snackBar.open('No se pudieron cargar los roles.', 'Cerrar', { duration: 3500 });
+      }
+    });
+  }
+
+  toggleManagementPanel(): void {
+    this.isManaging.update((value) => !value);
+  }
+
+  manageUser(user: UserRecord): void {
+    if (!this.isManaging()) {
+      this.isManaging.set(true);
+    }
+    this.selectedSection.set(this.sections.find((s) => s.id === 'usuarios')!);
+    this.selectedUser.set(user);
+    this.userAccessForm.patchValue({
+      userId: user.id,
+      groupIds: user.groupIds || [],
+      roleIds: user.roleIds || []
+    });
+  }
+
+  manageGroup(group: GroupRecord): void {
+    if (!this.isManaging()) {
+      this.isManaging.set(true);
+    }
+    this.selectedSection.set(this.sections.find((s) => s.id === 'grupos')!);
+    this.selectedGroup.set(group);
+    this.groupPermissionForm.patchValue({ groupId: group.id, permissionIds: [] });
+    this.groupUsersForm.patchValue({ groupId: group.id, userIds: [] });
+  }
+
+  submitUserAccess(): void {
+    if (this.userAccessForm.invalid || this.isSavingUserAccess()) {
+      this.userAccessForm.markAllAsTouched();
+      return;
+    }
+
+    const { userId, groupIds, roleIds } = this.userAccessForm.value;
+    this.isSavingUserAccess.set(true);
+
+    forkJoin([
+      this.authDirectory.assignGroupsToUser(userId!, groupIds || []),
+      this.authDirectory.assignRolesToUser(userId!, roleIds || [])
+    ]).subscribe({
+      next: () => {
+        this.snackBar.open('Accesos del usuario actualizados.', 'Cerrar', { duration: 3000 });
+        this.loadUsers();
+      },
+      error: (err) => {
+        console.error(err);
+        this.snackBar.open('No se pudieron guardar los cambios del usuario.', 'Cerrar', {
+          duration: 4000
+        });
+      },
+      complete: () => this.isSavingUserAccess.set(false)
+    });
+  }
+
+  submitGroup(): void {
+    if (this.groupForm.invalid || this.isSavingGroup()) {
+      this.groupForm.markAllAsTouched();
+      return;
+    }
+
+    this.isSavingGroup.set(true);
+    const { name, description } = this.groupForm.value;
+
+    this.authDirectory.createGroup({ name: name!, description: description || null }).subscribe({
+      next: (newGroup) => {
+        this.groups.update((current) => [...current, this.mapGroup(newGroup)]);
+        this.snackBar.open('Grupo creado con exito.', 'Cerrar', { duration: 3000 });
+        this.groupForm.reset();
+      },
+      error: (err) => {
+        console.error(err);
+        this.snackBar.open('No se pudo crear el grupo.', 'Cerrar', { duration: 4000 });
+      },
+      complete: () => this.isSavingGroup.set(false)
+    });
+  }
+
+  submitGroupPermissions(): void {
+    if (this.groupPermissionForm.invalid || this.isSavingGroupPermissions()) {
+      this.groupPermissionForm.markAllAsTouched();
+      return;
+    }
+
+    const { groupId, permissionIds } = this.groupPermissionForm.value;
+    this.isSavingGroupPermissions.set(true);
+
+    this.authDirectory
+      .assignPermissionsToGroup(groupId!, permissionIds || [])
+      .subscribe({
+        next: () => {
+          this.snackBar.open('Permisos del grupo actualizados.', 'Cerrar', { duration: 3000 });
+        },
+        error: (err) => {
+          console.error(err);
+          this.snackBar.open('No se pudieron asignar los permisos.', 'Cerrar', { duration: 4000 });
+        },
+        complete: () => this.isSavingGroupPermissions.set(false)
+      });
+  }
+
+  submitGroupUsers(): void {
+    if (this.groupUsersForm.invalid || this.isSavingGroupUsers()) {
+      this.groupUsersForm.markAllAsTouched();
+      return;
+    }
+
+    const { groupId, userIds } = this.groupUsersForm.value;
+    this.isSavingGroupUsers.set(true);
+
+    this.authDirectory.assignUsersToGroup(groupId!, userIds || []).subscribe({
+      next: () => {
+        this.snackBar.open('Usuarios asignados al grupo.', 'Cerrar', { duration: 3000 });
+        this.loadGroups();
+        this.loadUsers();
+      },
+      error: (err) => {
+        console.error(err);
+        this.snackBar.open('No se pudieron vincular los usuarios.', 'Cerrar', { duration: 4000 });
+      },
+      complete: () => this.isSavingGroupUsers.set(false)
+    });
+  }
+
   private mapUser(user: ApiUser): UserRecord {
     return {
       id: user.id,
@@ -190,6 +370,8 @@ export class AuthDashboardComponent implements OnInit {
       company: user.company || 'Sin compania',
       groups: (user.groups || []).map((group) => group.name || 'Grupo'),
       roles: (user.roles || []).map((role) => role.name || 'Rol'),
+      groupIds: (user.groups || []).map((group) => group.id),
+      roleIds: (user.roles || []).map((role) => role.id),
       status: this.normalizeStatus(user.status)
     };
   }
@@ -221,7 +403,7 @@ export class AuthDashboardComponent implements OnInit {
   private mapPermission(permission: any): PermissionRecord {
     return {
       id: permission.id,
-      name: permission.name,
+      name: permission.name || permission.guard_name || `Permiso ${permission.id}`,
       description: permission.description || permission.guard_name || null
     };
   }
