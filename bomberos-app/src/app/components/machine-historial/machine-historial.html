@@ -71,7 +71,7 @@
     <div class="no-selection">
       <mat-icon>directions_car</mat-icon>
       <h3 class="mat-h3">Seleccione una unidad</h3>
-      
+
       <button mat-raised-button color="primary" (click)="toggleSidenav()">
         Ver Lista de Unidades
       </button>
@@ -82,16 +82,16 @@
       <div class="detail-header">
         <div class="header-info">
           <h1 class="mat-h1">{{ selectedUnit()!.name }}</h1>
-          
+
           <mat-chip-listbox>
-            <mat-chip 
+            <mat-chip
               [ngClass]="getStatusChipClass(selectedUnit()!.status)"
               [matMenuTriggerFor]="statusMenu"
               matTooltip="Clic para cambiar estado"
-              style="cursor: pointer; padding-right: 8px;">
-              
+              style="cursor: pointer; padding-right: 8px"
+            >
               {{ selectedUnit()!.status }}
-              
+
               <mat-icon matChipTrailingIcon>arrow_drop_down</mat-icon>
             </mat-chip>
           </mat-chip-listbox>
@@ -110,6 +110,20 @@
               <span>Fuera de Servicio</span>
             </button>
           </mat-menu>
+        </div>
+
+        <div class="header-actions">
+          <button mat-icon-button color="primary" matTooltip="Editar unidad" (click)="onEditUnit()">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="warn"
+            matTooltip="Eliminar unidad"
+            (click)="onDeleteUnit()"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
         </div>
       </div>
 
@@ -261,30 +275,70 @@
 
             <mat-divider class="form-divider"></mat-divider>
 
-            @if (selectedUnit()!.documents.length === 0) {
-            <p class="empty-state">No hay gastos registrados.</p>
+            <!-- SECCIÓN NUEVA: Filtro de Fechas -->
+            <div
+              class="filter-section"
+              style="padding: 10px 0; display: flex; align-items: center; gap: 10px"
+            >
+              <mat-form-field
+                appearance="outline"
+                class="full-width"
+                style="font-size: 14px; max-width: 300px"
+              >
+                <mat-label>Filtrar por rango de fechas</mat-label>
+                <mat-date-range-input [rangePicker]="historyPicker">
+                  <input
+                    matStartDate
+                    placeholder="Desde"
+                    [ngModel]="documentsDateStart()"
+                    (dateChange)="documentsDateStart.set($event.value)"
+                  />
+                  <input
+                    matEndDate
+                    placeholder="Hasta"
+                    [ngModel]="documentsDateEnd()"
+                    (dateChange)="documentsDateEnd.set($event.value)"
+                  />
+                </mat-date-range-input>
+                <mat-datepicker-toggle matIconSuffix [for]="historyPicker"></mat-datepicker-toggle>
+                <mat-date-range-picker #historyPicker></mat-date-range-picker>
+
+                @if (documentsDateStart() || documentsDateEnd()) {
+                <button mat-icon-button matSuffix (click)="clearDateFilter($event)">
+                  <mat-icon>close</mat-icon>
+                </button>
+                }
+              </mat-form-field>
+            </div>
+
+            @if (filteredDocuments().length === 0) {
+            <p class="empty-state">
+              @if (documentsDateStart() || documentsDateEnd()) { No se encontraron documentos en
+              este rango de fechas. } @else { No hay gastos registrados. }
+            </p>
             } @else {
             <mat-list>
-              @for (doc of selectedUnit()!.documents; track doc.id) {
-              
+              @for (doc of filteredDocuments(); track doc.id) {
+
               <div class="document-wrapper" [class.unpaid-row]="!doc.is_paid">
                 <mat-list-item class="document-item">
-                  <mat-icon matListItemIcon [class.text-warn]="!doc.is_paid">{{ getDocumentIcon(doc.type) }}</mat-icon>
-                  
+                  <mat-icon matListItemIcon [class.text-warn]="!doc.is_paid">{{
+                    getDocumentIcon(doc.type)
+                  }}</mat-icon>
+
                   <div matListItemTitle class="doc-title-row">
                     {{ doc.name }}
                     @if (!doc.is_paid) {
-                      <span class="unpaid-badge">PENDIENTE DE PAGO</span>
+                    <span class="unpaid-badge">PENDIENTE DE PAGO</span>
                     }
                   </div>
                   <div matListItemLine>Subido: {{ doc.uploaded_at_formatted }}</div>
-  
+
                   <span class="document-cost" [class.text-warn]="!doc.is_paid">
                     {{ doc.cost || 0 | currency : 'CLP' : 'symbol-narrow' : '1.0-0' }}
                   </span>
-  
+
                   <div class="action-buttons">
-                    <!-- BOTÓN DE PAGO -->
                     <button
                       mat-icon-button
                       [matTooltip]="doc.is_paid ? 'Marcar como no pagado' : 'Marcar como pagado'"
@@ -311,12 +365,11 @@
                   </div>
                 </mat-list-item>
 
-                <!-- Alerta de texto explícita -->
                 @if (!doc.is_paid) {
-                  <div class="unpaid-alert">
-                    <mat-icon class="alert-icon">warning</mat-icon>
-                    <span>Este documento no ha sido pagado.</span>
-                  </div>
+                <div class="unpaid-alert">
+                  <mat-icon class="alert-icon">warning</mat-icon>
+                  <span>Este documento no ha sido pagado.</span>
+                </div>
                 }
               </div>
               <mat-divider></mat-divider>
@@ -324,7 +377,7 @@
             </mat-list>
 
             <div class="total-cost">
-              <span class="total-label">Total:</span>
+              <span class="total-label">Total (Filtrado):</span>
               <span class="total-amount">{{
                 totalDocumentsCost() | currency : 'CLP' : 'symbol-narrow' : '1.0-0'
               }}</span>

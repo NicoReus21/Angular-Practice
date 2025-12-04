@@ -31,6 +31,9 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { BreakpointObserver } from '@angular/cdk/layout';
+// Importaciones para el Datepicker
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 
 import Swal from 'sweetalert2';
 
@@ -38,6 +41,7 @@ import {
   MachineHistorialService,
   CarApiResponse,
   CreateChecklistDto,
+  CreateCarDto,
   ApiDocument,
   ApiMaintenance,
   ChecklistGroup,
@@ -64,6 +68,7 @@ export interface AttachedDocument {
   type: 'pdf' | 'doc' | 'img' | 'other';
   url: string;
   uploaded_at_formatted: string;
+  created_at_raw: Date; 
   cost: number;
   is_paid: boolean;
   maintenance_id?: number;
@@ -108,10 +113,13 @@ export interface VehicleUnit {
     CurrencyPipe,
     MatToolbarModule,
     MatMenuModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   templateUrl: './machine-historial.html',
   styleUrls: ['./machine-historial.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [provideNativeDateAdapter()],
 })
 export class MachineHistorialComponent implements OnInit {
   private dialog = inject(MatDialog);
@@ -123,10 +131,13 @@ export class MachineHistorialComponent implements OnInit {
 
   private allUnits = signal<VehicleUnit[]>([]);
   selectedUnitId = signal<number | null>(null);
-  currentStatusFilter = signal<'Todos' | 'En Servicio' | 'En Taller' | 'Fuera de Servicio'>(
-    'Todos'
-  );
+  currentStatusFilter = signal<'Todos' | 'En Servicio' | 'En Taller' | 'Fuera de Servicio'>('Todos');
 
+  // Señales para el filtro de rango de fechas
+  documentsDateStart = signal<Date | null>(null);
+  documentsDateEnd = signal<Date | null>(null);
+
+  // Señales para nuevo documento
   newDocumentName = signal<string>('');
   newDocumentCost = signal<number | null>(null);
   newDocumentFile = signal<File | null>(null);
@@ -148,10 +159,38 @@ export class MachineHistorialComponent implements OnInit {
     return this.allUnits().find((u) => u.id === id) || null;
   });
 
-  totalDocumentsCost = computed(() => {
+  filteredDocuments = computed(() => {
     const unit = this.selectedUnit();
-    if (!unit || !unit.documents) return 0;
-    return unit.documents.reduce((sum, doc) => sum + (doc.cost || 0), 0);
+    if (!unit || !unit.documents) return [];
+
+    const start = this.documentsDateStart();
+    const end = this.documentsDateEnd();
+
+    if (!start && !end) return unit.documents;
+
+    return unit.documents.filter((doc) => {
+      const docDate = new Date(doc.created_at_raw);
+      const docTime = docDate.getTime();
+
+      let isValid = true;
+      
+      if (start) {
+        const s = new Date(start);
+        s.setHours(0, 0, 0, 0); 
+        isValid = isValid && docTime >= s.getTime();
+      }
+      
+      if (end) {
+        const e = new Date(end);
+        e.setHours(23, 59, 59, 999); 
+        isValid = isValid && docTime <= e.getTime();
+      }
+      return isValid;
+    });
+  });
+
+  totalDocumentsCost = computed(() => {
+    return this.filteredDocuments().reduce((sum, doc) => sum + (doc.cost || 0), 0);
   });
 
   ngOnInit(): void {
@@ -169,6 +208,9 @@ export class MachineHistorialComponent implements OnInit {
 
   onSelectUnit(id: number) {
     this.selectedUnitId.set(id);
+    this.documentsDateStart.set(null);
+    this.documentsDateEnd.set(null);
+    
     if (this.isMobile()) {
       this.sidenavOpened.set(false);
     }
@@ -178,29 +220,27 @@ export class MachineHistorialComponent implements OnInit {
     this.currentStatusFilter.set(status);
   }
 
+  clearDateFilter(event: Event) {
+    event.stopPropagation();
+    this.documentsDateStart.set(null);
+    this.documentsDateEnd.set(null);
+  }
+
   getStatusChipClass(status: string): string {
     switch (status) {
-      case 'En Servicio':
-        return 'status-chip-servicio';
-      case 'En Taller':
-        return 'status-chip-taller';
-      case 'Fuera de Servicio':
-        return 'status-chip-fuera';
-      default:
-        return '';
+      case 'En Servicio': return 'status-chip-servicio';
+      case 'En Taller': return 'status-chip-taller';
+      case 'Fuera de Servicio': return 'status-chip-fuera';
+      default: return '';
     }
   }
 
   getDocumentIcon(type: string): string {
     switch (type) {
-      case 'pdf':
-        return 'picture_as_pdf';
-      case 'doc':
-        return 'description';
-      case 'img':
-        return 'image';
-      default:
-        return 'attach_file';
+      case 'pdf': return 'picture_as_pdf';
+      case 'doc': return 'description';
+      case 'img': return 'image';
+      default: return 'attach_file';
     }
   }
 
@@ -209,17 +249,11 @@ export class MachineHistorialComponent implements OnInit {
     if (!unit || unit.status === newStatus) return;
     this.vehicleService.updateUnitStatus(unit.id, newStatus).subscribe({
       next: () => {
-        this.snackBar.open(`Estado cambiado a: ${newStatus}`, 'Cerrar', {
-          duration: 3000,
-          panelClass: 'success-snackbar',
-        });
+        this.snackBar.open(`Estado cambiado a: ${newStatus}`, 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
         this.loadUnits();
       },
       error: (err) => {
-        this.snackBar.open(`Error al cambiar estado: ${this.getFirstErrorMessage(err)}`, 'Cerrar', {
-          duration: 5000,
-          panelClass: 'error-snackbar',
-        });
+        this.snackBar.open(`Error al cambiar estado: ${this.getFirstErrorMessage(err)}`, 'Cerrar', { duration: 5000, panelClass: 'error-snackbar' });
       },
     });
   }
@@ -227,9 +261,7 @@ export class MachineHistorialComponent implements OnInit {
   loadUnits(): void {
     this.vehicleService.getUnits().subscribe({
       next: (unitsFromApi) => {
-        const mappedUnits: VehicleUnit[] = unitsFromApi.map((car) =>
-          this.mapApiCarToVehicleUnit(car)
-        );
+        const mappedUnits: VehicleUnit[] = unitsFromApi.map((car) => this.mapApiCarToVehicleUnit(car));
         this.allUnits.set(mappedUnits);
       },
       error: (err) => {
@@ -239,7 +271,70 @@ export class MachineHistorialComponent implements OnInit {
     });
   }
 
+  onEditUnit(): void {
+    const unit = this.selectedUnit();
+    if (!unit) return;
+
+    const isMobile = this.isMobile();
+    const dialogRef = this.dialog.open(CreateFiretruckComponent, {
+      width: isMobile ? '95vw' : '600px',
+      maxWidth: '100vw',
+      maxHeight: '95vh',
+      autoFocus: false,
+      data: { unit: unit }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result && result.formData && result.id) {
+        this.vehicleService.updateUnit(result.id, result.formData, result.imageFile).subscribe({
+          next: (updatedCar) => {
+            this.allUnits.update((units) => 
+              units.map(u => u.id === updatedCar.id ? this.mapApiCarToVehicleUnit(updatedCar) : u)
+            );
+            this.snackBar.open('Unidad actualizada correctamente', 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
+          },
+          error: (err) => {
+            this.snackBar.open(`Error al actualizar: ${this.getFirstErrorMessage(err)}`, 'Cerrar', { duration: 5000, panelClass: 'error-snackbar' });
+          }
+        });
+      }
+    });
+  }
+
+  onDeleteUnit(): void {
+    const unit = this.selectedUnit();
+    if (!unit) return;
+
+    Swal.fire({
+      title: `¿Eliminar ${unit.name}?`,
+      text: 'Se eliminará la unidad y todo su historial. Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.vehicleService.deleteUnit(unit.id).subscribe({
+          next: () => {
+            this.allUnits.update(units => units.filter(u => u.id !== unit.id));
+            this.selectedUnitId.set(null);
+            Swal.fire('Eliminado', 'La unidad ha sido eliminada.', 'success');
+          },
+          error: (err) => {
+            Swal.fire('Error', 'No se pudo eliminar la unidad.', 'error');
+            console.error(err);
+          }
+        });
+      }
+    });
+  }
+
   private mapApiCarToVehicleUnit(car: CarApiResponse): VehicleUnit {
+    const rawUrl = this.mapApiUrl(car.imageUrl);
+    // Truco para romper caché de imagen
+    const imageUrl = rawUrl ? `${rawUrl}?t=${new Date().getTime()}` : null;
+
     return {
       id: car.id,
       name: car.name,
@@ -247,7 +342,7 @@ export class MachineHistorialComponent implements OnInit {
       model: car.model,
       plate: car.plate,
       company: car.company,
-      imageUrl: this.mapApiUrl(car.imageUrl),
+      imageUrl: imageUrl, 
       checklists: (car.checklists || []).map((cl) => ({
         id: cl.id,
         persona_cargo: cl.persona_cargo,
@@ -267,18 +362,22 @@ export class MachineHistorialComponent implements OnInit {
         service_type: m.service_type || 'Borrador',
         pdf_url: this.mapApiUrl(m.pdf_url),
         status: m.status,
-        fullData: m, // Ahora 'm' incluye 'documents' correctamente tipado
+        fullData: m, 
       })),
     };
   }
 
   private mapApiDocumentToLocal(doc: ApiDocument): AttachedDocument {
+    const dateSource = (doc as any).date || doc.created_at;
+    const dateObj = new Date(dateSource);
+
     return {
       id: doc.id,
       name: doc.file_name,
       type: doc.file_type,
       url: this.mapApiUrl(doc.url) || doc.url,
-      uploaded_at_formatted: new Date(doc.created_at).toLocaleDateString('es-CL'),
+      uploaded_at_formatted: dateObj.toLocaleDateString('es-CL'),
+      created_at_raw: dateObj, 
       cost: +doc.cost,
       is_paid: !!doc.is_paid,
       maintenance_id: doc.maintenance_id,
@@ -307,6 +406,7 @@ export class MachineHistorialComponent implements OnInit {
     return err.message || defaultMsg;
   }
 
+  
   onChecklistItemToggle(checklistGroupId: number, taskId: number): void {
     this.allUnits.update((units) => {
       return units.map((unit) => {
@@ -369,16 +469,10 @@ export class MachineHistorialComponent implements OnInit {
         this.vehicleService.createChecklist(unit.id, dto).subscribe({
           next: () => {
             this.loadUnits();
-            this.snackBar.open('Checklist creado', 'Cerrar', {
-              duration: 3000,
-              panelClass: 'success-snackbar',
-            });
+            this.snackBar.open('Checklist creado', 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
           },
           error: (err) => {
-            this.snackBar.open(`Error: ${this.getFirstErrorMessage(err)}`, 'Cerrar', {
-              duration: 5000,
-              panelClass: 'error-snackbar',
-            });
+            this.snackBar.open(`Error: ${this.getFirstErrorMessage(err)}`, 'Cerrar', { duration: 5000, panelClass: 'error-snackbar' });
           },
         });
       }
@@ -465,18 +559,15 @@ export class MachineHistorialComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: { formData: any; files: File[] }) => {
       if (result && result.formData) {
         const formData = new FormData();
-
         const dto = { ...result.formData };
         if (dto.service_date instanceof Date) {
           dto.service_date = dto.service_date.toISOString().split('T')[0];
         }
-
         Object.keys(dto).forEach((key) => {
           if (dto[key] !== null && dto[key] !== undefined) {
             formData.append(key, dto[key]);
           }
         });
-
         if (result.files && result.files.length > 0) {
           result.files.forEach((file) => {
             formData.append('attachments[]', file);
@@ -499,10 +590,7 @@ export class MachineHistorialComponent implements OnInit {
           },
           error: (err) => {
             console.error(err);
-            this.snackBar.open(`Error: ${this.getFirstErrorMessage(err)}`, 'Cerrar', {
-              duration: 5000,
-              panelClass: 'error-snackbar',
-            });
+            this.snackBar.open(`Error: ${this.getFirstErrorMessage(err)}`, 'Cerrar', { duration: 5000, panelClass: 'error-snackbar' });
           },
         });
       }
@@ -511,7 +599,6 @@ export class MachineHistorialComponent implements OnInit {
 
   onDeleteReport(reportId: number, event?: MouseEvent): void {
     if (event) event.stopPropagation();
-
     Swal.fire({
       title: '¿Eliminar Reporte?',
       text: 'Esta acción no se puede deshacer. Se eliminará el historial.',
@@ -556,10 +643,7 @@ export class MachineHistorialComponent implements OnInit {
     this.vehicleService.uploadDocument(unitId, cost, file).subscribe({
       next: () => {
         this.loadUnits();
-        this.snackBar.open('Documento subido', 'Cerrar', {
-          duration: 3000,
-          panelClass: 'success-snackbar',
-        });
+        this.snackBar.open('Documento subido', 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
       },
     });
   }
@@ -588,16 +672,10 @@ export class MachineHistorialComponent implements OnInit {
     this.vehicleService.toggleDocumentPayment(docId).subscribe({
       next: (updatedDoc) => {
         const statusMsg = updatedDoc.is_paid ? 'marcado como pagado' : 'marcado como pendiente';
-        this.snackBar.open(`Documento ${statusMsg}`, 'Cerrar', {
-          duration: 3000,
-          panelClass: 'success-snackbar',
-        });
+        this.snackBar.open(`Documento ${statusMsg}`, 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
       },
       error: () => {
-        this.snackBar.open('Error al actualizar estado. Revertiendo...', 'Cerrar', {
-          duration: 3000,
-          panelClass: 'error-snackbar',
-        });
+        this.snackBar.open('Error al actualizar estado. Revertiendo...', 'Cerrar', { duration: 3000, panelClass: 'error-snackbar' });
         this.loadUnits();
       },
     });
@@ -623,7 +701,6 @@ export class MachineHistorialComponent implements OnInit {
 
   openCreateUnitDialog(): void {
     const isMobile = this.isMobile();
-
     const dialogRef = this.dialog.open(CreateFiretruckComponent, {
       width: isMobile ? '95vw' : '600px',
       maxWidth: '100vw',
@@ -632,15 +709,12 @@ export class MachineHistorialComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result && result.formData) {
+      if (result && result.formData && !result.id) {
         this.vehicleService.createUnit(result.formData, result.imageFile).subscribe({
           next: (newCar) => {
             this.allUnits.update((units) => [this.mapApiCarToVehicleUnit(newCar), ...units]);
             this.selectedUnitId.set(newCar.id);
-            this.snackBar.open('Unidad creada correctamente', 'Cerrar', {
-              duration: 3000,
-              panelClass: 'success-snackbar',
-            });
+            this.snackBar.open('Unidad creada correctamente', 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
           },
         });
       }
