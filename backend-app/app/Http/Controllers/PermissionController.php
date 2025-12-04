@@ -22,6 +22,44 @@ class PermissionController extends Controller
     }
 
     /**
+     * Devuelve todos los permisos asociados a un mĆódulo especĆ­fico.
+     * Actualmente se exponen slugs para los mĆódulos esperados y se validan
+     * para evitar consultas arbitrarias.
+     */
+    public function byModule(string $module)
+    {
+        $moduleMap = [
+            'bombero-accidentado' => 'Bombero Accidentado',
+            'material-mayor'      => 'Material Mayor',
+        ];
+
+        if (!array_key_exists($module, $moduleMap)) {
+            return response()->json(['message' => 'MĆódulo no encontrado'], 404);
+        }
+
+        return Permission::where('module', $moduleMap[$module])
+            ->orderBy('section')
+            ->orderBy('action')
+            ->get();
+    }
+
+    /**
+     * Alias dedicado para permisos de Bombero Accidentado.
+     */
+    public function bomberoAccidentado()
+    {
+        return $this->byModule('bombero-accidentado');
+    }
+
+    /**
+     * Alias dedicado para permisos de Material Mayor.
+     */
+    public function materialMayor()
+    {
+        return $this->byModule('material-mayor');
+    }
+
+    /**
      * Crea un nuevo permiso.
      */
     public function store(StorePermissionRequest $request)

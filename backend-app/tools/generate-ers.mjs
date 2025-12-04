@@ -6,8 +6,10 @@ const OUTPUT_DIR = path.resolve('docs', 'ers');
 const ERS_MD = path.join(OUTPUT_DIR, 'ERS.md');
 const ERS_PUML = path.join(OUTPUT_DIR, 'ERS.puml');
 const ERS_PDF = path.join(OUTPUT_DIR, 'ERS.pdf');
+const ERS_DOCX = path.join(OUTPUT_DIR, 'ERS.docx');
 const PDF_STYLES = path.join(OUTPUT_DIR, 'pdf-styles.css');
 const RNF_FILE = path.join(OUTPUT_DIR, 'rnf.md');
+const USERS_DIR = path.resolve('docs', 'users');
 
 const PROJECT_NAME = 'Sistema general de Bomberos Antofagasta';
 const INTRO_TEXT =
@@ -15,11 +17,14 @@ const INTRO_TEXT =
   'Incluye un resumen por módulo, el detalle de cada tarjeta y un diagrama tipo mindmap en PlantUML.';
 
 const LABEL_MAP = {
+  AUT: 'Autentificación',
   MM: 'Material Mayor',
-  PBA: 'Proceso Bombero Accidentado',
-  SAP: 'Seguimiento de Accidentes',
-  COR: 'Correos',
+  PBA: 'Bombero Accidentado',
+  SAP: 'Bombero Accidentado',
+  COR: 'Bombero Accidentado',
 };
+
+const MODULE_ORDER = ['Bombero Accidentado', 'Material Mayor', 'Autentificación'];
 
 const NON_FUNCTIONAL_DEFAULT = [
   { id: 'RNF-01', titulo: 'Seguridad', descripcion: 'Pendiente de documentar.' },
@@ -99,6 +104,37 @@ const readRequirements = async () => {
   return items;
 };
 
+const readUsers = async () => {
+  const map = new Map();
+  try {
+    const files = await fs.readdir(USERS_DIR);
+    const candidates = files
+      .filter((file) => file.endsWith('.md'))
+      .filter((file) => file !== 'README.md' && file !== 'TEMPLATE.md');
+
+    for (const file of candidates) {
+      const fullPath = path.join(USERS_DIR, file);
+      const raw = await fs.readFile(fullPath, 'utf8');
+      const content = raw.replace(/\r\n/g, '\n');
+
+      const readMeta = (label, fallback = 'N/D') => {
+        const regex = new RegExp(`\\*\\*${label}\\s*:\\*\\*\\s*([^\\n]*)`, 'i');
+        const match = content.match(regex);
+        return match ? match[1].trim() : fallback;
+      };
+
+      const name = readMeta('Nombre', path.basename(file, '.md'));
+      const descripcion = readMeta('Descripción', 'Pendiente de documentar');
+
+      map.set(name, { descripcion });
+    }
+  } catch (error) {
+    console.warn(`No se pudieron cargar usuarios desde ${USERS_DIR}; se usará texto por defecto.`);
+  }
+
+  return map;
+};
+
 const ensureOutputDir = async () => {
   await fs.mkdir(OUTPUT_DIR, { recursive: true });
 };
@@ -141,7 +177,7 @@ const loadNonFunctional = async () => {
   }
 };
 
-const buildUsersTable = (requirements) => {
+const buildUsersTable = (requirements, users = new Map()) => {
   const roles = new Set();
   requirements.forEach((req) => {
     req.usuario
@@ -155,7 +191,8 @@ const buildUsersTable = (requirements) => {
   lines.push('| Usuario | Descripción |');
   lines.push('| --- | --- |');
   roles.forEach((role) => {
-    lines.push(`| ${sanitizeText(role)} | Pendiente de documentar |`);
+    const descripcion = users.get(role)?.descripcion || 'Pendiente de documentar';
+    lines.push(`| ${sanitizeText(role)} | ${sanitizeText(descripcion)} |`);
   });
   return lines.join('\n');
 };
@@ -206,6 +243,16 @@ const requirementTable = (req) => {
 `.trim();
 };
 
+const sortLabels = (labels) =>
+  [...labels].sort((a, b) => {
+    const ia = MODULE_ORDER.indexOf(a);
+    const ib = MODULE_ORDER.indexOf(b);
+    if (ia !== -1 && ib !== -1) return ia - ib;
+    if (ia !== -1) return -1;
+    if (ib !== -1) return 1;
+    return a.localeCompare(b);
+  });
+
 const buildRequirementCards = (requirements) => {
   const grouped = new Map();
   for (const req of requirements) {
@@ -218,9 +265,10 @@ const buildRequirementCards = (requirements) => {
     list.sort((a, b) => a.id.localeCompare(b.id));
   }
 
-  const groups = Array.from(grouped.entries()).sort((a, b) =>
-    a[0].localeCompare(b[0])
-  );
+  const groups = Array.from(grouped.entries()).sort((a, b) => {
+    const order = sortLabels([a[0], b[0]]);
+    return order[0] === a[0] ? -1 : 1;
+  });
 
   const lines = [];
   lines.push('## II. Requerimientos');
@@ -281,12 +329,10 @@ const buildToc = (modules) => {
   return lines.join('\n');
 };
 
-const buildMarkdown = (requirements, nonFunctional) => {
-  const groupedLabels = Array.from(
+const buildMarkdown = (requirements, nonFunctional, users) => {
+  const groupedLabels = sortLabels(
     new Set(
-      requirements
-        .map((req) => LABEL_MAP[req.prefix] || req.prefix || 'Otros')
-        .sort()
+      requirements.map((req) => LABEL_MAP[req.prefix] || req.prefix || 'Otros')
     )
   );
 
@@ -308,7 +354,7 @@ const buildMarkdown = (requirements, nonFunctional) => {
   lines.push('');
   lines.push('### 1. Usuarios');
   lines.push('');
-  lines.push(buildUsersTable(requirements));
+  lines.push(buildUsersTable(requirements, users));
   lines.push('');
   lines.push('<div style="page-break-after: always;"></div>');
   lines.push('');
@@ -332,9 +378,10 @@ const buildPlantUml = (requirements) => {
     list.sort((a, b) => a.id.localeCompare(b.id));
   }
 
-  const groups = Array.from(grouped.entries()).sort((a, b) =>
-    a[0].localeCompare(b[0])
-  );
+  const groups = Array.from(grouped.entries()).sort((a, b) => {
+    const order = sortLabels([a[0], b[0]]);
+    return order[0] === a[0] ? -1 : 1;
+  });
 
   const lines = [];
   lines.push('@startmindmap');
@@ -384,6 +431,49 @@ const buildPdfIfPossible = async (markdown) => {
   console.log(`ERS PDF generado: ${result.filename}`);
 };
 
+const buildDocxIfPossible = async (markdown) => {
+  let mdToPdf;
+  try {
+    ({ mdToPdf } = await import('md-to-pdf'));
+  } catch (error) {
+    console.warn('md-to-pdf no estÇ­ instalado; se omite la generaciÇün de DOCX.');
+    return;
+  }
+
+  let htmlToDocx;
+  try {
+    ({ default: htmlToDocx } = await import('html-to-docx'));
+  } catch (error) {
+    console.warn('html-to-docx no estÇ­ instalado; se omite la generaciÇün de DOCX.');
+    return;
+  }
+
+  let htmlContent = '';
+  try {
+    const result = await mdToPdf(
+      { content: markdown },
+      { as_html: true, stylesheet: PDF_STYLES }
+    );
+    htmlContent = typeof result?.content === 'string' ? result.content : '';
+  } catch (error) {
+    console.warn('No se pudo generar el HTML base para DOCX.');
+    return;
+  }
+
+  if (!htmlContent) {
+    console.warn('El HTML generado para DOCX estÇü vacÇ­o; se omite la exportaciÇün.');
+    return;
+  }
+
+  try {
+    const buffer = await htmlToDocx(htmlContent);
+    await fs.writeFile(ERS_DOCX, buffer);
+    console.log(`ERS DOCX generado: ${ERS_DOCX}`);
+  } catch (error) {
+    console.warn(`No se pudo generar el DOCX: ${error.message}`);
+  }
+};
+
 const ensurePdfStyles = async () => {
   try {
     await fs.access(PDF_STYLES);
@@ -425,12 +515,14 @@ const main = async () => {
   await ensurePdfStyles();
   const requirements = await readRequirements();
   const nonFunctional = await loadNonFunctional();
-  const markdown = buildMarkdown(requirements, nonFunctional);
+  const users = await readUsers();
+  const markdown = buildMarkdown(requirements, nonFunctional, users);
   const plantuml = buildPlantUml(requirements);
 
   await fs.writeFile(ERS_MD, markdown, 'utf8');
   await fs.writeFile(ERS_PUML, plantuml, 'utf8');
   await buildPdfIfPossible(markdown);
+  await buildDocxIfPossible(markdown);
 
   console.log(`ERS generada: ${ERS_MD}`);
   console.log(`PlantUML generado: ${ERS_PUML}`);

@@ -1,7 +1,7 @@
 <section class="auth-dashboard">
   <aside class="sidebar">
     <div class="sidebar-header">
-      <p class="sidebar-eyebrow">Autenticación</p>
+      <p class="sidebar-eyebrow">Autenticacion</p>
       <h2>Centro de control</h2>
       <p>Gestiona accesos, equipos y permisos desde un solo lugar.</p>
     </div>
@@ -31,7 +31,7 @@
   <div class="dashboard-content">
     <header class="dashboard-header">
       <div>
-        <p class="header-eyebrow">Módulo de autenticación</p>
+        <p class="header-eyebrow">Modulo de autenticacion</p>
         <h1>{{ selectedSection().label }}</h1>
         <p>{{ selectedSection().description }}</p>
       </div>
@@ -64,7 +64,7 @@
             <mat-card class="stat-card stat-card--attention">
               <mat-icon>report_gmailerrorred</mat-icon>
               <div>
-                <p class="stat-label">Revisión</p>
+                <p class="stat-label">Revision</p>
                 <p class="stat-value">{{ suspendedUsersCount() }}</p>
               </div>
             </mat-card>
@@ -78,49 +78,76 @@
                   Visualiza los grupos y roles asignados para cada persona.
                 </mat-card-subtitle>
               </div>
+              <button mat-stroked-button color="warn" (click)="loadUsers()">
+                <mat-icon>refresh</mat-icon>
+                Actualizar
+              </button>
             </mat-card-header>
 
             <div class="table-wrapper">
-              <table mat-table [dataSource]="users()" class="users-table">
-                <ng-container matColumnDef="name">
-                  <th mat-header-cell *matHeaderCellDef>Usuario</th>
-                  <td mat-cell *matCellDef="let element">
-                    <p class="user-name">{{ element.name }}</p>
-                    <span class="user-email">{{ element.email }}</span>
-                    <span class="user-company">{{ element.company }}</span>
-                  </td>
-                </ng-container>
+              @if (isLoadingUsers()) {
+                <div class="state state--loading">
+                  <mat-icon>hourglass_top</mat-icon>
+                  <p>Cargando usuarios...</p>
+                </div>
+              } @else if (userError()) {
+                <div class="state state--error">
+                  <mat-icon>error</mat-icon>
+                  <div class="state__content">
+                    <p>{{ userError() }}</p>
+                    <button mat-stroked-button color="warn" (click)="loadUsers()">Reintentar</button>
+                  </div>
+                </div>
+              } @else if (!users().length) {
+                <div class="state state--empty">
+                  <mat-icon>person_off</mat-icon>
+                  <div class="state__content">
+                    <p>No hay usuarios registrados.</p>
+                    <button mat-stroked-button color="warn" (click)="loadUsers()">Refrescar</button>
+                  </div>
+                </div>
+              } @else {
+                <table mat-table [dataSource]="users()" class="users-table">
+                  <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Usuario</th>
+                    <td mat-cell *matCellDef="let element">
+                      <p class="user-name">{{ element.name }}</p>
+                      <span class="user-email">{{ element.email }}</span>
+                      <span class="user-company">{{ element.company }}</span>
+                    </td>
+                  </ng-container>
 
-                <ng-container matColumnDef="groups">
-                  <th mat-header-cell *matHeaderCellDef>Grupos</th>
-                  <td mat-cell *matCellDef="let element">
-                    @for (group of element.groups; track group) {
-                      <span class="chip chip--group">{{ group }}</span>
-                    }
-                  </td>
-                </ng-container>
+                  <ng-container matColumnDef="groups">
+                    <th mat-header-cell *matHeaderCellDef>Grupos</th>
+                    <td mat-cell *matCellDef="let element">
+                      @for (group of element.groups; track group) {
+                        <span class="chip chip--group">{{ group }}</span>
+                      }
+                    </td>
+                  </ng-container>
 
-                <ng-container matColumnDef="roles">
-                  <th mat-header-cell *matHeaderCellDef>Roles</th>
-                  <td mat-cell *matCellDef="let element">
-                    @for (role of element.roles; track role) {
-                      <span class="chip chip--role">{{ role }}</span>
-                    }
-                  </td>
-                </ng-container>
+                  <ng-container matColumnDef="roles">
+                    <th mat-header-cell *matHeaderCellDef>Roles</th>
+                    <td mat-cell *matCellDef="let element">
+                      @for (role of element.roles; track role) {
+                        <span class="chip chip--role">{{ role }}</span>
+                      }
+                    </td>
+                  </ng-container>
 
-                <ng-container matColumnDef="status">
-                  <th mat-header-cell *matHeaderCellDef>Estado</th>
-                  <td mat-cell *matCellDef="let element">
-                    <span class="status" [ngClass]="'status--' + element.status.toLowerCase()">
-                      {{ element.status }}
-                    </span>
-                  </td>
-                </ng-container>
+                  <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef>Estado</th>
+                    <td mat-cell *matCellDef="let element">
+                      <span class="status" [ngClass]="'status--' + element.status.toLowerCase()">
+                        {{ element.status }}
+                      </span>
+                    </td>
+                  </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-              </table>
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                </table>
+              }
             </div>
           </mat-card>
         </section>
@@ -131,46 +158,123 @@
         </section>
       }
       @case ('grupos') {
-        <section class="placeholder-section">
+        <section class="groups-section">
           <mat-card>
             <mat-card-header>
-              <mat-card-title>Administración de grupos</mat-card-title>
-              <mat-card-subtitle>
-                Define brigadas, áreas o compañías para organizar los accesos.
-              </mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content>
-              <p>
-                Desde aquí podrás crear nuevos grupos, asignar responsables y vincular
-                usuarios. Esta sección servirá como base para futuras integraciones con
-                el directorio institucional.
-              </p>
-              <button mat-stroked-button color="warn">
-                <mat-icon>group_add</mat-icon>
-                Crear grupo piloto
+              <div>
+                <mat-card-title>Administracion de grupos</mat-card-title>
+                <mat-card-subtitle>
+                  Consulta los grupos y cuantos usuarios pertenecen a cada uno.
+                </mat-card-subtitle>
+              </div>
+              <button mat-stroked-button color="warn" (click)="loadGroups()">
+                <mat-icon>refresh</mat-icon>
+                Actualizar
               </button>
+            </mat-card-header>
+
+            <mat-card-content>
+              <div class="table-wrapper">
+                @if (isLoadingGroups()) {
+                  <div class="state state--loading">
+                    <mat-icon>hourglass_top</mat-icon>
+                    <p>Cargando grupos...</p>
+                  </div>
+                } @else if (groupError()) {
+                  <div class="state state--error">
+                    <mat-icon>error</mat-icon>
+                    <div class="state__content">
+                      <p>{{ groupError() }}</p>
+                      <button mat-stroked-button color="warn" (click)="loadGroups()">Reintentar</button>
+                    </div>
+                  </div>
+                } @else if (!groups().length) {
+                  <div class="state state--empty">
+                    <mat-icon>group_off</mat-icon>
+                    <div class="state__content">
+                      <p>No hay grupos registrados.</p>
+                      <button mat-stroked-button color="warn" (click)="loadGroups()">Refrescar</button>
+                    </div>
+                  </div>
+                } @else {
+                  <table class="groups-table">
+                    <thead>
+                      <tr>
+                        <th>Grupo</th>
+                        <th>Usuarios</th>
+                        <th>Descripcion</th>
+                        <th>Creado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (group of groups(); track group.id) {
+                        <tr>
+                          <td>{{ group.name }}</td>
+                          <td>{{ group.usersCount ?? '--' }}</td>
+                          <td>{{ group.description }}</td>
+                          <td>{{ group.createdAt | date: 'shortDate' }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                }
+              </div>
             </mat-card-content>
           </mat-card>
         </section>
       }
       @case ('permisos') {
-        <section class="placeholder-section">
+        <section class="permissions-section">
           <mat-card>
             <mat-card-header>
-              <mat-card-title>Permisos detallados</mat-card-title>
-              <mat-card-subtitle>
-                Define reglas específicas para cada rol y ajusta el alcance de los módulos.
-              </mat-card-subtitle>
+              <div>
+                <mat-card-title>Permisos disponibles</mat-card-title>
+                <mat-card-subtitle>
+                  Lista de permisos entregados por el backend para vincular con roles.
+                </mat-card-subtitle>
+              </div>
+              <button mat-stroked-button color="warn" (click)="loadPermissions()">
+                <mat-icon>refresh</mat-icon>
+                Actualizar
+              </button>
             </mat-card-header>
             <mat-card-content>
-              <p>
-                Próximamente podrás crear plantillas de permisos, activar revisiones y
-                programar auditorías de acceso para cumplir con protocolos de seguridad.
-              </p>
-              <button mat-stroked-button color="warn">
-                <mat-icon>rule</mat-icon>
-                Diseñar nueva política
-              </button>
+              <div class="permissions-grid">
+                @if (isLoadingPermissions()) {
+                  <div class="state state--loading">
+                    <mat-icon>hourglass_top</mat-icon>
+                    <p>Cargando permisos...</p>
+                  </div>
+                } @else if (permissionError()) {
+                  <div class="state state--error">
+                    <mat-icon>error</mat-icon>
+                    <div class="state__content">
+                      <p>{{ permissionError() }}</p>
+                      <button mat-stroked-button color="warn" (click)="loadPermissions()">Reintentar</button>
+                    </div>
+                  </div>
+                } @else if (!permissions().length) {
+                  <div class="state state--empty">
+                    <mat-icon>rule</mat-icon>
+                    <div class="state__content">
+                      <p>No hay permisos disponibles.</p>
+                      <button mat-stroked-button color="warn" (click)="loadPermissions()">Refrescar</button>
+                    </div>
+                  </div>
+                } @else {
+                  @for (permission of permissions(); track permission.id) {
+                    <div class="permission-card">
+                      <mat-icon>verified</mat-icon>
+                      <div>
+                        <p class="permission-title">{{ permission.name }}</p>
+                        <p class="permission-description">
+                          {{ permission.description || 'Sin descripcion' }}
+                        </p>
+                      </div>
+                    </div>
+                  }
+                }
+              </div>
             </mat-card-content>
           </mat-card>
         </section>

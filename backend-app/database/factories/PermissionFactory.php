@@ -16,8 +16,14 @@ class PermissionFactory extends Factory
      */
     public function definition(): array
     {
+        $modules = ['Bombero Accidentado', 'Material Mayor', 'Autenticacion'];
+        $actions = ['create', 'read', 'update', 'delete'];
+
         return [
-            //
+            'module' => $this->faker->randomElement($modules),
+            'section' => $this->faker->randomElement(['process', 'car', 'document', 'user']),
+            'action' => $this->faker->randomElement($actions),
+            'description' => $this->faker->sentence(),
         ];
     }
 }
