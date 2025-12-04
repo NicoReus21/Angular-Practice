@@ -1,18 +1,35 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { RoleManagementComponent } from '../role-management/role-management';
+import { AuthDirectoryService, ApiGroup, ApiUser } from '../../services/auth-directory.service';
+import { RoleService } from '../../services/role-service';
 
 interface UserRecord {
+  id: number;
   name: string;
   email: string;
   company: string;
   groups: string[];
   roles: string[];
   status: 'Activo' | 'Suspendido' | 'Pendiente';
+}
+
+interface GroupRecord {
+  id: number;
+  name: string;
+  description?: string;
+  usersCount?: number;
+  createdAt?: string;
+}
+
+interface PermissionRecord {
+  id: number;
+  name: string;
+  description?: string | null;
 }
 
 interface DashboardSection {
@@ -37,7 +54,10 @@ interface DashboardSection {
   styleUrl: './auth-dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AuthDashboardComponent {
+export class AuthDashboardComponent implements OnInit {
+  private authDirectory = inject(AuthDirectoryService);
+  private roleService = inject(RoleService);
+
   readonly sections: DashboardSection[] = [
     {
       id: 'usuarios',
@@ -49,19 +69,19 @@ export class AuthDashboardComponent {
       id: 'roles',
       label: 'Roles',
       icon: 'shield_person',
-      description: 'Administra los roles, permisos y su asignación.'
+      description: 'Administra los roles, permisos y su asignacion.'
     },
     {
       id: 'grupos',
       label: 'Grupos',
       icon: 'group_work',
-      description: 'Organiza las compañías o brigadas en grupos operativos.'
+      description: 'Organiza las companias o brigadas en grupos operativos.'
     },
     {
       id: 'permisos',
       label: 'Permisos',
       icon: 'verified_user',
-      description: 'Define alcances específicos y combina permisos por rol.'
+      description: 'Define alcances especificos y combina permisos por rol.'
     }
   ];
 
@@ -70,40 +90,17 @@ export class AuthDashboardComponent {
 
   readonly displayedColumns = ['name', 'groups', 'roles', 'status'];
 
-  readonly users = signal<UserRecord[]>([
-    {
-      name: 'Carla Pérez',
-      email: 'cperez@bomberos.cl',
-      company: '2da Compañía',
-      groups: ['Central', 'Logística'],
-      roles: ['Administradora', 'Revisora'],
-      status: 'Activo'
-    },
-    {
-      name: 'Miguel Torres',
-      email: 'mtorres@bomberos.cl',
-      company: '4ta Compañía',
-      groups: ['Rescate Urbano'],
-      roles: ['Supervisor'],
-      status: 'Pendiente'
-    },
-    {
-      name: 'Andrea González',
-      email: 'agonzalez@bomberos.cl',
-      company: '1ra Compañía',
-      groups: ['Comando', 'RRHH'],
-      roles: ['Operadora'],
-      status: 'Activo'
-    },
-    {
-      name: 'Felipe Mena',
-      email: 'fmena@bomberos.cl',
-      company: '3ra Compañía',
-      groups: ['Apoyo Médico'],
-      roles: ['Colaborador'],
-      status: 'Suspendido'
-    }
-  ]);
+  readonly users = signal<UserRecord[]>([]);
+  readonly groups = signal<GroupRecord[]>([]);
+  readonly permissions = signal<PermissionRecord[]>([]);
+
+  readonly isLoadingUsers = signal(false);
+  readonly isLoadingGroups = signal(false);
+  readonly isLoadingPermissions = signal(false);
+
+  readonly userError = signal<string | null>(null);
+  readonly groupError = signal<string | null>(null);
+  readonly permissionError = signal<string | null>(null);
 
   readonly activeUsersCount = computed(
     () => this.users().filter((user) => user.status === 'Activo').length
@@ -117,11 +114,115 @@ export class AuthDashboardComponent {
     () => this.users().filter((user) => user.status === 'Suspendido').length
   );
 
+  ngOnInit(): void {
+    this.loadUsers();
+    this.loadGroups();
+    this.loadPermissions();
+  }
+
   selectSection(section: DashboardSection): void {
     this.selectedSection.set(section);
   }
 
   isActive(section: DashboardSection): boolean {
     return this.activeSectionId() === section.id;
+  }
+
+  loadUsers(): void {
+    this.isLoadingUsers.set(true);
+    this.userError.set(null);
+
+    this.authDirectory.getUsers().subscribe({
+      next: (data: ApiUser[]) => {
+        const mappedUsers = (data || []).map((user) => this.mapUser(user));
+        this.users.set(mappedUsers);
+      },
+      error: (err) => {
+        console.error(err);
+        this.userError.set('No se pudieron cargar los usuarios.');
+        this.users.set([]);
+      },
+      complete: () => this.isLoadingUsers.set(false)
+    });
+  }
+
+  loadGroups(): void {
+    this.isLoadingGroups.set(true);
+    this.groupError.set(null);
+
+    this.authDirectory.getGroups().subscribe({
+      next: (data: ApiGroup[]) => {
+        const mappedGroups = (data || []).map((group) => this.mapGroup(group));
+        this.groups.set(mappedGroups);
+      },
+      error: (err) => {
+        console.error(err);
+        this.groupError.set('No se pudieron cargar los grupos.');
+        this.groups.set([]);
+      },
+      complete: () => this.isLoadingGroups.set(false)
+    });
+  }
+
+  loadPermissions(): void {
+    this.isLoadingPermissions.set(true);
+    this.permissionError.set(null);
+
+    this.roleService.getAllPermissions().subscribe({
+      next: (data: any[]) => {
+        const mappedPermissions = (data || []).map((permission) => this.mapPermission(permission));
+        this.permissions.set(mappedPermissions);
+      },
+      error: (err) => {
+        console.error(err);
+        this.permissionError.set('No se pudieron cargar los permisos.');
+        this.permissions.set([]);
+      },
+      complete: () => this.isLoadingPermissions.set(false)
+    });
+  }
+
+  private mapUser(user: ApiUser): UserRecord {
+    return {
+      id: user.id,
+      name: user.name || 'Usuario sin nombre',
+      email: user.email || 'Sin email',
+      company: user.company || 'Sin compania',
+      groups: (user.groups || []).map((group) => group.name || 'Grupo'),
+      roles: (user.roles || []).map((role) => role.name || 'Rol'),
+      status: this.normalizeStatus(user.status)
+    };
+  }
+
+  private normalizeStatus(rawStatus?: string | null): UserRecord['status'] {
+    const status = (rawStatus || '').toLowerCase();
+
+    if (status.includes('suspend')) {
+      return 'Suspendido';
+    }
+
+    if (status.includes('pend')) {
+      return 'Pendiente';
+    }
+
+    return 'Activo';
+  }
+
+  private mapGroup(group: ApiGroup): GroupRecord {
+    return {
+      id: group.id,
+      name: group.name,
+      description: group.description || 'Sin descripcion',
+      usersCount: group.users_count,
+      createdAt: group.created_at
+    };
+  }
+
+  private mapPermission(permission: any): PermissionRecord {
+    return {
+      id: permission.id,
+      name: permission.name,
+      description: permission.description || permission.guard_name || null
+    };
   }
 }

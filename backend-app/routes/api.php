@@ -110,6 +110,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('rols', RolController::class);
     Route::get('/permissions', [PermissionController::class, 'index']);
+    Route::get('/modules/bombero-accidentado/permissions', [PermissionController::class, 'bomberoAccidentado']);
+    Route::get('/modules/material-mayor/permissions', [PermissionController::class, 'materialMayor']);
     Route::get('/rols/{rol}/permissions', [RolController::class, 'getPermissions']);
     Route::post('/rols/{rol}/permissions', [RolController::class, 'syncPermissions']);
 

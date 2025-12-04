@@ -17,7 +17,18 @@ class CarFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->company() . ' Unidad',
+            'plate' => strtoupper($this->faker->bothify('??-####')),
+            'model' => $this->faker->word(),
+            'company' => $this->faker->company(),
+            'status' => 'operativo',
+            'imageUrl' => null,
+            'marca' => $this->faker->company(),
+            'chassis_number' => $this->faker->bothify('CH-####'),
+            'type' => $this->faker->randomElement(['Camion', 'Rescate', 'Ambulancia']),
+            'cabin' => $this->faker->randomElement(['Simple', 'Doble']),
+            'mileage' => $this->faker->numberBetween(0, 150000),
+            'hourmeter' => $this->faker->numberBetween(0, 8000),
         ];
     }
 }

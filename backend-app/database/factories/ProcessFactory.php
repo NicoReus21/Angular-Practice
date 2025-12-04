@@ -17,7 +17,10 @@ class ProcessFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'bombero_name' => $this->faker->name(),
+            'company' => $this->faker->company(),
+            'status' => 'draft',
+            'user_id' => \App\Models\User::factory(),
         ];
     }
 }

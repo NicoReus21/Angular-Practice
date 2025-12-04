@@ -6,6 +6,7 @@ const OUTPUT_DIR = path.resolve('docs', 'ers');
 const ERS_MD = path.join(OUTPUT_DIR, 'ERS.md');
 const ERS_PUML = path.join(OUTPUT_DIR, 'ERS.puml');
 const ERS_PDF = path.join(OUTPUT_DIR, 'ERS.pdf');
+const ERS_DOCX = path.join(OUTPUT_DIR, 'ERS.docx');
 const PDF_STYLES = path.join(OUTPUT_DIR, 'pdf-styles.css');
 const RNF_FILE = path.join(OUTPUT_DIR, 'rnf.md');
 const USERS_DIR = path.resolve('docs', 'users');
@@ -430,6 +431,49 @@ const buildPdfIfPossible = async (markdown) => {
   console.log(`ERS PDF generado: ${result.filename}`);
 };
 
+const buildDocxIfPossible = async (markdown) => {
+  let mdToPdf;
+  try {
+    ({ mdToPdf } = await import('md-to-pdf'));
+  } catch (error) {
+    console.warn('md-to-pdf no estÇ­ instalado; se omite la generaciÇün de DOCX.');
+    return;
+  }
+
+  let htmlToDocx;
+  try {
+    ({ default: htmlToDocx } = await import('html-to-docx'));
+  } catch (error) {
+    console.warn('html-to-docx no estÇ­ instalado; se omite la generaciÇün de DOCX.');
+    return;
+  }
+
+  let htmlContent = '';
+  try {
+    const result = await mdToPdf(
+      { content: markdown },
+      { as_html: true, stylesheet: PDF_STYLES }
+    );
+    htmlContent = typeof result?.content === 'string' ? result.content : '';
+  } catch (error) {
+    console.warn('No se pudo generar el HTML base para DOCX.');
+    return;
+  }
+
+  if (!htmlContent) {
+    console.warn('El HTML generado para DOCX estÇü vacÇ­o; se omite la exportaciÇün.');
+    return;
+  }
+
+  try {
+    const buffer = await htmlToDocx(htmlContent);
+    await fs.writeFile(ERS_DOCX, buffer);
+    console.log(`ERS DOCX generado: ${ERS_DOCX}`);
+  } catch (error) {
+    console.warn(`No se pudo generar el DOCX: ${error.message}`);
+  }
+};
+
 const ensurePdfStyles = async () => {
   try {
     await fs.access(PDF_STYLES);
@@ -478,6 +522,7 @@ const main = async () => {
   await fs.writeFile(ERS_MD, markdown, 'utf8');
   await fs.writeFile(ERS_PUML, plantuml, 'utf8');
   await buildPdfIfPossible(markdown);
+  await buildDocxIfPossible(markdown);
 
   console.log(`ERS generada: ${ERS_MD}`);
   console.log(`PlantUML generado: ${ERS_PUML}`);
