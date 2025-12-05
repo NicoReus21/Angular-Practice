@@ -3,8 +3,8 @@
 **ID:** MM-04  
 **Usuario:** Comandancia, Encargado de Material Mayor  
 **Nombre del Requerimiento:** Carros de Comandancia  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona
+**Iteración Asignada:** 2  
 
 ---
 
@@ -23,6 +23,5 @@ Incluir en Material Mayor los vehículos de Comandancia (camiones, camionetas, c
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

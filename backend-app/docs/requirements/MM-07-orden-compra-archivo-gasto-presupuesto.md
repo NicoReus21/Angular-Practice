@@ -3,8 +3,8 @@
 **ID:** MM-07  
 **Usuario:** Contabilidad, Encargado de Material Mayor  
 **Nombre del Requerimiento:** Subir orden de compra, registrar gasto y presupuesto  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona  
+**Iteración Asignada:** 2
 
 ---
 
@@ -24,6 +24,5 @@ Agregar apartado para subir órdenes de compra y registrar el gasto asociado. Pe
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

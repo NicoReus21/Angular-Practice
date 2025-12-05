@@ -3,8 +3,8 @@
 **ID:** MM-19  
 **Usuario:** Comandancia, Encargado  
 **Nombre del Requerimiento:** Estado urgente para mantención  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona
+**Iteración Asignada:** 2 
 
 ---
 
@@ -23,6 +23,5 @@ Agregar opción de marcar un registro como "Urgente" para priorizar su mantenci�
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

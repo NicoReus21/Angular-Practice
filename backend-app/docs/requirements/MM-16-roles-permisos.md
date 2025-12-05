@@ -3,8 +3,8 @@
 **ID:** MM-16  
 **Usuario:** Inspector de Material Mayor, Encargados de Material Mayor  
 **Nombre del Requerimiento:** Roles y permisos de Material Mayor  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona
+**Iteración Asignada:** 3  
 
 ---
 
@@ -23,6 +23,5 @@ Definir roles: Inspector (edición de reportes y estados) y Encargado de Materia
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

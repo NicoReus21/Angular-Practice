@@ -3,8 +3,8 @@
 **ID:** AUT-09  
 **Usuario:** Administrativo, Usuario  
 **Nombre del Requerimiento:** Autenticación y cierre de sesión  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona  
+**Iteración Asignada:** 3 
 
 ---
 
@@ -23,5 +23,5 @@ Permitir inicio de sesión con email y contraseña, generando token de acceso (p
 ---
 
 ## ÐY"- Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

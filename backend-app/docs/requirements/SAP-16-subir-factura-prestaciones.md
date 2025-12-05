@@ -25,6 +25,5 @@ El sistema debe permitir subir la factura correspondiente a atenciones médicas 
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

@@ -3,8 +3,8 @@
 **ID:** AUT-06  
 **Usuario:** Administrativo  
 **Nombre del Requerimiento:** Asignar roles a usuarios  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona
+**Iteración Asignada:** 3
 
 ---
 
@@ -23,5 +23,5 @@ Asignar y revocar roles a usuarios usando la tabla `user_rols`, registrando fech
 ---
 
 ## ÐY"- Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

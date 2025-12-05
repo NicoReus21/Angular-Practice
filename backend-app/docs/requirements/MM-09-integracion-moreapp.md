@@ -3,8 +3,8 @@
 **ID:** MM-09  
 **Usuario:** Encargado de Material Mayor  
 **Nombre del Requerimiento:** Integración con MoreApp para formularios  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona  
+**Iteración Asignada:** 2
 
 ---
 
@@ -23,6 +23,5 @@ Registrar que se utiliza MoreApp para la creación de formularios y evaluar inte
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

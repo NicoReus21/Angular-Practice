@@ -1,6 +1,6 @@
 # Especificación de Requerimientos de Software
 _Proyecto: Sistema general de Bomberos Antofagasta_
-Generado automáticamente: 2025-12-03T02:46:17.428Z
+Generado automáticamente: 2025-12-05T14:29:26.756Z
 
 <div style="page-break-after: always;"></div>
 
@@ -60,7 +60,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -91,7 +91,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -122,7 +122,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -153,7 +153,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -184,7 +184,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -215,7 +215,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -246,7 +246,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -277,7 +277,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -308,7 +308,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -339,7 +339,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -370,7 +370,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -401,7 +401,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -432,7 +432,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -463,7 +463,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -494,7 +494,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -525,7 +525,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -556,7 +556,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -587,7 +587,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -618,7 +618,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -649,7 +649,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -680,7 +680,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -711,7 +711,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -742,7 +742,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -773,7 +773,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -804,7 +804,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -835,7 +835,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -866,7 +866,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -897,7 +897,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -927,11 +927,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Administrativo, Encargado de Material Mayor</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 2</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -958,11 +958,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Contabilidad, Administrativo</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 2</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -989,11 +989,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Encargado de Material Mayor, Inspector</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 2</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1020,11 +1020,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Comandancia, Encargado de Material Mayor</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 2</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1051,11 +1051,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Encargado de Material Mayor, Auditoría</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 2</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1082,11 +1082,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Administrativo, Contabilidad</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 2</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1113,11 +1113,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Contabilidad, Encargado de Material Mayor</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 2</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1144,11 +1144,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Todos</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 2</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1175,11 +1175,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Encargado de Material Mayor</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 2</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1206,11 +1206,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Administrativo, Contabilidad</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 2</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1237,11 +1237,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Inspector, Encargado de Material Mayor</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 2</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1268,11 +1268,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Inspector, Encargado de Material Mayor</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 2</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1299,11 +1299,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Inspector, Encargado de Material Mayor</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 2</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1330,11 +1330,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Inspector, Encargado de Material Mayor</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 2</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1361,11 +1361,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Encargado de Material Mayor</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 2</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1392,11 +1392,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Inspector de Material Mayor, Encargados de Material Mayor</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 3</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1423,11 +1423,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Dirección, Contabilidad, Encargado</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1454,11 +1454,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Dirección, Contabilidad</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 1</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1485,11 +1485,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Comandancia, Encargado</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 2</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1516,11 +1516,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Encargado de Compañía</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 2</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1550,11 +1550,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Administrativo</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 3</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1581,11 +1581,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Administrativo</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 3</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1612,11 +1612,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Administrativo</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 3</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1643,11 +1643,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Administrativo</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 3</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1674,11 +1674,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Administrativo</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 3</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1705,11 +1705,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Administrativo</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 3</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1736,11 +1736,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Administrativo</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 3</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1767,11 +1767,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Administrativo</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 3</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1798,11 +1798,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Administrativo, Usuario</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 3</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>
@@ -1829,11 +1829,11 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
     <td><strong>Usuario(s):</strong> Usuario</td>
   </tr>
   <tr>
-    <td><strong>Programador Responsable:</strong> Por asignar</td>
-    <td><strong>Iteración Asignada:</strong> Por definir</td>
+    <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
+    <td><strong>Iteración Asignada:</strong> 3</td>
   </tr>
   <tr>
-    <td><strong>Estado:</strong> Pendiente</td>
+    <td><strong>Estado:</strong> Validado con el cliente</td>
     <td><strong>Última actualización:</strong> N/D</td>
   </tr>
   <tr>

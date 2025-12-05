@@ -3,8 +3,8 @@
 **ID:** AUT-10  
 **Usuario:** Usuario  
 **Nombre del Requerimiento:** Recuperar contraseña  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona  
+**Iteración Asignada:** 3  
 
 ---
 
@@ -23,5 +23,5 @@ Implementar recuperación de contraseña enviando token de restablecimiento al e
 ---
 
 ## ÐY"- Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

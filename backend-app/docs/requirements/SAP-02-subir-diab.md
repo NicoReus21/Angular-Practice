@@ -25,6 +25,5 @@ El sistema debe permitir al Capitán o al Bombero responsable del caso subir el 
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

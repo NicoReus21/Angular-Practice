@@ -24,6 +24,5 @@ Permite subir archivo que contiene el registro de asistencia al servicio, firmad
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

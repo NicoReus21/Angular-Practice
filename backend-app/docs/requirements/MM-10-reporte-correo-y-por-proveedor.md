@@ -3,8 +3,8 @@
 **ID:** MM-10  
 **Usuario:** Administrativo, Contabilidad  
 **Nombre del Requerimiento:** Generar reporte por correo y por proveedor  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona 
+**Iteración Asignada:** 2 
 
 ---
 
@@ -23,6 +23,5 @@ Generar reportes automáticos por correo e informes por proveedor cada vez que e
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025
