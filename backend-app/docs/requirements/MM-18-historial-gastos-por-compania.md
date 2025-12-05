@@ -3,8 +3,8 @@
 **ID:** MM-18  
 **Usuario:** Dirección, Contabilidad  
 **Nombre del Requerimiento:** Historial de gastos por compañía  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona  
+**Iteración Asignada:** 1 
 
 ---
 
@@ -23,6 +23,5 @@ Generar historial de gastos para comparar qué compañía gasta más, con detall
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

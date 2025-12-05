@@ -3,8 +3,8 @@
 **ID:** MM-05  
 **Usuario:** Encargado de Material Mayor, Auditoría  
 **Nombre del Requerimiento:** Registro histórico de Material Mayor (no eliminar)  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona 
+**Iteración Asignada:** 2
 
 ---
 
@@ -23,6 +23,5 @@ Mantener un registro histórico inalterable de Material Mayor: altas, bajas, cam
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

@@ -72,5 +72,5 @@ El template oficial está en `docs/requirements/TEMPLATE.md`.
 - [SAP-22 - Subir boleta gastos acompañante](SAP-22-subir-boleta-gastos-acompanante.md)
 - [SAP-23 - Subir certificado médico incapacidad](SAP-23-subir-certificado-medico-incapacidad.md)
 - [SAP-24 - Subir boleta alimentación acompañante](SAP-24-subir-boleta-alimentacion-acompanante.md)
-- [SAP-25 - Subir otros gastos](SAP-25-subir-otros-gastos.md)
-- [COR-01 - Enviar correo](COR-01-enviar-correo.md)
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

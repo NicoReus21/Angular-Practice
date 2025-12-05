@@ -3,8 +3,8 @@
 **ID:** AUT-07  
 **Usuario:** Administrativo  
 **Nombre del Requerimiento:** Asignar usuarios a grupos  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona
+**Iteración Asignada:** 3
 
 ---
 
@@ -23,5 +23,5 @@ Gestionar la membresía de usuarios en grupos mediante la tabla `user_groups`, p
 ---
 
 ## ÐY"- Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

@@ -3,8 +3,8 @@
 **ID:** AUT-02  
 **Usuario:** Administrativo  
 **Nombre del Requerimiento:** Listar y filtrar usuarios  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona  
+**Iteración Asignada:** 3 
 
 ---
 
@@ -23,5 +23,5 @@ Proveer endpoints para listar usuarios con paginación y filtros por nombre, ema
 ---
 
 ## ÐY"- Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

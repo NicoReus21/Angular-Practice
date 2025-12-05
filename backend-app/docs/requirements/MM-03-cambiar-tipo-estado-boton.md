@@ -3,8 +3,8 @@
 **ID:** MM-03  
 **Usuario:** Encargado de Material Mayor, Inspector  
 **Nombre del Requerimiento:** Cambiar tipo de estado (botón)  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona
+**Iteración Asignada:** 2 
 
 ---
 
@@ -23,6 +23,5 @@ Agregar un botón para cambiar el estado de un registro de Material Mayor (p. ej
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

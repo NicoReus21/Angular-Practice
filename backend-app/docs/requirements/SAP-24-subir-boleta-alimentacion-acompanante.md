@@ -24,6 +24,5 @@ Permite registrar gastos de alimentación del acompañante durante la hospitaliz
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

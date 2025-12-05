@@ -3,8 +3,8 @@
 **ID:** MM-15  
 **Usuario:** Encargado de Material Mayor  
 **Nombre del Requerimiento:** Definir tipo de pendiente  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona
+**Iteración Asignada:** 2
 
 ---
 
@@ -23,6 +23,5 @@ Agregar campo "Tipo de pendiente" para clasificar acciones pendientes dentro del
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

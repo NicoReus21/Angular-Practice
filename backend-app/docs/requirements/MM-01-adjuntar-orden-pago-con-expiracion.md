@@ -3,8 +3,8 @@
 **ID:** MM-01  
 **Usuario:** Administrativo, Encargado de Material Mayor  
 **Nombre del Requerimiento:** Adjuntar documento de orden de pago con expiración  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona  
+**Iteración Asignada:** 2  
 
 ---
 
@@ -24,6 +24,5 @@ Adjuntar documento de Orden de Pago al registro de Material Mayor con una fecha 
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

@@ -3,8 +3,8 @@
 **ID:** MM-14  
 **Usuario:** Inspector, Encargado de Material Mayor  
 **Nombre del Requerimiento:** Subir documentos finales (imágenes, PDF)  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona
+**Iteración Asignada:** 2  
 
 ---
 
@@ -23,6 +23,5 @@ Permitir subir documentos finales vinculados al servicio/mantención en formatos
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

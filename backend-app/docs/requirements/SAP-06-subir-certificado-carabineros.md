@@ -24,6 +24,5 @@ El sistema debe permitir adjuntar el parte o certificado emitido por Carabineros
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

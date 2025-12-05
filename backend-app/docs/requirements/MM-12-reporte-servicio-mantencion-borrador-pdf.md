@@ -3,8 +3,8 @@
 **ID:** MM-12  
 **Usuario:** Inspector, Encargado de Material Mayor  
 **Nombre del Requerimiento:** Reporte de servicio/mantención (borrador y PDF final)  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona  
+**Iteración Asignada:** 2
 
 ---
 
@@ -23,6 +23,5 @@ Crear formulario de reporte de servicio/mantención editable con registro de úl
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

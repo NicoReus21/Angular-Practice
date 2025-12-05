@@ -3,8 +3,8 @@
 **ID:** MM-13  
 **Usuario:** Inspector, Encargado de Material Mayor  
 **Nombre del Requerimiento:** Campos de reporte de servicio/mantención  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona  
+**Iteración Asignada:** 2 
 
 ---
 
@@ -24,6 +24,5 @@ Incorporar los campos del reporte: Marca, Patente, Compañía, Cabina, Filtros (
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

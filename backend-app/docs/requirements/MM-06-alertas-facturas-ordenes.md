@@ -3,8 +3,8 @@
 **ID:** MM-06  
 **Usuario:** Administrativo, Contabilidad  
 **Nombre del Requerimiento:** Alertas para facturas, órdenes de pago y compra  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona
+**Iteración Asignada:** 2
 
 ---
 
@@ -23,6 +23,5 @@ Generar alertas con tiempo para vencimientos de facturas, órdenes de pago y ór
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

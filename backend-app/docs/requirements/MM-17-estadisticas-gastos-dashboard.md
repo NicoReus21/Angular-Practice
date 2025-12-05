@@ -3,8 +3,8 @@
 **ID:** MM-17  
 **Usuario:** Dirección, Contabilidad, Encargado  
 **Nombre del Requerimiento:** Estadísticas de gastos y dashboard  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona  
+**Iteración Asignada:** 1 
 
 ---
 
@@ -23,6 +23,5 @@ Generar estadísticas sobre gastos de reparación y mantenimiento: gasto mensual
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

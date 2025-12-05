@@ -3,8 +3,8 @@
 **ID:** AUT-03  
 **Usuario:** Administrativo  
 **Nombre del Requerimiento:** CRUD de roles  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona  
+**Iteración Asignada:** 3 
 
 ---
 
@@ -23,5 +23,5 @@ Crear, editar, listar y eliminar roles (tabla `rols`) con campos nombre y descri
 ---
 
 ## ÐY"- Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

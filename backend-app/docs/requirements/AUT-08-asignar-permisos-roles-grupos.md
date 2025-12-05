@@ -3,8 +3,8 @@
 **ID:** AUT-08  
 **Usuario:** Administrativo  
 **Nombre del Requerimiento:** Asignar permisos a roles y grupos  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona
+**Iteración Asignada:** 3  
 
 ---
 
@@ -23,5 +23,5 @@ Administrar la relación de permisos con roles y grupos usando las tablas `rol_p
 ---
 
 ## ÐY"- Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

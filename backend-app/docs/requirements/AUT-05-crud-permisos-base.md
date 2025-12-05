@@ -3,8 +3,8 @@
 **ID:** AUT-05  
 **Usuario:** Administrativo  
 **Nombre del Requerimiento:** CRUD de permisos base  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona  
+**Iteración Asignada:** 3
 
 ---
 
@@ -23,5 +23,5 @@ Gestionar permisos (tabla `permissions`) definiendo módulo, sección y acción 
 ---
 
 ## ÐY"- Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

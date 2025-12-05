@@ -24,6 +24,5 @@ El sistema debe permitir al usuario asignado subir un Reporte Flash, el cual es 
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

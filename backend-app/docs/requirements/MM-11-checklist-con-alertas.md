@@ -3,8 +3,8 @@
 **ID:** MM-11  
 **Usuario:** Inspector, Encargado de Material Mayor  
 **Nombre del Requerimiento:** Checklist con tiempos y alertas  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona 
+**Iteración Asignada:** 2 
 
 ---
 
@@ -23,6 +23,5 @@ Incorporar checklist con fechas objetivo y alertas tipo popup para actividades d
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

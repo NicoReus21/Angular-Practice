@@ -3,8 +3,8 @@
 **ID:** MM-02  
 **Usuario:** Contabilidad, Administrativo  
 **Nombre del Requerimiento:** Pago a proveedores  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona  
+**Iteración Asignada:** 2  
 
 ---
 
@@ -24,6 +24,5 @@ Registrar y gestionar pagos a proveedores vinculados a Material Mayor, asociando
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

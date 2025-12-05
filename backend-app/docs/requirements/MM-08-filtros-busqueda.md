@@ -3,8 +3,8 @@
 **ID:** MM-08  
 **Usuario:** Todos  
 **Nombre del Requerimiento:** Filtros de búsqueda por compañía y fecha  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona 
+**Iteración Asignada:** 2  
 
 ---
 
@@ -23,6 +23,5 @@ Incluir filtros de búsqueda por compañía, por fecha y otros criterios relevan
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025

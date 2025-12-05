@@ -3,8 +3,8 @@
 **ID:** MM-20  
 **Usuario:** Encargado de Compañía  
 **Nombre del Requerimiento:** Reporte semanal de horómetro  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona 
+**Iteración Asignada:** 2
 
 ---
 
@@ -23,6 +23,5 @@ El encargado de compañía debe informar semanalmente el registro de horómetro 
 ---
 
 ## 🔖 Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
-
+**Estado inicial:** Validado con el cliente  
+**Ultima actualizacion:** 05-12-2025
