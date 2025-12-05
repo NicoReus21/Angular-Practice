@@ -1,6 +1,6 @@
 # Especificación de Requerimientos de Software
 _Proyecto: Sistema general de Bomberos Antofagasta_
-Generado automáticamente: 2025-12-03T02:46:17.428Z
+Generado automáticamente: 2025-12-05T03:28:30.697Z
 
 <div style="page-break-after: always;"></div>
 

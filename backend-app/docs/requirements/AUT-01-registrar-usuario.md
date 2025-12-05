@@ -3,8 +3,8 @@
 **ID:** AUT-01  
 **Usuario:** Administrativo  
 **Nombre del Requerimiento:** Registrar usuario  
-**Programador Responsable:** Por asignar  
-**Iteración Asignada:** Por definir  
+**Programador Responsable:** Miguel Araya, Nicolas Carmona  
+**Iteración Asignada:** 3  
 
 ---
 
@@ -24,5 +24,5 @@ Crear usuarios del sistema vía API REST con los campos nombre, email y contrase
 ---
 
 ## ÐY"- Estado
-**Estado inicial:** Pendiente  
-**Última actualización:** _(YYYY-MM-DD)_
+**Estado inicial:** Validado  
+**Última actualización:** _(2025-12-05)_
