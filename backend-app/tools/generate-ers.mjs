@@ -97,7 +97,7 @@ const readRequirements = async () => {
       descripcion: cleanSection(descriptionBlock),
       validaciones: cleanSection(validationsBlock),
       estado: readStatus('Estado inicial', 'Pendiente'),
-      ultimaActualizacion: readStatus('ltima actualizaci', 'N/D'),
+      ultimaActualizacion: readStatus('Ultima actualizaci', 'N/D'),
     });
   }
 

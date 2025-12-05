@@ -1,6 +1,6 @@
 # Especificación de Requerimientos de Software
 _Proyecto: Sistema general de Bomberos Antofagasta_
-Generado automáticamente: 2025-12-05T14:29:26.756Z
+Generado automáticamente: 2025-12-05T20:33:40.108Z
 
 <div style="page-break-after: always;"></div>
 
@@ -61,7 +61,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Enviar correo</td>
@@ -92,7 +92,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Crear Proceso Bombero Accidentado</td>
@@ -123,7 +123,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Listar procesos de bombero accidentado</td>
@@ -154,7 +154,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir reporte flash</td>
@@ -185,7 +185,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir DIAB</td>
@@ -216,7 +216,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir Informe OBAC</td>
@@ -247,7 +247,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir declaración de testigos</td>
@@ -278,7 +278,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Incidente sin lesiones</td>
@@ -309,7 +309,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir certificado carabineros</td>
@@ -340,7 +340,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir informe DAU (Dato de Atención de Urgencia)</td>
@@ -371,7 +371,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir informe médico</td>
@@ -402,7 +402,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir informes médicos adicionales</td>
@@ -433,7 +433,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir certificado médico atención especial</td>
@@ -464,7 +464,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir certificado acreditación voluntario</td>
@@ -495,7 +495,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir copia libro llamada</td>
@@ -526,7 +526,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir copia aviso citación</td>
@@ -557,7 +557,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir copia libro asistencia</td>
@@ -588,7 +588,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir informe ejecutivo</td>
@@ -619,7 +619,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir factura prestaciones</td>
@@ -650,7 +650,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir boleta honorarios visada</td>
@@ -681,7 +681,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir boleta medicamentos</td>
@@ -712,7 +712,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir certificado médico autorización examen</td>
@@ -743,7 +743,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir boleta factura traslado</td>
@@ -774,7 +774,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir certificado médico traslado</td>
@@ -805,7 +805,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir boleta gastos acompañante</td>
@@ -836,7 +836,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir certificado médico incapacidad</td>
@@ -867,7 +867,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir boleta alimentación acompañante</td>
@@ -898,7 +898,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir otros gastos</td>
@@ -932,7 +932,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Adjuntar documento de orden de pago con expiración</td>
@@ -963,7 +963,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Pago a proveedores</td>
@@ -994,7 +994,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Cambiar tipo de estado (botón)</td>
@@ -1025,7 +1025,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Carros de Comandancia</td>
@@ -1056,7 +1056,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Registro histórico de Material Mayor (no eliminar)</td>
@@ -1087,7 +1087,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Alertas para facturas, órdenes de pago y compra</td>
@@ -1118,7 +1118,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir orden de compra, registrar gasto y presupuesto</td>
@@ -1149,7 +1149,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Filtros de búsqueda por compañía y fecha</td>
@@ -1180,7 +1180,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Integración con MoreApp para formularios</td>
@@ -1211,7 +1211,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Generar reporte por correo y por proveedor</td>
@@ -1242,7 +1242,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Checklist con tiempos y alertas</td>
@@ -1273,7 +1273,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Reporte de servicio/mantención (borrador y PDF final)</td>
@@ -1304,7 +1304,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Campos de reporte de servicio/mantención</td>
@@ -1335,7 +1335,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Subir documentos finales (imágenes, PDF)</td>
@@ -1366,7 +1366,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Definir tipo de pendiente</td>
@@ -1397,7 +1397,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Roles y permisos de Material Mayor</td>
@@ -1428,7 +1428,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Estadísticas de gastos y dashboard</td>
@@ -1459,7 +1459,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Historial de gastos por compañía</td>
@@ -1490,7 +1490,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Estado urgente para mantención</td>
@@ -1521,7 +1521,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Reporte semanal de horómetro</td>
@@ -1551,20 +1551,20 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Programador Responsable:</strong> Miguel Araya, Nicolas Carmona</td>
-    <td><strong>Iteración Asignada:</strong> 3</td>
+    <td><strong>Iteración Asignada:</strong> N/D</td>
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Registrar usuario</td>
   </tr>
   <tr>
-    <td colspan="2"><strong>Descripción:</strong><br>Crear usuarios del sistema vía API REST con los campos nombre, email y contraseña. Permitir marcar el email como verificado, forzar cambio de contraseña en el primer inicio de sesión y activar/desactivar usuarios.</td>
+    <td colspan="2"><strong>Descripción:</strong><br>Crear usuarios del sistema vÇða API REST con los campos nombre, email y contraseÇña. Permitir marcar el email como verificado, forzar cambio de contraseÇña en el primer inicio de sesiÇün y activar/desactivar usuarios.</td>
   </tr>
   <tr>
-    <td colspan="2"><strong>Validaciones:</strong><br><ul><li>Email único y con formato válido.</li><li>Contraseña mínima de 8 caracteres; almacenar encriptada.</li><li>No permitir crear usuario desactivado sin registrar motivo.</li><li>Registrar fecha de creación y usuario que realizó el alta.</li></ul></td>
+    <td colspan="2"><strong>Validaciones:</strong><br><ul><li>Email Ç§nico y con formato vÇ­lido.</li><li>ContraseÇña mÇðnima de 8 caracteres; almacenar encriptada.</li><li>No permitir crear usuario desactivado sin registrar motivo.</li><li>Registrar fecha de creaciÇün y usuario que realizÇü el alta.</li></ul></td>
   </tr>
 </table>
 
@@ -1586,7 +1586,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Listar y filtrar usuarios</td>
@@ -1617,7 +1617,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> CRUD de roles</td>
@@ -1648,7 +1648,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> CRUD de grupos</td>
@@ -1679,7 +1679,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> CRUD de permisos base</td>
@@ -1710,7 +1710,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Asignar roles a usuarios</td>
@@ -1741,7 +1741,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Asignar usuarios a grupos</td>
@@ -1772,7 +1772,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Asignar permisos a roles y grupos</td>
@@ -1803,7 +1803,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Autenticación y cierre de sesión</td>
@@ -1834,7 +1834,7 @@ Este documento consolida los requerimientos funcionales a partir de las Tarjetas
   </tr>
   <tr>
     <td><strong>Estado:</strong> Validado con el cliente</td>
-    <td><strong>Última actualización:</strong> N/D</td>
+    <td><strong>Última actualización:</strong> 05-12-2025</td>
   </tr>
   <tr>
     <td colspan="2"><strong>Nombre del Requerimiento:</strong> Recuperar contraseña</td>
