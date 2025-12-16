@@ -48,12 +48,12 @@ export class AuthDirectoryService {
     return this.http.put<ApiGroup>(`${this.apiUrl}/groups/${groupId}`, payload);
   }
 
-  assignUsersToGroup(groupId: number, userIds: number[]): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/groups/${groupId}/users`, { users: userIds });
+  assignUserToGroup(userId: number, groupId: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/users/${userId}/groups/${groupId}`, {});
   }
 
-  assignPermissionsToGroup(groupId: number, permissionIds: number[]): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/groups/${groupId}/permissions`, { permissions: permissionIds });
+  assignPermissionToGroup(groupId: number, permissionId: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/groups/${groupId}/permissions/${permissionId}`, {});
   }
 
   assignGroupsToUser(userId: number, groupIds: number[]): Observable<any> {

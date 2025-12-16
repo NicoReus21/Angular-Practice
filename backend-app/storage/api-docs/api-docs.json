@@ -3082,6 +3082,308 @@
                     }
                 ]
             }
+        },
+        "/api/groups/{groupId}/permissions/{permissionId}": {
+            "post": {
+                "tags": [
+                    "Sistema"
+                ],
+                "summary": "Asigna un permiso a un grupo",
+                "operationId": "5d08705ede3f4a942e66f40a5cf18efa",
+                "parameters": [
+                    {
+                        "name": "groupId",
+                        "in": "path",
+                        "description": "ID del grupo",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2
+                        }
+                    },
+                    {
+                        "name": "permissionId",
+                        "in": "path",
+                        "description": "ID del permiso",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Permiso asignado al grupo",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 12
+                                        },
+                                        "id_group": {
+                                            "type": "integer",
+                                            "example": 2
+                                        },
+                                        "id_permission": {
+                                            "type": "integer",
+                                            "example": 5
+                                        },
+                                        "granted_at": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "2025-12-05"
+                                        },
+                                        "revoked_at": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": null,
+                                            "nullable": true
+                                        },
+                                        "id_user_created": {
+                                            "type": "integer",
+                                            "example": 3
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "El permiso ya esta asignado al grupo"
+                    },
+                    "404": {
+                        "description": "Grupo o permiso no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Sistema"
+                ],
+                "summary": "Revoca un permiso de un grupo",
+                "operationId": "03302b4d9d4cdb643b828f4886f9a4b1",
+                "parameters": [
+                    {
+                        "name": "groupId",
+                        "in": "path",
+                        "description": "ID del grupo",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2
+                        }
+                    },
+                    {
+                        "name": "permissionId",
+                        "in": "path",
+                        "description": "ID del permiso",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Permiso revocado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Permiso revocado del grupo"
+                                        },
+                                        "revoked_at": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "2025-12-05"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No existe una asignacion activa para este grupo y permiso"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/users/{userId}/groups/{groupId}": {
+            "post": {
+                "tags": [
+                    "Sistema"
+                ],
+                "summary": "Asigna un usuario a un grupo",
+                "operationId": "d3501e1dd8a8a818d270246290ae43a8",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID del usuario",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "groupId",
+                        "in": "path",
+                        "description": "ID del grupo",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Usuario asignado al grupo",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 10
+                                        },
+                                        "id_user": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "id_group": {
+                                            "type": "integer",
+                                            "example": 2
+                                        },
+                                        "assigned_at": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "2025-12-05"
+                                        },
+                                        "removed_at": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": null,
+                                            "nullable": true
+                                        },
+                                        "id_user_created": {
+                                            "type": "integer",
+                                            "example": 3
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Asignacion ya existe"
+                    },
+                    "404": {
+                        "description": "Usuario o grupo no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Sistema"
+                ],
+                "summary": "Desasigna un usuario de un grupo",
+                "operationId": "d1da7854e17eb200ef0337c64f5fdafb",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID del usuario",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "groupId",
+                        "in": "path",
+                        "description": "ID del grupo",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Desasignacion registrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario desasignado del grupo"
+                                        },
+                                        "removed_at": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "2025-12-05"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No existe una asignacion activa para este usuario y grupo"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -3409,7 +3711,7 @@
     "tags": [
         {
             "name": "Sistema",
-            "description": "Autenticacion, usuarios, grupos, roles y permisos."
+            "description": "Operaciones del sistema (usuarios, grupos, roles)"
         },
         {
             "name": "Material Mayor",

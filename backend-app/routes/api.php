@@ -39,6 +39,8 @@ use App\Http\Controllers\BomberoAccidentado\GV\OtroGastoController;
 use App\Http\Controllers\CarChecklistItemsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\UserGroupController;
+use App\Http\Controllers\GroupPermissionController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
@@ -110,6 +112,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/groups', [GroupController::class, 'store']);
     Route::put('/groups/{id}', [GroupController::class, 'update']);
     Route::delete('/groups/{id}', [GroupController::class, 'destroy']);
+    Route::post('/users/{user}/groups/{group}', [UserGroupController::class, 'assign']);
+    Route::delete('/users/{user}/groups/{group}', [UserGroupController::class, 'remove']);
+    Route::post('/groups/{group}/permissions/{permission}', [GroupPermissionController::class, 'assign']);
+    Route::delete('/groups/{group}/permissions/{permission}', [GroupPermissionController::class, 'revoke']);
 
     Route::apiResource('rols', RolController::class);
     Route::get('/permissions', [PermissionController::class, 'index']);

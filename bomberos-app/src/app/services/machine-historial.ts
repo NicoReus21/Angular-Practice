@@ -82,6 +82,9 @@ export interface CarApiResponse {
   checklists: ApiChecklist[];
   documents: ApiDocument[];
   imageUrl: string | null;
+  // Variaciones que puede enviar el backend
+  image?: string | null;
+  image_url?: string | null;
 }
 
 export interface CreateCarDto {

@@ -47,7 +47,7 @@ class CarController extends Controller
     
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('car_images', 'public');
-            $url = Storage::url($path);
+            $url = Storage::disk('public')->url($path);
             $validatedData['imageUrl'] = $url;
         }
         unset($validatedData['image']);
@@ -89,13 +89,11 @@ class CarController extends Controller
         $validatedData = $validator->validated();
         if ($request->hasFile('image')) {
             if ($car->imageUrl) {
-                $oldPath = str_replace(Storage::url(''), '', $car->imageUrl);
-                if (Storage::disk('public')->exists($oldPath)) {
-                    Storage::disk('public')->delete($oldPath);
-                }
+                $oldPath = ltrim(str_replace('/storage', '', parse_url($car->imageUrl, PHP_URL_PATH)), '/');
+                Storage::disk('public')->delete($oldPath);
             }
             $path = $request->file('image')->store('car_images', 'public');
-            $validatedData['imageUrl'] = Storage::url($path);
+            $validatedData['imageUrl'] = Storage::disk('public')->url($path);
         }
 
         unset($validatedData['image']);
@@ -108,7 +106,7 @@ class CarController extends Controller
     public function destroy(Car $car)
     {
         if ($car->imageUrl) {
-            $path = str_replace(Storage::url(''), '', $car->imageUrl);
+            $path = ltrim(str_replace('/storage', '', parse_url($car->imageUrl, PHP_URL_PATH)), '/');
             Storage::disk('public')->delete($path);
         }
         

@@ -44,6 +44,6 @@ class CarDocument extends Model
         if (!$this->path) {
             return null;
         }
-        return Storage::url($this->path);
+        return Storage::disk('public')->url($this->path);
     }
 }

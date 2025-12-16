@@ -133,11 +133,11 @@ export class MachineHistorialComponent implements OnInit {
   selectedUnitId = signal<number | null>(null);
   currentStatusFilter = signal<'Todos' | 'En Servicio' | 'En Taller' | 'Fuera de Servicio'>('Todos');
 
-  // Señales para el filtro de rango de fechas
+  // SeÃ±ales para el filtro de rango de fechas
   documentsDateStart = signal<Date | null>(null);
   documentsDateEnd = signal<Date | null>(null);
 
-  // Señales para nuevo documento
+  // SeÃ±ales para nuevo documento
   newDocumentName = signal<string>('');
   newDocumentCost = signal<number | null>(null);
   newDocumentFile = signal<File | null>(null);
@@ -146,7 +146,7 @@ export class MachineHistorialComponent implements OnInit {
   isMobile = signal<boolean>(false);
   sidenavOpened = signal<boolean>(true);
 
-  private backendUrl = 'http://localhost:8000';
+  private backendUrl = 'http://127.0.0.1:8000';
 
   filteredUnits = computed(() => {
     const status = this.currentStatusFilter();
@@ -306,12 +306,12 @@ export class MachineHistorialComponent implements OnInit {
     if (!unit) return;
 
     Swal.fire({
-      title: `¿Eliminar ${unit.name}?`,
-      text: 'Se eliminará la unidad y todo su historial. Esta acción no se puede deshacer.',
+      title: `Â¿Eliminar ${unit.name}?`,
+      text: 'Se eliminarÃ¡ la unidad y todo su historial. Esta acciÃ³n no se puede deshacer.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
-      confirmButtonText: 'Sí, eliminar',
+      confirmButtonText: 'SÃ­, eliminar',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
@@ -331,7 +331,10 @@ export class MachineHistorialComponent implements OnInit {
   }
 
   private mapApiCarToVehicleUnit(car: CarApiResponse): VehicleUnit {
-    const rawUrl = this.mapApiUrl(car.imageUrl);
+    const rawUrl = this.mapApiUrl(
+      // Soportar distintas formas de devolver la URL desde la API
+      (car as any).imageUrl || (car as any).image_url || (car as any).image
+    );
     // Truco para romper caché de imagen
     const imageUrl = rawUrl ? `${rawUrl}?t=${new Date().getTime()}` : null;
 
@@ -358,7 +361,7 @@ export class MachineHistorialComponent implements OnInit {
         id: m.id,
         date: new Date(m.service_date).toLocaleDateString('es-CL'),
         technician: m.inspector_name || 'Borrador',
-        description: m.reported_problem || 'Sin descripción',
+        description: m.reported_problem || 'Sin descripciÃ³n',
         service_type: m.service_type || 'Borrador',
         pdf_url: this.mapApiUrl(m.pdf_url),
         status: m.status,
@@ -388,7 +391,8 @@ export class MachineHistorialComponent implements OnInit {
     if (!url) return null;
     if (url.startsWith('http')) return url;
     if (url.startsWith('/')) return `${this.backendUrl}${url}`;
-    return url;
+    // Si viene sin slash inicial (ej: "storage/..."), se asume relativo al backend.
+    return `${this.backendUrl}/${url}`;
   }
 
   private getFirstErrorMessage(err: any, defaultMsg: string = 'Error desconocido'): string {
@@ -400,7 +404,7 @@ export class MachineHistorialComponent implements OnInit {
           return allErrorArrays[0][0];
         }
       } catch (e) {
-        console.error('Error al parsear validación:', e);
+        console.error('Error al parsear validaciÃ³n:', e);
       }
     }
     return err.message || defaultMsg;
@@ -504,19 +508,19 @@ export class MachineHistorialComponent implements OnInit {
   onDeleteChecklist(checklistId: number, event: MouseEvent): void {
     event.stopPropagation();
     Swal.fire({
-      title: '¿Eliminar Checklist?',
-      text: 'Se eliminará permanentemente.',
+      title: 'Â¿Eliminar Checklist?',
+      text: 'Se eliminarÃ¡ permanentemente.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
-      confirmButtonText: 'Sí, eliminar',
+      confirmButtonText: 'SÃ­, eliminar',
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
         this.vehicleService.deleteChecklist(checklistId).subscribe({
           next: () => {
             this.loadUnits();
-            Swal.fire('¡Eliminado!', 'Checklist eliminado.', 'success');
+            Swal.fire('Â¡Eliminado!', 'Checklist eliminado.', 'success');
           },
         });
       }
@@ -585,7 +589,7 @@ export class MachineHistorialComponent implements OnInit {
         action$.subscribe({
           next: () => {
             this.loadUnits();
-            const msg = dto.status === 'draft' ? 'Borrador guardado' : 'Reporte generado con éxito';
+            const msg = dto.status === 'draft' ? 'Borrador guardado' : 'Reporte generado con Ã©xito';
             this.snackBar.open(msg, 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
           },
           error: (err) => {
@@ -600,8 +604,8 @@ export class MachineHistorialComponent implements OnInit {
   onDeleteReport(reportId: number, event?: MouseEvent): void {
     if (event) event.stopPropagation();
     Swal.fire({
-      title: '¿Eliminar Reporte?',
-      text: 'Esta acción no se puede deshacer. Se eliminará el historial.',
+      title: 'Â¿Eliminar Reporte?',
+      text: 'Esta acciÃ³n no se puede deshacer. Se eliminarÃ¡ el historial.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',

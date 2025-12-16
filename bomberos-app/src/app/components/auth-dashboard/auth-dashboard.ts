@@ -7,6 +7,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { RoleManagementComponent } from '../role-management/role-management';
@@ -61,6 +62,7 @@ interface DashboardSection {
     MatSelectModule,
     ReactiveFormsModule,
     MatSnackBarModule,
+    RouterLink,
     RoleManagementComponent
   ],
   templateUrl: './auth-dashboard.html',
@@ -325,18 +327,25 @@ export class AuthDashboardComponent implements OnInit {
     const { groupId, permissionIds } = this.groupPermissionForm.value;
     this.isSavingGroupPermissions.set(true);
 
-    this.authDirectory
-      .assignPermissionsToGroup(groupId!, permissionIds || [])
-      .subscribe({
-        next: () => {
-          this.snackBar.open('Permisos del grupo actualizados.', 'Cerrar', { duration: 3000 });
-        },
-        error: (err) => {
-          console.error(err);
-          this.snackBar.open('No se pudieron asignar los permisos.', 'Cerrar', { duration: 4000 });
-        },
-        complete: () => this.isSavingGroupPermissions.set(false)
-      });
+    const requests = (permissionIds || []).map((permissionId) =>
+      this.authDirectory.assignPermissionToGroup(groupId!, permissionId)
+    );
+
+    if (!requests.length) {
+      this.isSavingGroupPermissions.set(false);
+      return;
+    }
+
+    forkJoin(requests).subscribe({
+      next: () => {
+        this.snackBar.open('Permisos del grupo actualizados.', 'Cerrar', { duration: 3000 });
+      },
+      error: (err) => {
+        console.error(err);
+        this.snackBar.open('No se pudieron asignar los permisos.', 'Cerrar', { duration: 4000 });
+      },
+      complete: () => this.isSavingGroupPermissions.set(false)
+    });
   }
 
   submitGroupUsers(): void {
@@ -348,7 +357,16 @@ export class AuthDashboardComponent implements OnInit {
     const { groupId, userIds } = this.groupUsersForm.value;
     this.isSavingGroupUsers.set(true);
 
-    this.authDirectory.assignUsersToGroup(groupId!, userIds || []).subscribe({
+    const requests = (userIds || []).map((userId) =>
+      this.authDirectory.assignUserToGroup(userId, groupId!)
+    );
+
+    if (!requests.length) {
+      this.isSavingGroupUsers.set(false);
+      return;
+    }
+
+    forkJoin(requests).subscribe({
       next: () => {
         this.snackBar.open('Usuarios asignados al grupo.', 'Cerrar', { duration: 3000 });
         this.loadGroups();
