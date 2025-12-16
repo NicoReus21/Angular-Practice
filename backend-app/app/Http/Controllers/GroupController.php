@@ -10,7 +10,7 @@ class GroupController extends Controller
 {
     public function index()
     {
-        return Group::all();
+        return Group::withCount('user_groups as users_count')->get();
     }
 
     public function store(Request $request)
@@ -33,7 +33,7 @@ class GroupController extends Controller
 
     public function show(string $id)
     {
-        return Group::findOrFail($id);
+        return Group::withCount('user_groups as users_count')->findOrFail($id);
     }
 
     public function update(Request $request, string $id)

@@ -34,4 +34,15 @@ class Process extends Model
     {
         return $this->hasMany(Document::class);
     }
+
+    /**
+     * Normaliza el estado al devolverlo en respuestas.
+     */
+    public function getStatusAttribute($value)
+    {
+        if ($value === 'started' || $value === 'Pendiente') {
+            return 'Iniciado';
+        }
+        return $value;
+    }
 }

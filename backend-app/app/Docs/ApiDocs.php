@@ -627,7 +627,17 @@ class ApiDocs
      *     summary="Marcar paso de proceso como completado",
      *     security={{"sanctum":{}}},
      *     @OA\Parameter(name="process", in="path", required=true, @OA\Schema(type="integer")),
-     *     @OA\Response(response=200, description="Actualizado")
+     *     @OA\Response(response=200, description="Actualizado", @OA\JsonContent(ref="#/components/schemas/Process"))
+     * )
+     * @OA\Patch(
+     *     path="/api/process/{process}/finalize",
+     *     tags={"Bombero Accidentado"},
+     *     summary="Finalizar proceso",
+     *     description="Marca el proceso con estado Finalizado.",
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(name="process", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Proceso finalizado", @OA\JsonContent(ref="#/components/schemas/Process")),
+     *     @OA\Response(response=404, description="No encontrado")
      * )
      */
     public function processDocs()

@@ -267,11 +267,11 @@
         <button
           mat-flat-button
           color="primary"
-          [disabled]="isFinishing()"
+          [disabled]="isFinishing() || isProcessFinalized()"
           (click)="finishProcess()"
         >
           <mat-icon>done_all</mat-icon>
-          <span>Finalizar Flujo</span>
+          <span>{{ isProcessFinalized() ? 'Proceso Finalizado' : 'Finalizar Flujo' }}</span>
         </button>
       </div>
     </ng-container>

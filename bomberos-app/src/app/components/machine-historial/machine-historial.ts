@@ -389,10 +389,31 @@ export class MachineHistorialComponent implements OnInit {
 
   private mapApiUrl(url: string | null | undefined): string | null {
     if (!url) return null;
-    if (url.startsWith('http')) return url;
+    if (url.startsWith('http')) return this.normalizeBackendUrl(url);
     if (url.startsWith('/')) return `${this.backendUrl}${url}`;
     // Si viene sin slash inicial (ej: "storage/..."), se asume relativo al backend.
     return `${this.backendUrl}/${url}`;
+  }
+
+  private normalizeBackendUrl(url: string): string {
+    // Reemplaza host/puerto localhost por el backend configurado
+    try {
+      const backend = new URL(this.backendUrl);
+      const current = new URL(url, this.backendUrl);
+
+      const isLocalHost =
+        current.hostname === 'localhost' ||
+        current.hostname === '127.0.0.1';
+
+      if (isLocalHost) {
+        current.hostname = backend.hostname;
+        current.protocol = backend.protocol;
+        current.port = backend.port;
+      }
+      return current.toString();
+    } catch {
+      return url;
+    }
   }
 
   private getFirstErrorMessage(err: any, defaultMsg: string = 'Error desconocido'): string {

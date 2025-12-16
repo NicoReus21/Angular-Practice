@@ -32,6 +32,9 @@ interface GroupRecord {
   name: string;
   description?: string;
   usersCount?: number;
+  userIds?: number[];
+  permissionIds?: number[];
+  users?: any[];
   createdAt?: string;
 }
 
@@ -264,8 +267,14 @@ export class AuthDashboardComponent implements OnInit {
     }
     this.selectedSection.set(this.sections.find((s) => s.id === 'grupos')!);
     this.selectedGroup.set(group);
-    this.groupPermissionForm.patchValue({ groupId: group.id, permissionIds: [] });
-    this.groupUsersForm.patchValue({ groupId: group.id, userIds: [] });
+    this.groupPermissionForm.patchValue({
+      groupId: group.id,
+      permissionIds: group.permissionIds || []
+    });
+    this.groupUsersForm.patchValue({
+      groupId: group.id,
+      userIds: group.userIds || []
+    });
   }
 
   submitUserAccess(): void {
@@ -413,7 +422,15 @@ export class AuthDashboardComponent implements OnInit {
       id: group.id,
       name: group.name,
       description: group.description || 'Sin descripcion',
-      usersCount: group.users_count,
+      users: (group as any).users || undefined,
+      usersCount:
+        typeof group.users_count === 'number'
+          ? group.users_count
+          : ((group as any).users ? (group as any).users.length : undefined),
+      userIds: (group as any).users ? (group as any).users.map((u: any) => u.id) : undefined,
+      permissionIds: (group as any).permissions
+        ? (group as any).permissions.map((p: any) => p.id)
+        : undefined,
       createdAt: group.created_at
     };
   }
@@ -424,5 +441,30 @@ export class AuthDashboardComponent implements OnInit {
       name: permission.name || permission.guard_name || `Permiso ${permission.id}`,
       description: permission.description || permission.guard_name || null
     };
+  }
+
+  permissionLabel(permission: PermissionRecord): string {
+    const desc = permission.description ? ` - ${permission.description}` : '';
+    return `${permission.id}. ${permission.name}${desc}`;
+  }
+
+  onPermissionGroupChange(groupId: number): void {
+    const target = this.groups().find((g) => g.id === groupId);
+    if (target) {
+      this.selectedGroup.set(target);
+      this.groupPermissionForm.patchValue({
+        permissionIds: target.permissionIds || []
+      });
+    }
+  }
+
+  onUsersGroupChange(groupId: number): void {
+    const target = this.groups().find((g) => g.id === groupId);
+    if (target) {
+      this.selectedGroup.set(target);
+      this.groupUsersForm.patchValue({
+        userIds: target.userIds || []
+      });
+    }
   }
 }

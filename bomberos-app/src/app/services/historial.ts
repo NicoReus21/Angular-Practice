@@ -17,7 +17,7 @@ export interface HistorialElement {
 })
 export class HistorialService {
   private http = inject(HttpClient);
-  private backendUrl = 'http://localhost:8000/api/process';
+  private backendUrl = 'http://127.0.0.1:8000/api/process';
 
   private records = signal<HistorialElement[]>([]);
   public readonly historyRecords = this.records.asReadonly();
@@ -41,4 +41,3 @@ export class HistorialService {
     return this.http.delete(`${this.backendUrl}/${id}`);
   }
 }
-

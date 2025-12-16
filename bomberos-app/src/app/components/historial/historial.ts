@@ -40,10 +40,21 @@ export class HistorialComponent implements OnInit {
     });
   }
 
+  private isFinishedStatus(rawEstado: string | undefined): boolean {
+    if (!rawEstado) return false;
+    const normalized = rawEstado.trim().toLowerCase();
+    // Solo consideramos finalizado cuando coincide exactamente.
+    return normalized === 'finalizado';
+  }
+
   async checkPendingDocumentation(records: HistorialElement[]) {
-    const pendingRecords = records.filter(r => 
-      r.estado !== 'Finalizado' && r.estado !== 'Completado'
-    );
+    const pendingRecords = records.filter((r) => {
+      const estado =
+        r.estado ||
+        (r as any).status ||
+        (r as any).process_status;
+      return !this.isFinishedStatus(estado);
+    });
     
     const Toast = Swal.mixin({
       toast: true,

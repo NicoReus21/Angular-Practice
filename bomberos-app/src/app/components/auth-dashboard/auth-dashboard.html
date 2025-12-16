@@ -296,7 +296,11 @@
                     }
                     <mat-form-field appearance="outline">
                       <mat-label>Grupo</mat-label>
-                      <mat-select formControlName="groupId" placeholder="Selecciona grupo">
+                      <mat-select
+                        formControlName="groupId"
+                        placeholder="Selecciona grupo"
+                        (selectionChange)="onPermissionGroupChange($event.value)"
+                      >
                         @for (group of groups(); track group.id) {
                           <mat-option [value]="group.id">{{ group.name }}</mat-option>
                         }
@@ -309,7 +313,9 @@
                       <mat-label>Permisos</mat-label>
                       <mat-select formControlName="permissionIds" multiple>
                         @for (permission of permissions(); track permission.id) {
-                          <mat-option [value]="permission.id">{{ permission.name }}</mat-option>
+                          <mat-option [value]="permission.id">
+                            {{ permissionLabel(permission) }}
+                          </mat-option>
                         }
                       </mat-select>
                       @if (groupPermissionForm.get('permissionIds')?.hasError('required')) {
@@ -339,7 +345,11 @@
                     }
                     <mat-form-field appearance="outline">
                       <mat-label>Grupo</mat-label>
-                      <mat-select formControlName="groupId" placeholder="Selecciona grupo">
+                      <mat-select
+                        formControlName="groupId"
+                        placeholder="Selecciona grupo"
+                        (selectionChange)="onUsersGroupChange($event.value)"
+                      >
                         @for (group of groups(); track group.id) {
                           <mat-option [value]="group.id">{{ group.name }}</mat-option>
                         }

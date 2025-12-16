@@ -89,7 +89,6 @@ export class CreateReportComponent implements OnInit, AfterViewInit {
       company: [{ value: '', disabled: true }],
       model: [{ value: '', disabled: true }],
 
-      chassis_number: [''],
       mileage: ['', Validators.required],
       cabin: [''],
       filter_code: [''],
@@ -128,7 +127,6 @@ export class CreateReportComponent implements OnInit, AfterViewInit {
         fecha = new Date(r.service_date + (r.service_date.includes('T') ? '' : 'T00:00:00'));
 
       this.reportForm.patchValue({
-        chassis_number: r.chassis_number || '',
         mileage: r.mileage,
         cabin: r.cabin,
         filter_code: r.filter_code,

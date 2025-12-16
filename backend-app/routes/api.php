@@ -58,6 +58,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/process', [ProcessController::class, 'index']);
     Route::get('/process/{process}', [ProcessController::class, 'show']);
     Route::put('/process/{process}', [ProcessController::class, 'update']);
+    Route::patch('/process/{process}/finalize', [ProcessController::class, 'finalize'])->name('process.finalize');
     Route::delete('/process/{process}', [ProcessController::class, 'destroy']);
     Route::delete('/documents/{document}', [DocumentController::class, 'destroy']);
 

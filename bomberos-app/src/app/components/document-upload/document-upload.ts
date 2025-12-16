@@ -68,6 +68,7 @@ export class DocumentUploadComponent implements OnInit {
   isUploading = signal(false);
   isFinishing = signal(false);
   uploadError = signal<string | null>(null);
+  processStatus = signal<string | null>(null);
   private currentProcessId = signal<number | null>(null);
 
   preliminaryForm: FormGroup;
@@ -215,6 +216,13 @@ export class DocumentUploadComponent implements OnInit {
         this.sections.set(sections);
         this.preliminaryDataCompleted.set(true);
         this.isLoading.set(false);
+        // Guardamos el estado actual del proceso (ej: Finalizado)
+        this.processStatus.set(
+          (record as any).estado ||
+          (record as any).status ||
+          (record as any).process_status ||
+          null
+        );
       },
       error: (err) => {
         this.uploadError.set('Error al cargar el proceso.');
@@ -229,6 +237,7 @@ export class DocumentUploadComponent implements OnInit {
     this.preliminaryForm.reset();
     this.preliminaryForm.enable();
     this.currentProcessId.set(null);
+    this.processStatus.set(null);
     this.sections.set(this.getInitialSections());
     this.flatStepIndex.set(0);
     this.isLoading.set(false);
@@ -377,6 +386,11 @@ export class DocumentUploadComponent implements OnInit {
   }
 
   finishProcess(): void {
+    if (this.isProcessFinalized()) {
+      this.snackBar.open('El proceso ya está finalizado.', 'Cerrar', { duration: 4000 });
+      return;
+    }
+
     const allSteps = this.allSteps();
     const incompleteMandatoryStep = allSteps.find((s) => !s.optional && s.files.length === 0);
 
@@ -389,16 +403,35 @@ export class DocumentUploadComponent implements OnInit {
       return;
     }
 
+    const processId = this.currentProcessId();
+    if (!processId) {
+      this.snackBar.open('No se pudo identificar el proceso.', 'Cerrar', { duration: 4000 });
+      return;
+    }
+
     this.isFinishing.set(true);
-    this.snackBar.open('Proceso finalizado correctamente.', 'Cerrar', { duration: 3000 });
-    setTimeout(() => {
-      this.router.navigate(['/historial']);
-    }, 1000);
+    this.uploadService.completeStep(processId, 'finalizar').subscribe({
+      next: () => {
+        this.processStatus.set('Finalizado');
+        this.snackBar.open('Proceso finalizado correctamente.', 'Cerrar', { duration: 3000 });
+        this.router.navigate(['/historial']);
+      },
+      error: (err) => {
+        console.error(err);
+        this.snackBar.open('No se pudo finalizar el proceso.', 'Cerrar', { duration: 4000 });
+        this.isFinishing.set(false);
+      },
+    });
   }
 
   isServerFile(file: any): file is ServerFile {
     return file.fromServer === true;
   }
+
+  isProcessFinalized = computed(() => {
+    const status = (this.processStatus() || '').toLowerCase();
+    return status.includes('final');
+  });
 
   saveChanges(): void {
     this.saveDraft();

@@ -8,7 +8,7 @@ import { Observable, of } from 'rxjs';
 export class FileUploadService {
   private http = inject(HttpClient);
 
-  private backendUrl = 'http://localhost:8000/api';
+  private backendUrl = 'http://127.0.0.1:8000/api';
 
   createProcess(data: { bomberoNombre: string, compania: string }): Observable<any> {
     const payload = {
@@ -43,7 +43,8 @@ export class FileUploadService {
 
   completeStep(processId: number, stepTitle: string): Observable<any> {
     const url = `${this.backendUrl}/processes/${processId}/complete-step`;
-    return this.http.patch(url, { step_title: stepTitle });
+    // El endpoint no requiere payload; se envía objeto vacío.
+    return this.http.patch(url, {});
   }
 
   viewFile(fileId: number): Observable<Blob> {
