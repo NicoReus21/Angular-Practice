@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { RoleManagementComponent } from './role-management';
 
@@ -8,7 +9,7 @@ describe('RoleManagement', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RoleManagementComponent]
+      imports: [HttpClientTestingModule, RoleManagementComponent]
     })
     .compileComponents();
 

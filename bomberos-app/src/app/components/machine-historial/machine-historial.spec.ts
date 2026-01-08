@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { MachineHistorialComponent } from './machine-historial';
 
@@ -8,7 +9,7 @@ describe('MachineHistorial', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MachineHistorialComponent]
+      imports: [HttpClientTestingModule, MachineHistorialComponent]
     })
     .compileComponents();
 
