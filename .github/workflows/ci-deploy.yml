@@ -115,7 +115,7 @@ jobs:
           set -euo pipefail
           cd "$BACKEND_PATH"
           git pull origin main
-          composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+          php "$HOME/composer.phar" install --no-dev --no-interaction --prefer-dist --optimize-autoloader
           php artisan migrate --force --ansi
           php artisan config:cache
           php artisan route:cache
