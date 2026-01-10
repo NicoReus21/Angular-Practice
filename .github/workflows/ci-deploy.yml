@@ -72,6 +72,11 @@ jobs:
       - name: Build frontend
         run: npm run build -- --configuration production
         working-directory: bomberos-app
+        
+      - name: Copy htaccess to browser build
+        run: |
+          mkdir -p "${FRONTEND_BUILD_DIR}/browser"
+          cp bomberos-app/public/.htaccess "${FRONTEND_BUILD_DIR}/browser/.htaccess"
 
       - name: Upload frontend build
         uses: actions/upload-artifact@v4

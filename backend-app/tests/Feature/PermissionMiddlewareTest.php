@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 namespace Tests\Feature;
 
@@ -22,6 +22,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class PermissionMiddlewareTest extends TestCase
@@ -41,9 +42,7 @@ class PermissionMiddlewareTest extends TestCase
         $this->user = User::factory()->create();
     }
 
-    /**
-     * @dataProvider permissionCases
-     */
+    #[DataProvider('permissionCases')]
     public function test_rutas_bloquean_sin_permiso(array $case): void
     {
         $this->actingAs($this->user, 'sanctum');
@@ -54,9 +53,7 @@ class PermissionMiddlewareTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /**
-     * @dataProvider permissionCases
-     */
+    #[DataProvider('permissionCases')]
     public function test_rutas_permiten_con_permiso(array $case): void
     {
         $this->actingAs($this->user, 'sanctum');
@@ -648,8 +645,7 @@ class PermissionMiddlewareTest extends TestCase
                         'persona_cargo' => 'Inspector',
                         'fecha_realizacion' => '2025-01-01',
                     ]);
-                    $item = CarChecklistItems::create([
-                        'checklist_id' => $checklist->id,
+                    $item = $checklist->items()->create([
                         'task_description' => 'Inicial',
                         'completed' => false,
                     ]);
@@ -737,7 +733,7 @@ class PermissionMiddlewareTest extends TestCase
             ];
         }
 
-        return $cases;
+        return array_map(static fn ($case) => [$case], $cases);
     }
 
     private function prepareCase(array $case): array

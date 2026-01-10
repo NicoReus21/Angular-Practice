@@ -2,10 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Models\Permission;
 use App\Models\Process;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -25,6 +28,7 @@ class TestUploadBaseDocument extends TestCase
             'password' => bcrypt('password'),
         ]);
 
+        $this->grantPermission($this->user, 'Bombero Accidentado', 'Process', 'update');
         $this->actingAs($this->user, 'sanctum');
 
         $this->process = Process::factory()->create([
@@ -66,5 +70,33 @@ class TestUploadBaseDocument extends TestCase
             'step' => $step,
             'file_name' => $response->json('document.file_name'),
         ]);
+    }
+
+    private function grantPermission(User $user, string $module, string $section, string $action): void
+    {
+        $permission = Permission::updateOrCreate(
+            [
+                'module' => $module,
+                'section' => $section,
+                'action' => $action,
+            ],
+            [
+                'description' => "{$action} {$section}",
+            ]
+        );
+
+        DB::table('user_permissions')->updateOrInsert(
+            [
+                'id_user' => $user->id,
+                'id_permission' => $permission->id,
+            ],
+            [
+                'granted_at' => Carbon::today()->toDateString(),
+                'revoked_at' => null,
+                'id_user_created' => $user->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
     }
 }
