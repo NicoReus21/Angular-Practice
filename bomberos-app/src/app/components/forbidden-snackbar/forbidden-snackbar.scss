@@ -1,0 +1,25 @@
+:host {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.snackbar-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  color: #fff;
+}
+
+.message {
+  font-weight: 600;
+}
+
+.detail {
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+.close-button {
+  color: #fff;
+}

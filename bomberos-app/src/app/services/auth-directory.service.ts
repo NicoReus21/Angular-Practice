@@ -16,6 +16,14 @@ export interface ApiGroup {
   created_at?: string;
 }
 
+export interface ApiPermission {
+  id: number;
+  module: string;
+  section: string;
+  action: string;
+  description?: string | null;
+}
+
 export interface ApiUser {
   id: number;
   name: string;
@@ -65,6 +73,18 @@ export class AuthDirectoryService {
     return this.http.get<ApiRole[]>(`${this.apiUrl}/users/${userId}/roles`);
   }
 
+  getPermissions(): Observable<ApiPermission[]> {
+    return this.http.get<ApiPermission[]>(`${this.apiUrl}/permissions`);
+  }
+
+  getGroupPermissions(groupId: number): Observable<ApiPermission[]> {
+    return this.http.get<ApiPermission[]>(`${this.apiUrl}/groups/${groupId}/permissions`);
+  }
+
+  getCurrentUserPermissions(): Observable<ApiPermission[]> {
+    return this.http.get<ApiPermission[]>(`${this.apiUrl}/user/permissions`);
+  }
+
   updateGroup(groupId: number, payload: { name?: string; description?: string | null }): Observable<ApiGroup> {
     return this.http.put<ApiGroup>(`${this.apiUrl}/groups/${groupId}`, payload);
   }
@@ -79,6 +99,10 @@ export class AuthDirectoryService {
 
   assignPermissionToGroup(groupId: number, permissionId: number): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/groups/${groupId}/permissions/${permissionId}`, {});
+  }
+
+  revokePermissionFromGroup(groupId: number, permissionId: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/groups/${groupId}/permissions/${permissionId}`);
   }
 
   assignGroupsToUser(userId: number, groupIds: number[]): Observable<any> {

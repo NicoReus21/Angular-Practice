@@ -13,13 +13,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { authInterceptor } from './interceptors/auth.interceptor';
+import { forbiddenInterceptor } from './interceptors/forbidden.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideAnimations(),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, forbiddenInterceptor])),
     importProvidersFrom(
       MatCardModule,
       MatFormFieldModule,
@@ -29,7 +31,8 @@ export const appConfig: ApplicationConfig = {
       MatTableModule,
       MatIconModule,
       MatExpansionModule, 
-      MatCheckboxModule  
+      MatCheckboxModule,
+      MatSnackBarModule
     )
   ]
 };

@@ -11,23 +11,32 @@ import { AuthDashboardComponent } from './components/auth-dashboard/auth-dashboa
 import { ModulesOverviewComponent } from './components/modules-overview/modules-overview';
 import { UserAccessComponent } from './components/user-access/user-access';
 import { GroupAccessComponent } from './components/group-access/group-access';
+import { AccessLandingComponent } from './components/access-landing/access-landing';
+import { AuthTransitionComponent } from './components/auth-transition/auth-transition';
+import { permissionGuard } from './guards/permission.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'modules', component: ModulesOverviewComponent },
+  { path: 'auth-transition', component: AuthTransitionComponent },
+  {
+    path: 'modules',
+    component: ModulesOverviewComponent,
+    canActivate: [permissionGuard('Sistema:Modules:read')]
+  },
   { path: 'app', redirectTo: 'modules', pathMatch: 'full' },
-  { path: 'historial', component: HistorialComponent },
+  { path: 'historial', component: HistorialComponent, canActivate: [permissionGuard('Bombero Accidentado:Home:read')] },
   { path: 'document-upload', component: DocumentUploadComponent },
   { path: 'document-upload/:id', component: DocumentUploadComponent },
-  { path: 'machine-historial', component: MachineHistorialComponent },
+  { path: 'machine-historial', component: MachineHistorialComponent, canActivate: [permissionGuard('Material Mayor:Home:read')] },
   { path: 'create-firetruck', component: CreateFiretruckComponent }, 
   {path: 'register', component: UserRegisterComponent },
   //{ path: 'rols', component: RoleManagementComponent },
   { path: 'recover-password', component: RecoverPasswordComponent },
   { path: 'rols/user/:id', component: UserAccessComponent },
   { path: 'rols/group/:id', component: GroupAccessComponent },
-  { path: 'rols', component: AuthDashboardComponent },
+  { path: 'rols', component: AuthDashboardComponent, canActivate: [permissionGuard('Sistema:Home:read')] },
+  { path: 'landing', component: AccessLandingComponent },
 
 
 

@@ -19,7 +19,7 @@ class InitialDataSeeder extends Seeder
 
         $today = Carbon::today()->toDateString();
 
-        $systemUser = User::firstOrCreate(
+        $systemUser = User::updateOrCreate(
             ['email' => 'system@sigba.test'],
             [
                 'name' => 'System Admin',
@@ -27,7 +27,7 @@ class InitialDataSeeder extends Seeder
             ]
         );
 
-        $adminUser = User::firstOrCreate(
+        $adminUser = User::updateOrCreate(
             ['email' => 'encargadoadministracion@gmail.com'],
             [
                 'name' => 'Encargado Administracion',
@@ -35,7 +35,7 @@ class InitialDataSeeder extends Seeder
             ]
         );
 
-        $mmUser = User::firstOrCreate(
+        $mmUser = User::updateOrCreate(
             ['email' => 'encargadomaterialmayor@gmail.com'],
             [
                 'name' => 'Encargado Material Mayor',
@@ -43,7 +43,7 @@ class InitialDataSeeder extends Seeder
             ]
         );
 
-        $baUser = User::firstOrCreate(
+        $baUser = User::updateOrCreate(
             ['email' => 'encargadobomberoaccidentado@gmail.com'],
             [
                 'name' => 'Encargado Bombero Accidentado',

@@ -1,0 +1,242 @@
+.access-landing {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 3rem;
+  background:
+    radial-gradient(circle at top left, rgba(255, 214, 196, 0.6), transparent 55%),
+    radial-gradient(circle at 60% 20%, rgba(255, 244, 239, 0.8), transparent 45%),
+    #f5f7fb;
+  min-height: calc(100vh - 120px);
+  font-family: 'Manrope', 'Segoe UI', sans-serif;
+}
+
+.eyebrow {
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  color: #cc4d26;
+  margin: 0 0 0.5rem;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.hero-content h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  line-height: 1.1;
+}
+
+.hero-lead {
+  margin: 0 0 1.5rem;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 1.05rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.stat-value {
+  display: block;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.hero-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.visual-card {
+  width: min(360px, 100%);
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.15);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+
+.visual-header {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.75rem 1rem;
+  background: #f6f0ee;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #f4b6a5;
+}
+
+.visual-body {
+  padding: 1.5rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.visual-row {
+  height: 10px;
+  border-radius: 999px;
+  background: #f4d4c9;
+}
+
+.visual-row.wide {
+  height: 16px;
+  background: #f2b9a8;
+}
+
+.visual-chart {
+  height: 120px;
+  border-radius: 16px;
+  background: linear-gradient(140deg, #ffdbc8 0%, #f6a98c 100%);
+}
+
+.floating-badge {
+  position: absolute;
+  bottom: -12px;
+  right: 10%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  background: #111827;
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.feature-card {
+  padding: 1.5rem;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+}
+
+.feature-card mat-icon {
+  color: #d84315;
+  margin-bottom: 0.75rem;
+}
+
+.feature-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.feature-card p {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.workflow-card {
+  padding: 1.5rem 2rem;
+  border-radius: 20px;
+  border: 1px solid #ffe0d4;
+  background: #fff9f5;
+}
+
+.workflow-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.workflow-steps {
+  display: grid;
+  gap: 1rem;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.9rem 1rem;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid #ffe0d4;
+}
+
+.step-number {
+  font-weight: 700;
+  color: #d84315;
+}
+
+.step h4 {
+  margin: 0 0 0.35rem;
+}
+
+.step p {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.notice-card {
+  padding: 1.25rem 1.5rem;
+  border-radius: 16px;
+  border: 1px solid #f0d7d7;
+  background: #fff5f5;
+}
+
+.notice {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.notice mat-icon {
+  color: #c62828;
+}
+
+.notice h4 {
+  margin: 0 0 0.25rem;
+}
+
+.notice p {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+@media (max-width: 768px) {
+  .access-landing {
+    padding: 1.5rem;
+  }
+
+  .floating-badge {
+    position: static;
+    margin-top: 1rem;
+  }
+}

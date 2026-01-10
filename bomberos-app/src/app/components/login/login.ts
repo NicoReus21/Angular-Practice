@@ -92,7 +92,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.authService.login(this.loginForm.value).subscribe({
       next: (response) => {
         console.log('Login exitoso!', response);
-        this.router.navigate(['/modules']);
+        this.router.navigate(['/auth-transition']);
       },
       error: (err) => {
         console.error('Error en el login:', err);
@@ -166,7 +166,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
     this.authService.googleLogin(credential).subscribe({
       next: () => {
-        this.ngZone.run(() => this.router.navigate(['/modules']));
+        this.ngZone.run(() => this.router.navigate(['/auth-transition']));
       },
       error: (err) => {
         console.error('Error en login Google:', err);

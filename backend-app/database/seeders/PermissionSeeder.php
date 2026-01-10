@@ -15,18 +15,22 @@ class PermissionSeeder extends Seeder
         $definitions = [
             // Operativos generales
             ['module' => 'Bombero Accidentado', 'section' => 'Process', 'actions' => ['create', 'read', 'update', 'delete']],
+            ['module' => 'Bombero Accidentado', 'section' => 'Home', 'actions' => ['read']],
 
             // Material Mayor
             ['module' => 'Material Mayor', 'section' => 'Car', 'actions' => ['create', 'read', 'update', 'delete']],
             ['module' => 'Material Mayor', 'section' => 'Maintenance', 'actions' => ['create', 'read', 'update', 'delete']],
             ['module' => 'Material Mayor', 'section' => 'Document', 'actions' => ['create', 'read', 'update', 'delete']],
             ['module' => 'Material Mayor', 'section' => 'Checklist', 'actions' => ['create', 'read', 'update', 'delete']],
+            ['module' => 'Material Mayor', 'section' => 'Home', 'actions' => ['read']],
 
             // Administración
             ['module' => 'Sistema', 'section' => 'User', 'actions' => ['create', 'read', 'update', 'delete']],
             ['module' => 'Sistema', 'section' => 'Group', 'actions' => ['create', 'read', 'update', 'delete']],
             ['module' => 'Sistema', 'section' => 'Rol', 'actions' => ['create', 'read', 'update', 'delete']],
             ['module' => 'Sistema', 'section' => 'Permission', 'actions' => ['create', 'read', 'update', 'delete']],
+            ['module' => 'Sistema', 'section' => 'Home', 'actions' => ['read']],
+            ['module' => 'Sistema', 'section' => 'Modules', 'actions' => ['read']],
         ];
 
         foreach ($definitions as $def) {

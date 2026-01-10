@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use App\Models\Permission;
 
 class Group extends Model
 {
@@ -26,5 +27,12 @@ class Group extends Model
         return $this->belongsToMany(User::class, 'user_groups', 'id_group', 'id_user')
             ->withPivot(['assigned_at', 'removed_at'])
             ->wherePivotNull('removed_at');
+    }
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'group_permissions', 'id_group', 'id_permission')
+            ->withPivot(['granted_at', 'revoked_at'])
+            ->wherePivotNull('revoked_at');
     }
 }

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
+import { PermissionStoreService } from './permission-store.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,11 @@ export class AuthService {
 
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private permissionStore: PermissionStoreService
+  ) {}
 
   login(credentials: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
@@ -63,6 +68,7 @@ export class AuthService {
 
   saveToken(token: string): void {
     localStorage.setItem('authToken', token);
+    this.permissionStore.clear();
   }
 
   getToken(): string | null {
@@ -71,6 +77,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('authToken');
+    this.permissionStore.clear();
     this.router.navigate(['/login']);
   }
 }

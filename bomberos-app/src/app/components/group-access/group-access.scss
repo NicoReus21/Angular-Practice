@@ -56,6 +56,18 @@
   border: 1px solid #eee;
 }
 
+.permission-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.permission-select {
+  flex: 1 1 320px;
+}
+
 .data-table {
   width: 100%;
   border-collapse: collapse;

@@ -100,12 +100,24 @@
               <thead>
                 <tr>
                   <th>Grupo</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 @for (group of assignedGroups(); track group.id) {
                   <tr>
                     <td>{{ group.name }}</td>
+                    <td>
+                      <button
+                        mat-stroked-button
+                        color="primary"
+                        [disabled]="isGroupBusy(group.id)"
+                        (click)="removeAssignedGroup(group.id)"
+                      >
+                        <mat-icon>group_remove</mat-icon>
+                        Quitar
+                      </button>
+                    </td>
                   </tr>
                 }
               </tbody>

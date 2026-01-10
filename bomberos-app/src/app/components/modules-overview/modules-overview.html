@@ -19,7 +19,7 @@
   <div class="modules-grid">
     <mat-card
       class="module-card"
-      *ngFor="let module of modules"
+      *ngFor="let module of visibleModules()"
       [ngClass]="{ 'module-card--disabled': !module.available }"
     >
       <mat-card-header>

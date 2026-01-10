@@ -18,6 +18,11 @@ use OpenApi\Annotations as OA;
  */
 class GroupPermissionController extends Controller
 {
+    public function getPermissionsForGroup(Group $group): JsonResponse
+    {
+        return response()->json($group->permissions);
+    }
+
     /**
      * @OA\Post(
      *     path="/api/groups/{groupId}/permissions/{permissionId}",

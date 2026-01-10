@@ -35,7 +35,82 @@
             <span class="meta-label">Usuarios asignados</span>
             <span class="meta-value">{{ usersCount() }}</span>
           </div>
+          <div>
+            <span class="meta-label">Permisos asignados</span>
+            <span class="meta-value">{{ permissionCount() }}</span>
+          </div>
         </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="table-card">
+      <mat-card-header>
+        <div>
+          <mat-card-title>Permisos del grupo</mat-card-title>
+          <mat-card-subtitle>Asigna o elimina permisos disponibles.</mat-card-subtitle>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="permission-controls">
+          <mat-form-field appearance="outline" class="permission-select">
+            <mat-label>Agregar permiso</mat-label>
+            <mat-select
+              [value]="selectedPermissionId()"
+              (selectionChange)="selectedPermissionId.set($event.value)"
+              [disabled]="isSavingPermission() || !availablePermissions().length"
+            >
+              @for (permission of availablePermissions(); track permission.id) {
+                <mat-option [value]="permission.id">
+                  {{ permissionLabel(permission) }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="addPermission()"
+            [disabled]="isSavingPermission() || !selectedPermissionId()"
+          >
+            {{ isSavingPermission() ? 'Agregando...' : 'Agregar permiso' }}
+          </button>
+        </div>
+
+        @if (!groupPermissions().length) {
+          <div class="state state--empty">
+            <mat-icon>verified_user</mat-icon>
+            <p>Este grupo no tiene permisos asignados.</p>
+          </div>
+        } @else {
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Permiso</th>
+                <th>Descripcion</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (permission of groupPermissions(); track permission.id) {
+                <tr>
+                  <td>{{ permissionLabel(permission) }}</td>
+                  <td>{{ permission.description || 'Sin descripcion' }}</td>
+                  <td>
+                    <button
+                      mat-stroked-button
+                      color="primary"
+                      [disabled]="isPermissionBusy(permission.id)"
+                      (click)="removePermission(permission.id)"
+                    >
+                      <mat-icon>remove_circle</mat-icon>
+                      Quitar
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
       </mat-card-content>
     </mat-card>
 
