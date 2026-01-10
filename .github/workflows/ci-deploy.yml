@@ -122,7 +122,7 @@ jobs:
           php artisan view:cache
           EOF
 
-      - name: Deploy frontend (rsync)
+      - name: Deploy frontend (scp)
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
@@ -130,6 +130,5 @@ jobs:
           FRONTEND_DEPLOY_PATH: ${{ secrets.FRONTEND_DEPLOY_PATH }}
         run: |
           PORT="${SSH_PORT:-22}"
-          sudo apt-get update
-          sudo apt-get install -y rsync
-          rsync -az --delete -e "ssh -p $PORT" dist/ "$SSH_USER@$SSH_HOST:$FRONTEND_DEPLOY_PATH"
+          ssh -p "$PORT" "$SSH_USER@$SSH_HOST" "rm -rf '$FRONTEND_DEPLOY_PATH' && mkdir -p '$FRONTEND_DEPLOY_PATH'"
+          scp -P "$PORT" -r dist/* "$SSH_USER@$SSH_HOST:$FRONTEND_DEPLOY_PATH/"
