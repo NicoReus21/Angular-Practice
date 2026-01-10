@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild, NgZone } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -45,14 +45,14 @@ declare global {
     ])
   ]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
   loginForm: FormGroup;
   errorMessage: string | null = null;
   isLoading = false;
   readonly hasGoogleClientId = !!environment.googleClientId;
   private googleLoaded = false;
 
-  @ViewChild('googleButton', { static: true }) googleButton!: ElementRef<HTMLDivElement>;
+  @ViewChild('googleButton') googleButton?: ElementRef<HTMLDivElement>;
 
   constructor(
     private fb: FormBuilder,
@@ -72,6 +72,9 @@ export class LoginComponent implements OnInit {
       this.router.navigate(['/modules']);
     }
 
+  }
+
+  ngAfterViewInit(): void {
     if (this.hasGoogleClientId) {
       this.loadGoogleIdentity();
     }
@@ -133,7 +136,7 @@ export class LoginComponent implements OnInit {
   }
 
   private initializeGoogle(): void {
-    if (!window.google?.accounts?.id || !environment.googleClientId) {
+    if (!window.google?.accounts?.id || !environment.googleClientId || !this.googleButton?.nativeElement) {
       return;
     }
 

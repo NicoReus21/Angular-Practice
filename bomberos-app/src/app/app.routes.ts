@@ -9,6 +9,8 @@ import { RoleManagementComponent } from './components/role-management/role-manag
 import { RecoverPasswordComponent } from './components/recover-user-password/recover-user-password';
 import { AuthDashboardComponent } from './components/auth-dashboard/auth-dashboard';
 import { ModulesOverviewComponent } from './components/modules-overview/modules-overview';
+import { UserAccessComponent } from './components/user-access/user-access';
+import { GroupAccessComponent } from './components/group-access/group-access';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -23,6 +25,8 @@ export const routes: Routes = [
   {path: 'register', component: UserRegisterComponent },
   //{ path: 'rols', component: RoleManagementComponent },
   { path: 'recover-password', component: RecoverPasswordComponent },
+  { path: 'rols/user/:id', component: UserAccessComponent },
+  { path: 'rols/group/:id', component: GroupAccessComponent },
   { path: 'rols', component: AuthDashboardComponent },
 
 

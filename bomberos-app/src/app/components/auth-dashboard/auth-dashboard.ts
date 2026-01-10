@@ -7,12 +7,11 @@ import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import {
   ReactiveFormsModule,
   FormBuilder,
   Validators,
-  FormControl,
   AbstractControl,
   ValidationErrors,
   ValidatorFn
@@ -96,6 +95,7 @@ export class AuthDashboardComponent implements OnInit {
   private authDirectory = inject(AuthDirectoryService);
   private roleService = inject(RoleService);
   private authService = inject(AuthService);
+  private router = inject(Router);
   private fb = inject(FormBuilder);
   private snackBar = inject(MatSnackBar);
 
@@ -145,26 +145,20 @@ export class AuthDashboardComponent implements OnInit {
   readonly isLoadingUsers = signal(false);
   readonly isLoadingGroups = signal(false);
   readonly isLoadingPermissions = signal(false);
+  readonly isLoadingGroupUsers = signal(false);
 
   readonly userError = signal<string | null>(null);
   readonly groupError = signal<string | null>(null);
   readonly permissionError = signal<string | null>(null);
+  readonly groupUsersError = signal<string | null>(null);
   readonly isManaging = signal(false);
 
-  readonly isSavingUserAccess = signal(false);
   readonly isSavingGroup = signal(false);
   readonly isSavingGroupPermissions = signal(false);
-  readonly isSavingGroupUsers = signal(false);
   readonly isSavingPassword = signal(false);
 
-  readonly selectedUser = signal<UserRecord | null>(null);
   readonly selectedGroup = signal<GroupRecord | null>(null);
-
-  userAccessForm = this.fb.group({
-    userId: this.fb.control<number | null>(null, Validators.required),
-    groupIds: this.fb.control<number[]>([], Validators.required),
-    roleIds: this.fb.control<number[]>([], Validators.required)
-  });
+  readonly groupUsers = signal<ApiUser[]>([]);
 
   groupForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(3)]],
@@ -177,8 +171,7 @@ export class AuthDashboardComponent implements OnInit {
   });
 
   groupUsersForm = this.fb.group({
-    groupId: this.fb.control<number | null>(null, Validators.required),
-    userIds: this.fb.control<number[]>([], Validators.required)
+    groupId: this.fb.control<number | null>(null, Validators.required)
   });
 
   passwordForm = this.fb.group(
@@ -286,59 +279,11 @@ export class AuthDashboardComponent implements OnInit {
   }
 
   manageUser(user: UserRecord): void {
-    if (!this.isManaging()) {
-      this.isManaging.set(true);
-    }
-    this.selectedSection.set(this.sections.find((s) => s.id === 'usuarios')!);
-    this.selectedUser.set(user);
-    this.userAccessForm.patchValue({
-      userId: user.id,
-      groupIds: user.groupIds || [],
-      roleIds: user.roleIds || []
-    });
+    this.router.navigate(['/rols/user', user.id]);
   }
 
   manageGroup(group: GroupRecord): void {
-    if (!this.isManaging()) {
-      this.isManaging.set(true);
-    }
-    this.selectedSection.set(this.sections.find((s) => s.id === 'grupos')!);
-    this.selectedGroup.set(group);
-    this.groupPermissionForm.patchValue({
-      groupId: group.id,
-      permissionIds: group.permissionIds || []
-    });
-    this.groupUsersForm.patchValue({
-      groupId: group.id,
-      userIds: group.userIds || []
-    });
-  }
-
-  submitUserAccess(): void {
-    if (this.userAccessForm.invalid || this.isSavingUserAccess()) {
-      this.userAccessForm.markAllAsTouched();
-      return;
-    }
-
-    const { userId, groupIds, roleIds } = this.userAccessForm.value;
-    this.isSavingUserAccess.set(true);
-
-    forkJoin([
-      this.authDirectory.assignGroupsToUser(userId!, groupIds || []),
-      this.authDirectory.assignRolesToUser(userId!, roleIds || [])
-    ]).subscribe({
-      next: () => {
-        this.snackBar.open('Accesos del usuario actualizados.', 'Cerrar', { duration: 3000 });
-        this.loadUsers();
-      },
-      error: (err) => {
-        console.error(err);
-        this.snackBar.open('No se pudieron guardar los cambios del usuario.', 'Cerrar', {
-          duration: 4000
-        });
-      },
-      complete: () => this.isSavingUserAccess.set(false)
-    });
+    this.router.navigate(['/rols/group', group.id]);
   }
 
   submitGroup(): void {
@@ -391,38 +336,6 @@ export class AuthDashboardComponent implements OnInit {
         this.snackBar.open('No se pudieron asignar los permisos.', 'Cerrar', { duration: 4000 });
       },
       complete: () => this.isSavingGroupPermissions.set(false)
-    });
-  }
-
-  submitGroupUsers(): void {
-    if (this.groupUsersForm.invalid || this.isSavingGroupUsers()) {
-      this.groupUsersForm.markAllAsTouched();
-      return;
-    }
-
-    const { groupId, userIds } = this.groupUsersForm.value;
-    this.isSavingGroupUsers.set(true);
-
-    const requests = (userIds || []).map((userId) =>
-      this.authDirectory.assignUserToGroup(userId, groupId!)
-    );
-
-    if (!requests.length) {
-      this.isSavingGroupUsers.set(false);
-      return;
-    }
-
-    forkJoin(requests).subscribe({
-      next: () => {
-        this.snackBar.open('Usuarios asignados al grupo.', 'Cerrar', { duration: 3000 });
-        this.loadGroups();
-        this.loadUsers();
-      },
-      error: (err) => {
-        console.error(err);
-        this.snackBar.open('No se pudieron vincular los usuarios.', 'Cerrar', { duration: 4000 });
-      },
-      complete: () => this.isSavingGroupUsers.set(false)
     });
   }
 
@@ -529,9 +442,43 @@ export class AuthDashboardComponent implements OnInit {
     const target = this.groups().find((g) => g.id === groupId);
     if (target) {
       this.selectedGroup.set(target);
-      this.groupUsersForm.patchValue({
-        userIds: target.userIds || []
-      });
+      this.loadGroupUsers(groupId);
     }
+  }
+
+  loadGroupUsers(groupId: number): void {
+    this.isLoadingGroupUsers.set(true);
+    this.groupUsersError.set(null);
+
+    this.authDirectory.getGroupUsers(groupId).subscribe({
+      next: (users) => {
+        this.groupUsers.set(users || []);
+      },
+      error: (err) => {
+        console.error(err);
+        this.groupUsersError.set('No se pudieron cargar los usuarios del grupo.');
+        this.groupUsers.set([]);
+      },
+      complete: () => this.isLoadingGroupUsers.set(false)
+    });
+  }
+
+  removeUserFromGroup(userId: number, groupId: number): void {
+    if (!groupId) {
+      return;
+    }
+    this.authDirectory.removeUserFromGroup(userId, groupId).subscribe({
+      next: () => {
+        this.loadGroupUsers(groupId);
+        this.loadGroups();
+        this.loadUsers();
+      },
+      error: (err) => {
+        console.error(err);
+        this.snackBar.open('No se pudo quitar el usuario del grupo.', 'Cerrar', {
+          duration: 4000
+        });
+      }
+    });
   }
 }

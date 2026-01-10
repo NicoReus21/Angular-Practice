@@ -18,6 +18,16 @@ use OpenApi\Annotations as OA;
  */
 class UserGroupController extends Controller
 {
+    public function getGroupsForUser(User $user): JsonResponse
+    {
+        return response()->json($user->groups);
+    }
+
+    public function getUsersForGroup(Group $group): JsonResponse
+    {
+        return response()->json($group->users);
+    }
+
     /**
      * @OA\Post(
      *     path="/api/users/{userId}/groups/{groupId}",

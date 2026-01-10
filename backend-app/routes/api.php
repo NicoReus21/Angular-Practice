@@ -69,7 +69,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('user-rols', UserRolController::class)->only(['store', 'destroy']);
     Route::get('/users/{user}/roles', [UserRolController::class, 'getRolesForUser']);
+    Route::post('/users/{userId}/roles/{roleId}', [UserRolController::class, 'assign']);
+    Route::delete('/users/{userId}/roles/{roleId}', [UserRolController::class, 'remove']);
 
+    Route::get('/users/{user}/groups', [UserGroupController::class, 'getGroupsForUser']);
+    Route::get('/groups/{group}/users', [UserGroupController::class, 'getUsersForGroup']);
     Route::prefix('process/{process}')->group(function () {
         // Requerimiento Operativo
         Route::post('/upload_reporte_flash', [ReporteFlashController::class, 'store'])->name('process.upload.reporte_flash');

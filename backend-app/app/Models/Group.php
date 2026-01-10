@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Group extends Model
 {
@@ -18,5 +19,12 @@ class Group extends Model
     public function user_groups()
     {
         return $this->hasMany(UserGroup::class, 'id_group', 'id');
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_groups', 'id_group', 'id_user')
+            ->withPivot(['assigned_at', 'removed_at'])
+            ->wherePivotNull('removed_at');
     }
 }

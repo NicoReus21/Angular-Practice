@@ -45,12 +45,36 @@ export class AuthDirectoryService {
     return this.http.post<ApiGroup>(`${this.apiUrl}/groups`, payload);
   }
 
+  getUser(userId: number): Observable<ApiUser> {
+    return this.http.get<ApiUser>(`${this.apiUrl}/users/${userId}`);
+  }
+
+  getGroup(groupId: number): Observable<ApiGroup> {
+    return this.http.get<ApiGroup>(`${this.apiUrl}/groups/${groupId}`);
+  }
+
+  getUserGroups(userId: number): Observable<ApiGroup[]> {
+    return this.http.get<ApiGroup[]>(`${this.apiUrl}/users/${userId}/groups`);
+  }
+
+  getGroupUsers(groupId: number): Observable<ApiUser[]> {
+    return this.http.get<ApiUser[]>(`${this.apiUrl}/groups/${groupId}/users`);
+  }
+
+  getUserRoles(userId: number): Observable<ApiRole[]> {
+    return this.http.get<ApiRole[]>(`${this.apiUrl}/users/${userId}/roles`);
+  }
+
   updateGroup(groupId: number, payload: { name?: string; description?: string | null }): Observable<ApiGroup> {
     return this.http.put<ApiGroup>(`${this.apiUrl}/groups/${groupId}`, payload);
   }
 
   assignUserToGroup(userId: number, groupId: number): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/users/${userId}/groups/${groupId}`, {});
+  }
+
+  removeUserFromGroup(userId: number, groupId: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/users/${userId}/groups/${groupId}`);
   }
 
   assignPermissionToGroup(groupId: number, permissionId: number): Observable<any> {
@@ -63,5 +87,13 @@ export class AuthDirectoryService {
 
   assignRolesToUser(userId: number, roleIds: number[]): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/users/${userId}/roles`, { roles: roleIds });
+  }
+
+  assignRoleToUser(userId: number, roleId: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/users/${userId}/roles/${roleId}`, {});
+  }
+
+  removeRoleFromUser(userId: number, roleId: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/users/${userId}/roles/${roleId}`);
   }
 }

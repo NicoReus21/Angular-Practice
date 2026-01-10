@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Group;
+use App\Models\Rol;
 
 class User extends Authenticatable
 {
@@ -49,5 +51,19 @@ class User extends Authenticatable
     public function user_groups()
     {
         return $this->hasMany(UserGroup::class, 'id_user', 'id');
+    }
+
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'user_groups', 'id_user', 'id_group')
+            ->withPivot(['assigned_at', 'removed_at'])
+            ->wherePivotNull('removed_at');
+    }
+
+    public function rols()
+    {
+        return $this->belongsToMany(Rol::class, 'user_rols', 'id_user', 'id_rol')
+            ->withPivot(['assigned_at', 'removed_at'])
+            ->wherePivotNull('removed_at');
     }
 }

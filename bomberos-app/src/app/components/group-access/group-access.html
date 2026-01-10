@@ -1,0 +1,88 @@
+<section class="group-access">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Modulo de autenticacion</p>
+      <h1>Gestion de grupo</h1>
+      <p class="subtitle">Visualiza los usuarios asignados y quitalos si es necesario.</p>
+    </div>
+    <button mat-stroked-button color="warn" routerLink="/rols">
+      <mat-icon>arrow_back</mat-icon>
+      Volver
+    </button>
+  </header>
+
+  @if (isLoading()) {
+    <div class="state state--loading">
+      <mat-spinner diameter="28"></mat-spinner>
+      <p>Cargando informacion del grupo...</p>
+    </div>
+  } @else if (errorMessage()) {
+    <div class="state state--error">
+      <mat-icon>error</mat-icon>
+      <p>{{ errorMessage() }}</p>
+    </div>
+  } @else {
+    <mat-card class="group-card">
+      <mat-card-header>
+        <div>
+          <mat-card-title>{{ group()?.name }}</mat-card-title>
+          <mat-card-subtitle>{{ group()?.description || 'Sin descripcion' }}</mat-card-subtitle>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="group-meta">
+          <div>
+            <span class="meta-label">Usuarios asignados</span>
+            <span class="meta-value">{{ usersCount() }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="table-card">
+      <mat-card-header>
+        <div>
+          <mat-card-title>Usuarios del grupo</mat-card-title>
+          <mat-card-subtitle>Lista de usuarios actualmente asignados.</mat-card-subtitle>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        @if (!groupUsers().length) {
+          <div class="state state--empty">
+            <mat-icon>person_off</mat-icon>
+            <p>No hay usuarios en este grupo.</p>
+          </div>
+        } @else {
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Usuario</th>
+                <th>Email</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (user of groupUsers(); track user.id) {
+                <tr>
+                  <td>{{ user.name }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>
+                    <button
+                      mat-stroked-button
+                      color="primary"
+                      [disabled]="isUserBusy(user.id)"
+                      (click)="removeUser(user.id)"
+                    >
+                      <mat-icon>person_remove</mat-icon>
+                      Quitar
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+</section>
