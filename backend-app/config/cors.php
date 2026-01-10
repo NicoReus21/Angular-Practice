@@ -7,7 +7,7 @@ return [
     'allowed_methods' => ['*'],
     
     // Estos orígenes están correctos.
-    'allowed_origins' => ['http://localhost:4200'],
+    'allowed_origins' => ['http://localhost:4200', 'https://sigba.itmanagement.cl'],
     
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],
