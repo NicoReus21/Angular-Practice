@@ -111,7 +111,7 @@ jobs:
           BACKEND_PATH: ${{ secrets.BACKEND_PATH }}
         run: |
           PORT="${SSH_PORT:-22}"
-          ssh -p "$PORT" "$SSH_USER@$SSH_HOST" << 'EOF'
+          ssh -p "$PORT" "$SSH_USER@$SSH_HOST" "BACKEND_PATH='$BACKEND_PATH' bash -s" << 'EOF'
           set -euo pipefail
           cd "$BACKEND_PATH"
           git pull origin main
