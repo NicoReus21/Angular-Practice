@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://sigba.itmanagement.cl/api',
-  backendUrl: 'https://sigba.itmanagement.cl'
+  apiUrl: 'https://sigba-api.itmanagement.cl/api',
+  backendUrl: 'https://sigba-api.itmanagement.cl'
 };
