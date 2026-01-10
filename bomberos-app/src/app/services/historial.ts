@@ -2,6 +2,7 @@ import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { UploadSection } from '../components/document-upload/document-upload';
+import { environment } from '../../environments/environment';
 
 export interface HistorialElement {
   id: number;
@@ -17,7 +18,7 @@ export interface HistorialElement {
 })
 export class HistorialService {
   private http = inject(HttpClient);
-  private backendUrl = 'http://127.0.0.1:8000/api/process';
+  private backendUrl = `${environment.apiUrl}/process`;
 
   private records = signal<HistorialElement[]>([]);
   public readonly historyRecords = this.records.asReadonly();

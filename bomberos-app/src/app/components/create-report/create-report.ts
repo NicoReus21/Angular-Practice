@@ -21,6 +21,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ApiMaintenance } from '../../services/machine-historial';
+import { environment } from '../../../environments/environment';
 
 import {
   AngularSignaturePadModule,
@@ -55,7 +56,7 @@ import {
 export class CreateReportComponent implements OnInit, AfterViewInit {
   private fb = inject(FormBuilder);
   public dialogRef = inject(MatDialogRef<CreateReportComponent>);
-  private backendUrl = 'http://localhost:8000';
+  private backendUrl = environment.backendUrl;
 
   public data: {
     unit: { id: number; model: string | null; plate: string; company: string; documents?: any[] };

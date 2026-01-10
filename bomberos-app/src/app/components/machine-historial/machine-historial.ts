@@ -36,6 +36,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 
 import Swal from 'sweetalert2';
+import { environment } from '../../../environments/environment';
 
 import {
   MachineHistorialService,
@@ -146,7 +147,7 @@ export class MachineHistorialComponent implements OnInit {
   isMobile = signal<boolean>(false);
   sidenavOpened = signal<boolean>(true);
 
-  private backendUrl = 'http://127.0.0.1:8000';
+  private backendUrl = environment.backendUrl;
 
   filteredUnits = computed(() => {
     const status = this.currentStatusFilter();

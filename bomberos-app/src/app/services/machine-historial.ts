@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
-const API_URL = 'http://127.0.0.1:8000/api';
+const API_URL = environment.apiUrl;
 
 export interface ApiDocument {
   id: number;

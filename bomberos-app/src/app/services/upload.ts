@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,7 @@ import { Observable, of } from 'rxjs';
 export class FileUploadService {
   private http = inject(HttpClient);
 
-  private backendUrl = 'http://127.0.0.1:8000/api';
+  private backendUrl = environment.apiUrl;
 
   createProcess(data: { bomberoNombre: string, compania: string }): Observable<any> {
     const payload = {

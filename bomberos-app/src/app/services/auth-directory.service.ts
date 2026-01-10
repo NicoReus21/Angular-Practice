@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface ApiRole {
   id: number;
@@ -29,7 +30,7 @@ export interface ApiUser {
   providedIn: 'root'
 })
 export class AuthDirectoryService {
-  private apiUrl = 'http://127.0.0.1:8000/api';
+  private apiUrl = environment.apiUrl;
   private http = inject(HttpClient);
 
   getUsers(): Observable<ApiUser[]> {
