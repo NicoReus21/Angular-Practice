@@ -1,0 +1,47 @@
+name: Tests
+
+on:
+  pull_request:
+    branches: ["develop", "main"]
+  push:
+    branches: ["develop"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: mbstring, pdo_sqlite
+
+      - name: Install backend dependencies
+        run: composer install --no-interaction --prefer-dist
+        working-directory: backend-app
+
+      - name: Prepare backend test env
+        run: |
+          cp .env.example .env
+          php -r "file_exists('database/database.sqlite') || touch('database/database.sqlite');"
+          php artisan key:generate --ansi
+        working-directory: backend-app
+
+      - name: Run backend migrations
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: php artisan migrate --graceful --ansi --force
+        working-directory: backend-app
+
+      - name: Run backend tests
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: php artisan test --ansi
+        working-directory: backend-app
