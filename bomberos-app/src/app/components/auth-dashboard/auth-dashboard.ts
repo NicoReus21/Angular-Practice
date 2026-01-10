@@ -8,11 +8,20 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  Validators,
+  FormControl,
+  AbstractControl,
+  ValidationErrors,
+  ValidatorFn
+} from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { RoleManagementComponent } from '../role-management/role-management';
 import { AuthDirectoryService, ApiGroup, ApiUser } from '../../services/auth-directory.service';
 import { RoleService } from '../../services/role-service';
+import { AuthService } from '../../services/auth-service';
 import { forkJoin } from 'rxjs';
 
 interface UserRecord {
@@ -45,11 +54,22 @@ interface PermissionRecord {
 }
 
 interface DashboardSection {
-  id: 'usuarios' | 'roles' | 'grupos' | 'permisos';
+  id: 'usuarios' | 'roles' | 'grupos' | 'permisos' | 'password';
   label: string;
   icon: string;
   description: string;
 }
+
+const passwordMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const newPassword = control.get('new_password')?.value;
+  const confirmPassword = control.get('new_password_confirmation')?.value;
+
+  if (!newPassword || !confirmPassword) {
+    return null;
+  }
+
+  return newPassword === confirmPassword ? null : { passwordMismatch: true };
+};
 
 @Component({
   selector: 'app-auth-dashboard',
@@ -75,6 +95,7 @@ interface DashboardSection {
 export class AuthDashboardComponent implements OnInit {
   private authDirectory = inject(AuthDirectoryService);
   private roleService = inject(RoleService);
+  private authService = inject(AuthService);
   private fb = inject(FormBuilder);
   private snackBar = inject(MatSnackBar);
 
@@ -102,6 +123,12 @@ export class AuthDashboardComponent implements OnInit {
       label: 'Permisos',
       icon: 'verified_user',
       description: 'Define alcances especificos y combina permisos por rol.'
+    },
+    {
+      id: 'password',
+      label: 'Contrasena',
+      icon: 'lock',
+      description: 'Actualiza tu contrasena para mantener la cuenta segura.'
     }
   ];
 
@@ -128,6 +155,7 @@ export class AuthDashboardComponent implements OnInit {
   readonly isSavingGroup = signal(false);
   readonly isSavingGroupPermissions = signal(false);
   readonly isSavingGroupUsers = signal(false);
+  readonly isSavingPassword = signal(false);
 
   readonly selectedUser = signal<UserRecord | null>(null);
   readonly selectedGroup = signal<GroupRecord | null>(null);
@@ -152,6 +180,15 @@ export class AuthDashboardComponent implements OnInit {
     groupId: this.fb.control<number | null>(null, Validators.required),
     userIds: this.fb.control<number[]>([], Validators.required)
   });
+
+  passwordForm = this.fb.group(
+    {
+      current_password: ['', [Validators.required]],
+      new_password: ['', [Validators.required, Validators.minLength(6)]],
+      new_password_confirmation: ['', [Validators.required]]
+    },
+    { validators: passwordMatchValidator }
+  );
 
   readonly activeUsersCount = computed(
     () => this.users().filter((user) => user.status === 'Activo').length
@@ -387,6 +424,36 @@ export class AuthDashboardComponent implements OnInit {
       },
       complete: () => this.isSavingGroupUsers.set(false)
     });
+  }
+
+  submitPasswordChange(): void {
+    if (this.passwordForm.invalid || this.isSavingPassword()) {
+      this.passwordForm.markAllAsTouched();
+      return;
+    }
+
+    const { current_password, new_password, new_password_confirmation } = this.passwordForm.value;
+    this.isSavingPassword.set(true);
+
+    this.authService
+      .changePassword(current_password!, new_password!, new_password_confirmation!)
+      .subscribe({
+        next: () => {
+          this.snackBar.open('Contrasena actualizada correctamente.', 'Cerrar', {
+            duration: 3000
+          });
+          this.passwordForm.reset();
+        },
+        error: (err) => {
+          console.error(err);
+          const message =
+            err?.status === 401
+              ? 'La contrasena actual es incorrecta.'
+              : 'No se pudo actualizar la contrasena.';
+          this.snackBar.open(message, 'Cerrar', { duration: 4000 });
+        },
+        complete: () => this.isSavingPassword.set(false)
+      });
   }
 
   private mapUser(user: ApiUser): UserRecord {

@@ -87,6 +87,15 @@ class InitialDataSeeder extends Seeder
             ]
         );
 
+        $guestGroup = Group::updateOrCreate(
+            ['name' => 'Invitados'],
+            [
+                'description' => 'Acceso limitado para usuarios externos',
+                'id_parent_group' => null,
+                'id_user_created' => $systemUser->id,
+            ]
+        );
+
         UserGroup::updateOrCreate(
             ['id_user' => $systemUser->id, 'id_group' => $systemGroup->id],
             [

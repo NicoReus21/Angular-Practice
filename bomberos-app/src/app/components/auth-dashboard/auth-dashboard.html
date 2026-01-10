@@ -512,6 +512,63 @@
           </mat-card>
         </section>
       }
+      @case ('password') {
+        <section class="password-section">
+          <mat-card class="management-card">
+            <mat-card-header>
+              <div>
+                <mat-card-title>Cambiar contrasena</mat-card-title>
+                <mat-card-subtitle>
+                  Actualiza tu contrasena con una nueva clave segura.
+                </mat-card-subtitle>
+              </div>
+            </mat-card-header>
+            <mat-card-content>
+              <form class="form-grid" [formGroup]="passwordForm" (ngSubmit)="submitPasswordChange()">
+                <mat-form-field appearance="outline">
+                  <mat-label>Contrasena actual</mat-label>
+                  <input matInput type="password" formControlName="current_password" />
+                  @if (passwordForm.get('current_password')?.hasError('required')) {
+                    <mat-error>La contrasena actual es obligatoria.</mat-error>
+                  }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Nueva contrasena</mat-label>
+                  <input matInput type="password" formControlName="new_password" />
+                  @if (passwordForm.get('new_password')?.hasError('required')) {
+                    <mat-error>La nueva contrasena es obligatoria.</mat-error>
+                  } @if (passwordForm.get('new_password')?.hasError('minlength')) {
+                    <mat-error>Debe tener al menos 6 caracteres.</mat-error>
+                  }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Confirmar contrasena</mat-label>
+                  <input matInput type="password" formControlName="new_password_confirmation" />
+                  @if (passwordForm.get('new_password_confirmation')?.hasError('required')) {
+                    <mat-error>Confirma la nueva contrasena.</mat-error>
+                  } @if (passwordForm.hasError('passwordMismatch') && passwordForm.get('new_password_confirmation')?.touched) {
+                    <mat-error>Las contrasenas no coinciden.</mat-error>
+                  }
+                </mat-form-field>
+
+                <div class="form-actions">
+                  <button
+                    mat-flat-button
+                    color="warn"
+                    type="submit"
+                    [disabled]="passwordForm.invalid || isSavingPassword()"
+                  >
+                    <mat-icon>lock_reset</mat-icon>
+                    {{ isSavingPassword() ? 'Actualizando...' : 'Actualizar contrasena' }}
+                  </button>
+                </div>
+              </form>
+            </mat-card-content>
+          </mat-card>
+        </section>
+      }
     }
   </div>
 </section>

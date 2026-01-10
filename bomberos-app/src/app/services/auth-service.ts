@@ -23,6 +23,16 @@ export class AuthService {
     );
   }
 
+  googleLogin(idToken: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/google-login`, { id_token: idToken }).pipe(
+      tap(response => {
+        if (response && response.token) {
+          this.saveToken(response.token);
+        }
+      })
+    );
+  }
+
   register(name: string, email: string, password: string): Observable<any> {
     const userCredentials = { name, email, password };
 
@@ -37,6 +47,18 @@ export class AuthService {
 
   recoverPassword(email: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/recover-password`, { email });
+  }
+
+  changePassword(
+    currentPassword: string,
+    newPassword: string,
+    newPasswordConfirmation: string
+  ): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/change-password`, {
+      current_password: currentPassword,
+      new_password: newPassword,
+      new_password_confirmation: newPasswordConfirmation
+    });
   }
 
   saveToken(token: string): void {
