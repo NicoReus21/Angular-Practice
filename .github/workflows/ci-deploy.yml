@@ -137,3 +137,5 @@ jobs:
           PORT="${SSH_PORT:-22}"
           ssh -p "$PORT" "$SSH_USER@$SSH_HOST" "rm -rf '$FRONTEND_DEPLOY_PATH' && mkdir -p '$FRONTEND_DEPLOY_PATH'"
           scp -P "$PORT" -r dist/* "$SSH_USER@$SSH_HOST:$FRONTEND_DEPLOY_PATH/"
+          ssh -p "$PORT" "$SSH_USER@$SSH_HOST" "mkdir -p '$FRONTEND_DEPLOY_PATH/browser'"
+          scp -P "$PORT" dist/browser/.htaccess "$SSH_USER@$SSH_HOST:$FRONTEND_DEPLOY_PATH/browser/.htaccess"

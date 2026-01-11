@@ -63,7 +63,7 @@ export class ModulesOverviewComponent {
       permissionKey: 'Material Mayor:Home:read'
     },
     {
-      title: 'AutenticaciИn',
+      title: 'Autenticación',
       subtitle: 'Usuarios y roles',
       description:
         'Administra las credenciales, permisos y accesos necesarios para tu compaヵВa.',
@@ -75,13 +75,13 @@ export class ModulesOverviewComponent {
       permissionKey: 'Sistema:Home:read'
     },
     {
-      title: 'PrИximamente mСs',
+      title: 'Próximamente más',
       subtitle: 'Nuevos desarrollos en curso',
       description:
-        'Estamos preparando mСs mІdulos para ampliar el alcance del sistema SIGBA.',
+        'Estamos preparando más módulos para ampliar el alcance del sistema SIGBA.',
       icon: 'construction',
       available: false,
-      tags: ['En diseЊo']
+      tags: ['En diseño']
     }
   ]);
 
