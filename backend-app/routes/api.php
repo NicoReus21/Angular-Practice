@@ -240,6 +240,8 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware('permission:Material Mayor:Car:create');
     Route::put('/cars/{car}', [CarController::class, 'update'])
         ->middleware('permission:Material Mayor:Car:update');
+    Route::patch('/cars/{car}', [CarController::class, 'update'])
+        ->middleware('permission:Material Mayor:Car:update');
     Route::delete('/cars/{car}', [CarController::class, 'destroy'])
         ->middleware('permission:Material Mayor:Car:delete');
     // --- Reportes (Mantenciones) ---
