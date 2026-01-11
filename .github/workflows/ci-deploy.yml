@@ -73,16 +73,17 @@ jobs:
         run: npm run build -- --configuration production
         working-directory: bomberos-app
         
-      - name: Copy htaccess to browser build
-        run: |
-          mkdir -p "${FRONTEND_BUILD_DIR}/browser"
-          cp bomberos-app/public/.htaccess "${FRONTEND_BUILD_DIR}/browser/.htaccess"
-
       - name: Upload frontend build
         uses: actions/upload-artifact@v4
         with:
           name: frontend-dist
           path: ${{ env.FRONTEND_BUILD_DIR }}
+      
+      - name: Upload frontend htaccess
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-htaccess
+          path: bomberos-app/public/.htaccess
 
   deploy:
     runs-on: ubuntu-latest
@@ -94,6 +95,12 @@ jobs:
         with:
           name: frontend-dist
           path: dist
+      
+      - name: Download frontend htaccess
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-htaccess
+          path: htaccess
 
       - name: Start SSH agent
         uses: webfactory/ssh-agent@v0.9.0
@@ -138,4 +145,4 @@ jobs:
           ssh -p "$PORT" "$SSH_USER@$SSH_HOST" "rm -rf '$FRONTEND_DEPLOY_PATH' && mkdir -p '$FRONTEND_DEPLOY_PATH'"
           scp -P "$PORT" -r dist/* "$SSH_USER@$SSH_HOST:$FRONTEND_DEPLOY_PATH/"
           ssh -p "$PORT" "$SSH_USER@$SSH_HOST" "mkdir -p '$FRONTEND_DEPLOY_PATH/browser'"
-          scp -P "$PORT" dist/browser/.htaccess "$SSH_USER@$SSH_HOST:$FRONTEND_DEPLOY_PATH/browser/.htaccess"
+          scp -P "$PORT" htaccess/.htaccess "$SSH_USER@$SSH_HOST:$FRONTEND_DEPLOY_PATH/browser/.htaccess"
