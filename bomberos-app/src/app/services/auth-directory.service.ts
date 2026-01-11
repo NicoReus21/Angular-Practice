@@ -85,6 +85,10 @@ export class AuthDirectoryService {
     return this.http.get<ApiPermission[]>(`${this.apiUrl}/user/permissions`);
   }
 
+  getCurrentUser(): Observable<ApiUser> {
+    return this.http.get<ApiUser>(`${this.apiUrl}/user`);
+  }
+
   updateGroup(groupId: number, payload: { name?: string; description?: string | null }): Observable<ApiGroup> {
     return this.http.put<ApiGroup>(`${this.apiUrl}/groups/${groupId}`, payload);
   }

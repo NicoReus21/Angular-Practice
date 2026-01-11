@@ -48,7 +48,9 @@ interface GroupRecord {
 
 interface PermissionRecord {
   id: number;
-  name: string;
+  module: string;
+  section: string;
+  action: string;
   description?: string | null;
 }
 
@@ -398,15 +400,17 @@ export class AuthDashboardComponent implements OnInit {
   }
 
   private mapGroup(group: ApiGroup): GroupRecord {
+    const usersCount =
+      group.users_count !== undefined && group.users_count !== null
+        ? Number(group.users_count)
+        : undefined;
+
     return {
       id: group.id,
       name: group.name,
       description: group.description || 'Sin descripcion',
       users: (group as any).users || undefined,
-      usersCount:
-        typeof group.users_count === 'number'
-          ? group.users_count
-          : ((group as any).users ? (group as any).users.length : undefined),
+      usersCount: usersCount ?? ((group as any).users ? (group as any).users.length : undefined),
       userIds: (group as any).users ? (group as any).users.map((u: any) => u.id) : undefined,
       permissionIds: (group as any).permissions
         ? (group as any).permissions.map((p: any) => p.id)
@@ -418,14 +422,16 @@ export class AuthDashboardComponent implements OnInit {
   private mapPermission(permission: any): PermissionRecord {
     return {
       id: permission.id,
-      name: permission.name || permission.guard_name || `Permiso ${permission.id}`,
-      description: permission.description || permission.guard_name || null
+      module: permission.module || 'Sin modulo',
+      section: permission.section || 'Sin seccion',
+      action: permission.action || 'Sin accion',
+      description: permission.description || null
     };
   }
 
   permissionLabel(permission: PermissionRecord): string {
     const desc = permission.description ? ` - ${permission.description}` : '';
-    return `${permission.id}. ${permission.name}${desc}`;
+    return `${permission.module}:${permission.section}:${permission.action}${desc}`;
   }
 
   onPermissionGroupChange(groupId: number): void {

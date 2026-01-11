@@ -429,7 +429,7 @@
               </button>
             </mat-card-header>
             <mat-card-content>
-              <div class="permissions-grid">
+              <div class="table-wrapper">
                 @if (isLoadingPermissions()) {
                   <div class="state state--loading">
                     <mat-icon>hourglass_top</mat-icon>
@@ -452,17 +452,28 @@
                     </div>
                   </div>
                 } @else {
-                  @for (permission of permissions(); track permission.id) {
-                    <div class="permission-card">
-                      <mat-icon>verified</mat-icon>
-                      <div>
-                        <p class="permission-title">{{ permission.name }}</p>
-                        <p class="permission-description">
-                          {{ permission.description || 'Sin descripcion' }}
-                        </p>
-                      </div>
-                    </div>
-                  }
+                  <table class="permissions-table">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Modulo</th>
+                        <th>Seccion</th>
+                        <th>Accion</th>
+                        <th>Descripcion</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (permission of permissions(); track permission.id) {
+                        <tr>
+                          <td>{{ permission.id }}</td>
+                          <td>{{ permission.module }}</td>
+                          <td>{{ permission.section }}</td>
+                          <td>{{ permission.action }}</td>
+                          <td>{{ permission.description || 'Sin descripcion' }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
                 }
               </div>
             </mat-card-content>

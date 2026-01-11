@@ -10,7 +10,7 @@ $bomberos-blanco: #FFFFFF;
 
 :host {
   display: block;
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
 }
 
@@ -18,15 +18,15 @@ $bomberos-blanco: #FFFFFF;
   position: relative;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
   min-height: 100vh;
-  padding: 20px;
+  padding: 24px 20px 32px;
   box-sizing: border-box;
   
   background: linear-gradient(135deg, #a31616 0%, #580808 100%);
   background-attachment: fixed; 
-  
+  max-height: 100vh;
   overflow-y: auto;
 }
 
@@ -56,8 +56,7 @@ $bomberos-blanco: #FFFFFF;
   
   animation: fadeIn 0.6s ease-out both;
   
-  margin-top: auto; 
-  margin-bottom: auto;
+  margin: 0 auto;
 }
 
 .top-institutional-panel {
@@ -320,8 +319,9 @@ $bomberos-blanco: #FFFFFF;
 
 @media (max-width: 599px) {
   .main-login-container {
-    padding: 20px 15px;
-    align-items: center;
+    padding: 20px 15px 28px;
+    align-items: flex-start;
+    max-height: none;
   }
   
   .login-card {

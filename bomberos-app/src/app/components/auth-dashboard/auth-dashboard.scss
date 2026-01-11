@@ -335,6 +335,38 @@
   font-size: 0.92rem;
 }
 
+.permissions-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  border: 1px solid #ffe3db;
+  background: #fff;
+}
+
+.permissions-table th,
+.permissions-table td {
+  padding: 0.85rem 0.75rem;
+  text-align: left;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #f3e1da;
+}
+
+.permissions-table th {
+  background: #fff3ee;
+  color: #b23b2b;
+  font-weight: 700;
+}
+
+.permissions-table tbody tr:nth-child(even) td {
+  background: #fffaf7;
+}
+
+.permissions-table td:last-child {
+  color: #616161;
+}
+
 .groups-section .table-wrapper {
   margin-top: 0.5rem;
 }

@@ -5,6 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../services/auth-service';
+import { AuthDirectoryService } from '../../services/auth-directory.service';
 import { PermissionStoreService } from '../../services/permission-store.service';
 
 interface ModuleCard {
@@ -35,6 +36,7 @@ interface ModuleCard {
 })
 export class ModulesOverviewComponent {
   private authService = inject(AuthService);
+  private authDirectory = inject(AuthDirectoryService);
   private permissionStore = inject(PermissionStoreService);
 
   readonly modules = signal<ModuleCard[]>([
@@ -86,6 +88,11 @@ export class ModulesOverviewComponent {
   ]);
 
   readonly permissions = signal<string[]>([]);
+  readonly userName = signal<string>('');
+
+  readonly greeting = computed(() =>
+    this.userName() ? `Bienvenido, ${this.userName()}` : 'Bienvenido'
+  );
 
   readonly visibleModules = computed(() =>
     this.modules().filter((module) => {
@@ -107,6 +114,17 @@ export class ModulesOverviewComponent {
       error: (err) => {
         console.error(err);
         this.permissions.set([]);
+      }
+    });
+
+    this.authDirectory.getCurrentUser().subscribe({
+      next: (user) => {
+        const name = user?.name || user?.email || '';
+        this.userName.set(name);
+      },
+      error: (err) => {
+        console.error(err);
+        this.userName.set('');
       }
     });
   }
