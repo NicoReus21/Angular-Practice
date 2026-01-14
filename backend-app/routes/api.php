@@ -41,10 +41,14 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\GroupPermissionController;
+use App\Http\Controllers\VendorReportLinkController;
+use App\Http\Controllers\MaintenanceDocumentController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/google-login', [AuthController::class, 'googleLogin']);
+Route::get('/vendor-report-links/{token}', [VendorReportLinkController::class, 'show']);
+Route::post('/vendor-report-links/{token}', [VendorReportLinkController::class, 'submit']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
@@ -54,6 +58,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
     Route::get('/user/permissions', [UserController::class, 'permissions']);
+    Route::post('/vendor-report-links', [VendorReportLinkController::class, 'store'])
+        ->middleware('permission:Material Mayor:Maintenance:create');
     Route::patch('/processes/{process}/complete-step', [ProcessController::class, 'completeStep'])
         ->middleware('permission:Bombero Accidentado:Process:update');
 
@@ -251,6 +257,9 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware('permission:Material Mayor:Maintenance:delete');
     Route::put('/maintenances/{maintenance}', [MaintenanceController::class, 'update'])
         ->middleware('permission:Material Mayor:Maintenance:update');
+    Route::get('/maintenances/{maintenance}/pdf', [MaintenanceController::class, 'downloadPdf'])
+        ->middleware('permission:Material Mayor:Maintenance:read')
+        ->name('maintenances.pdf');
     // --- Checklists ---
     Route::post('/cars/{car}/checklists', [CarChecklistController::class, 'store'])
         ->middleware('permission:Material Mayor:Checklist:create');
@@ -265,4 +274,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware('permission:Material Mayor:Document:create');
     Route::patch('/documents/{document}/toggle-payment', [CarDocumentController::class, 'togglePayment'])
         ->middleware('permission:Material Mayor:Document:update');
+    Route::get('/maintenance-documents/{document}/download', [MaintenanceDocumentController::class, 'download'])
+        ->middleware('permission:Material Mayor:Document:read')
+        ->name('maintenance-documents.download');
 });

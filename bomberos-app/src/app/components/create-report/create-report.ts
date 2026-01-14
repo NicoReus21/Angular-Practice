@@ -20,8 +20,10 @@ import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { HttpClientModule } from '@angular/common/http';
 import { ApiMaintenance } from '../../services/machine-historial';
 import { environment } from '../../../environments/environment';
+import { MachineHistorialService } from '../../services/machine-historial';
 
 import {
   AngularSignaturePadModule,
@@ -46,6 +48,7 @@ import {
     MatDividerModule,
     MatListModule,
     MatTooltipModule,
+    HttpClientModule,
     AngularSignaturePadModule,
   ],
   templateUrl: './create-report.html',
@@ -57,6 +60,7 @@ export class CreateReportComponent implements OnInit, AfterViewInit {
   private fb = inject(FormBuilder);
   public dialogRef = inject(MatDialogRef<CreateReportComponent>);
   private backendUrl = environment.backendUrl;
+  private machineService = inject(MachineHistorialService);
 
   public data: {
     unit: { id: number; model: string | null; plate: string; company: string; documents?: any[] };
@@ -157,9 +161,10 @@ export class CreateReportComponent implements OnInit, AfterViewInit {
       if (r.documents && r.documents.length > 0) {
         const mappedDocs = r.documents.map((doc: any) => ({
           ...doc,
-          url: this.mapApiUrl(doc.url) 
+          previewUrl: null,
         }));
         this.existingImages.set(mappedDocs);
+        this.loadExistingImages(mappedDocs);
       } else {
         this.existingImages.set([]);
       }
@@ -178,6 +183,23 @@ export class CreateReportComponent implements OnInit, AfterViewInit {
     this.inspectorPad?.set('canvasWidth', 300);
     this.inspectorPad?.clear();
     this.officerPad?.clear();
+  }
+
+  private loadExistingImages(docs: any[]) {
+    docs.forEach((doc) => {
+      if (!doc?.id) return;
+      this.machineService.downloadMaintenanceDocument(doc.id).subscribe({
+        next: (blob) => {
+          const url = URL.createObjectURL(blob);
+          this.existingImages.update((current) =>
+            current.map((item) => (item.id === doc.id ? { ...item, previewUrl: url } : item))
+          );
+        },
+        error: () => {
+          console.error('No se pudo cargar la imagen adjunta.');
+        },
+      });
+    });
   }
 
   clearInspectorSignature() {

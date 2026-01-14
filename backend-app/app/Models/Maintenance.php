@@ -14,6 +14,7 @@ class Maintenance extends Model
 
     protected $fillable = [
         'car_id',
+        'vendor_id',
         'service_date',
         'chassis_number',
         'mileage',
@@ -39,6 +40,11 @@ class Maintenance extends Model
     public function car()
     {
         return $this->belongsTo(Car::class);
+    }
+
+    public function vendor()
+    {
+        return $this->belongsTo(Vendor::class);
     }
 
 

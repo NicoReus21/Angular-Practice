@@ -1,0 +1,263 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: #f4f7fa;
+}
+
+.vendor-report-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+.vendor-hero {
+  margin-bottom: 24px;
+  h1 {
+    margin: 0 0 4px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1f2a44;
+  }
+  p {
+    margin: 0;
+    color: #546079;
+  }
+}
+
+.state-card {
+  padding: 16px;
+  text-align: center;
+  mat-card-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 500;
+  }
+}
+
+.error-state {
+  background-color: #ffebee;
+  border: 1px solid #ef9a9a;
+  color: #c62828;
+}
+
+.success-state {
+  background-color: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  color: #2e7d32;
+}
+
+.info-card {
+  margin-bottom: 24px;
+  border: 1px solid #e0e0e0;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .label {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #7a869a;
+    letter-spacing: 0.4px;
+  }
+
+  .value {
+    font-size: 15px;
+    color: #1f2a44;
+    font-weight: 600;
+  }
+}
+
+.report-form {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #e0e0e0;
+}
+
+.section-title {
+  font-weight: 600;
+  color: #3f51b5;
+  margin: 16px 0 8px;
+  font-size: 16px;
+}
+
+.section-divider {
+  margin: 16px 0;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.form-field-half {
+  flex: 1;
+  width: 100%;
+}
+
+.form-field-third {
+  flex: 1;
+  width: 100%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.signatures-container {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  margin-top: 12px;
+}
+
+.signature-box {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
+  padding: 12px;
+}
+
+.signature-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    text-transform: uppercase;
+  }
+}
+
+.signature-pad-wrapper {
+  border: 1px dashed #999;
+  background-color: #fff;
+  overflow: hidden;
+  cursor: crosshair;
+  height: 150px;
+  width: 100%;
+  position: relative;
+  border-radius: 4px;
+  touch-action: none;
+  user-select: none;
+  overscroll-behavior: contain;
+
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+    touch-action: none;
+  }
+}
+
+.signature-help {
+  font-size: 11px;
+  color: #999;
+  text-align: center;
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+
+.file-section {
+  margin-top: 16px;
+  padding: 16px;
+  background-color: #fafafa;
+  border-radius: 8px;
+  border: 1px dashed #ccc;
+}
+
+.file-upload-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #555;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+
+  mat-icon {
+    margin-right: 8px;
+    color: #3f51b5;
+  }
+}
+
+.file-input {
+  display: none;
+}
+
+.subsection-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  margin: 0 0 8px 0;
+}
+
+.file-preview-list {
+  margin-top: 12px;
+}
+
+.file-preview-item {
+  border-bottom: 1px solid #eee;
+}
+
+.actions-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+@media (max-width: 768px) {
+  .vendor-report-page {
+    padding: 24px 16px 48px;
+  }
+
+  .report-form {
+    padding: 16px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .signatures-container {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .actions-row {
+    justify-content: stretch;
+    button {
+      width: 100%;
+    }
+  }
+}

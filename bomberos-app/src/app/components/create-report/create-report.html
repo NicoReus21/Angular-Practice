@@ -1,4 +1,4 @@
-<form [formGroup]="reportForm">
+﻿<form [formGroup]="reportForm">
   <h1 mat-dialog-title class="dialog-title-container">
     <span class="title-text">Reporte de Servicio</span>
     <button
@@ -13,7 +13,7 @@
   </h1>
 
   <div mat-dialog-content class="dialog-content">
-    <h3 class="section-title">Información de la Unidad</h3>
+    <h3 class="section-title">InformaciÃ³n de la Unidad</h3>
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field-third">
         <mat-label>Modelo</mat-label>
@@ -24,7 +24,7 @@
         <input matInput formControlName="plate" />
       </mat-form-field>
       <mat-form-field appearance="outline" class="form-field-third">
-        <mat-label>Compañía</mat-label>
+        <mat-label>CompaÃ±Ã­a</mat-label>
         <input matInput formControlName="company" />
       </mat-form-field>
     </div>
@@ -39,24 +39,24 @@
 
     <mat-divider class="section-divider"></mat-divider>
 
-    <h3 class="section-title">Detalles de Inspección</h3>
+    <h3 class="section-title">Detalles de InspecciÃ³n</h3>
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field-third">
         <mat-label>Cabina</mat-label>
         <input matInput formControlName="cabin" />
       </mat-form-field>
       <mat-form-field appearance="outline" class="form-field-third">
-        <mat-label>Filtros (Código)</mat-label>
+        <mat-label>Filtros (CÃ³digo)</mat-label>
         <input matInput formControlName="filter_code" />
       </mat-form-field>
       <mat-form-field appearance="outline" class="form-field-third">
-        <mat-label>Horómetro</mat-label>
+        <mat-label>HorÃ³metro</mat-label>
         <input matInput formControlName="hourmeter" />
       </mat-form-field>
     </div>
 
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Señales de Advertencia</mat-label>
+      <mat-label>SeÃ±ales de Advertencia</mat-label>
       <textarea matInput formControlName="warnings" rows="2"></textarea>
     </mat-form-field>
 
@@ -67,10 +67,10 @@
       <mat-form-field appearance="outline" class="form-field-third">
         <mat-label>Tipo de Servicio</mat-label>
         <mat-select formControlName="service_type" required>
-          <mat-option value="Mantención Preventiva">M. Preventiva</mat-option>
-          <mat-option value="Mantención Correctiva">M. Correctiva</mat-option>
-          <mat-option value="Revisión General">Rev. General</mat-option>
-          <mat-option value="Reparación">Reparación</mat-option>
+          <mat-option value="MantenciÃ³n Preventiva">M. Preventiva</mat-option>
+          <mat-option value="MantenciÃ³n Correctiva">M. Correctiva</mat-option>
+          <mat-option value="RevisiÃ³n General">Rev. General</mat-option>
+          <mat-option value="ReparaciÃ³n">ReparaciÃ³n</mat-option>
           <mat-option value="Otros">Otros</mat-option>
         </mat-select>
         <mat-error>Seleccione un tipo de servicio</mat-error>
@@ -92,7 +92,7 @@
     </div>
 
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Ubicación del Equipo</mat-label>
+      <mat-label>UbicaciÃ³n del Equipo</mat-label>
       <input matInput formControlName="location" />
     </mat-form-field>
 
@@ -122,7 +122,7 @@
         <mat-label>Criticidad</mat-label>
         <mat-select formControlName="pending_type">
           <mat-option value="Ninguno">Ninguno</mat-option>
-          <mat-option value="Crítico">Crítico</mat-option>
+          <mat-option value="CrÃ­tico">CrÃ­tico</mat-option>
           <mat-option value="Normal">Normal</mat-option>
           <mat-option value="Bajo">Bajo</mat-option>
         </mat-select>
@@ -135,7 +135,7 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Anexo Información</mat-label>
+      <mat-label>Anexo InformaciÃ³n</mat-label>
       <textarea matInput formControlName="car_info_annex" rows="2"></textarea>
     </mat-form-field>
 
@@ -205,16 +205,18 @@
 
     <div class="file-section">
       @if (existingImages().length > 0) {
-      <h4 class="subsection-title">Imágenes Adjuntas (Guardadas)</h4>
+      <h4 class="subsection-title">Imagenes Adjuntas (Guardadas)</h4>
       <mat-list class="file-preview-list">
         @for (img of existingImages(); track img.id) {
         <mat-list-item class="file-preview-item saved-item">
           <mat-icon matListItemIcon>image</mat-icon>
-          <div matListItemTitle>{{ img.file_name || img.name }}</div>
+          <div matListItemTitle>{{ img.file_name || img.name || 'Imagen adjunta' }}</div>
           <div matListItemLine>Guardado previamente</div>
-          <a mat-icon-button [href]="img.url" target="_blank" matTooltip="Ver imagen">
+          @if (img.previewUrl) {
+          <a mat-icon-button [href]="img.previewUrl" target="_blank" matTooltip="Ver imagen">
             <mat-icon>visibility</mat-icon>
           </a>
+          }
         </mat-list-item>
         }
       </mat-list>

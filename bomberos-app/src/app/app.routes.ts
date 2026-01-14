@@ -13,10 +13,12 @@ import { UserAccessComponent } from './components/user-access/user-access';
 import { GroupAccessComponent } from './components/group-access/group-access';
 import { AccessLandingComponent } from './components/access-landing/access-landing';
 import { AuthTransitionComponent } from './components/auth-transition/auth-transition';
+import { VendorReportComponent } from './components/vendor-report/vendor-report';
 import { permissionGuard } from './guards/permission.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'vendor-report/:token', component: VendorReportComponent },
   { path: 'login', component: LoginComponent },
   { path: 'auth-transition', component: AuthTransitionComponent },
   {

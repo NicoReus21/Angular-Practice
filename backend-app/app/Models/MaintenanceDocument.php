@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class MaintenanceDocument extends Model
 {
@@ -34,6 +33,6 @@ class MaintenanceDocument extends Model
     public function getUrlAttribute()
     {
         if (!$this->file_path) return null;
-        return Storage::url($this->file_path);
+        return route('maintenance-documents.download', $this);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Maintenance;
 use App\Models\MaintenanceDocument;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MaintenanceDocumentController extends Controller
 {
@@ -43,8 +44,25 @@ class MaintenanceDocumentController extends Controller
 
     public function destroy(MaintenanceDocument $document)
     {
+        if (Storage::disk('local')->exists($document->file_path)) {
+            Storage::disk('local')->delete($document->file_path);
+        } elseif (Storage::disk('public')->exists($document->file_path)) {
+            Storage::disk('public')->delete($document->file_path);
+        }
         $document->delete();
         return response()->noContent();
     }
-}
 
+    public function download(MaintenanceDocument $document)
+    {
+        if (Storage::disk('local')->exists($document->file_path)) {
+            return Storage::disk('local')->response($document->file_path);
+        }
+
+        if (Storage::disk('public')->exists($document->file_path)) {
+            return Storage::disk('public')->response($document->file_path);
+        }
+
+        return response()->json(['message' => 'Archivo no encontrado'], 404);
+    }
+}

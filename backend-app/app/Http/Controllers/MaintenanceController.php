@@ -1,5 +1,4 @@
-<?php
-
+<?php 
 namespace App\Http\Controllers;
 
 use App\Models\Car;
@@ -77,7 +76,7 @@ class MaintenanceController extends Controller
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
                 try {
-                    $path = $file->store('documents', 'public');
+                    $path = $file->store('documents', 'local');
                     $maintenance->documents()->create([
                         'file_path'           => $path,
                         'mime'                => $file->getClientMimeType(),
@@ -91,34 +90,11 @@ class MaintenanceController extends Controller
             }
         }
 
-        // --- GENERACIÓN DE PDF ---
+        // --- GENERACIÇ"N DE PDF ---
         if ($status === 'completed') {
-            
-            $existingDocs = $maintenance->documents;
-            $attachedImagesPaths = [];
-
-            foreach ($existingDocs as $doc) {
-                if (Storage::disk('public')->exists($doc->file_path)) {
-                    $absolutePath = Storage::disk('public')->path($doc->file_path);
-                    
-                    if (file_exists($absolutePath)) {
-                        $type = pathinfo($absolutePath, PATHINFO_EXTENSION);
-                        $content = file_get_contents($absolutePath);
-                        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($content);
-                        $attachedImagesPaths[] = $base64;
-                    }
-                }
-            }
-
-            $pdf = Pdf::loadView('pdfs.report', [
-                'maintenance' => $maintenance,
-                'attachedImages' => $attachedImagesPaths
-            ]);
-            
-            $filename = 'reports/reporte-' . $car->id . '-' . $maintenance->id . '-' . time() . '.pdf';
-            Storage::disk('public')->put($filename, $pdf->output());
-
-            $maintenance->pdf_url = Storage::url($filename);
+            $attachedImagesPaths = $this->buildAttachedImages($maintenance);
+            $filename = $this->generatePdf($maintenance, $attachedImagesPaths);
+            $maintenance->pdf_url = $filename;
             $maintenance->save();
         }
 
@@ -131,10 +107,18 @@ class MaintenanceController extends Controller
     {
         try {
             if ($maintenance->pdf_url) {
-                $relativePath = str_replace('/storage/', '', parse_url($maintenance->pdf_url, PHP_URL_PATH));
-                $relativePath = ltrim($relativePath, '/');
+                $relativePath = ltrim($maintenance->pdf_url, '/');
+                if (str_starts_with($relativePath, 'http')) {
+                    $path = parse_url($relativePath, PHP_URL_PATH);
+                    $relativePath = ltrim($path ?? '', '/');
+                }
+                if (str_starts_with($relativePath, 'storage/')) {
+                    $relativePath = ltrim(substr($relativePath, strlen('storage/')), '/');
+                }
 
-                if (Storage::disk('public')->exists($relativePath)) {
+                if (Storage::disk('local')->exists($relativePath)) {
+                    Storage::disk('local')->delete($relativePath);
+                } elseif (Storage::disk('public')->exists($relativePath)) {
                     Storage::disk('public')->delete($relativePath);
                 }
             }
@@ -142,7 +126,9 @@ class MaintenanceController extends Controller
             $docs = $maintenance->documents; 
             
             foreach($docs as $doc) {
-                if (Storage::disk('public')->exists($doc->file_path)) {
+                if (Storage::disk('local')->exists($doc->file_path)) {
+                    Storage::disk('local')->delete($doc->file_path);
+                } elseif (Storage::disk('public')->exists($doc->file_path)) {
                     Storage::disk('public')->delete($doc->file_path);
                 }
                 $doc->delete();
@@ -150,11 +136,105 @@ class MaintenanceController extends Controller
 
             $maintenance->delete();
 
-            return response()->json(['message' => 'Reporte eliminado con éxito.'], 200);
+            return response()->json(['message' => 'Reporte eliminado con Ã©xito.'], 200);
 
         } catch (\Exception $e) {
             Log::error('Error al eliminar maintenance ID ' . $maintenance->id . ': ' . $e->getMessage());
             return response()->json(['message' => 'Error al eliminar el reporte: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function downloadPdf(Maintenance $maintenance)
+    {
+        if (!$maintenance->pdf_url) {
+            return response()->json(['message' => 'PDF no disponible'], 404);
+        }
+
+        $relativePath = ltrim($maintenance->pdf_url, '/');
+        if (str_starts_with($relativePath, 'http')) {
+            $path = parse_url($relativePath, PHP_URL_PATH);
+            $relativePath = ltrim($path ?? '', '/');
+        }
+        if (str_starts_with($relativePath, 'storage/')) {
+            $relativePath = ltrim(substr($relativePath, strlen('storage/')), '/');
+        }
+
+        $disk = null;
+        if (Storage::disk('local')->exists($relativePath)) {
+            $disk = 'local';
+        } elseif (Storage::disk('public')->exists($relativePath)) {
+            $disk = 'public';
+        }
+
+        if ($disk) {
+            $latestDoc = $maintenance->documents()->latest('created_at')->first();
+            if ($latestDoc) {
+                $pdfMtime = Storage::disk($disk)->lastModified($relativePath);
+                if ($pdfMtime < $latestDoc->created_at->timestamp) {
+                    $attachedImagesPaths = $this->buildAttachedImages($maintenance);
+                    $filename = $this->generatePdf($maintenance, $attachedImagesPaths);
+                    $maintenance->pdf_url = $filename;
+                    $maintenance->save();
+                    return Storage::disk('local')->download($filename);
+                }
+            }
+
+            return Storage::disk($disk)->download($relativePath);
+        }
+
+        if ($maintenance->status === 'completed') {
+            $attachedImagesPaths = $this->buildAttachedImages($maintenance);
+            $filename = $this->generatePdf($maintenance, $attachedImagesPaths);
+            $maintenance->pdf_url = $filename;
+            $maintenance->save();
+            return Storage::disk('local')->download($filename);
+        }
+
+        return response()->json(['message' => 'Archivo no encontrado'], 404);
+    }
+
+    private function buildAttachedImages(Maintenance $maintenance): array
+    {
+        $maintenance->load('documents');
+        $existingDocs = $maintenance->documents;
+        $attachedImagesPaths = [];
+
+        foreach ($existingDocs as $doc) {
+            $disk = null;
+            if (Storage::disk('local')->exists($doc->file_path)) {
+                $disk = 'local';
+            } elseif (Storage::disk('public')->exists($doc->file_path)) {
+                $disk = 'public';
+            }
+
+            if ($disk) {
+                $absolutePath = Storage::disk($disk)->path($doc->file_path);
+                if (file_exists($absolutePath)) {
+                    $type = strtolower(pathinfo($absolutePath, PATHINFO_EXTENSION));
+                    if ($type === 'jpg') {
+                        $type = 'jpeg';
+                    }
+                    $mime = $doc->mime ?: ('image/' . $type);
+                    $content = file_get_contents($absolutePath);
+                    $base64 = 'data:' . $mime . ';base64,' . base64_encode($content);
+                    $attachedImagesPaths[] = $base64;
+                }
+            }
+        }
+
+        return $attachedImagesPaths;
+    }
+
+    private function generatePdf(Maintenance $maintenance, array $attachedImages): string
+    {
+        $pdf = Pdf::loadView('pdfs.report', [
+            'maintenance' => $maintenance,
+            'attachedImages' => $attachedImages
+        ]);
+
+        $filename = 'reports/reporte-' . $maintenance->car_id . '-' . $maintenance->id . '-' . time() . '.pdf';
+        Storage::disk('local')->put($filename, $pdf->output());
+
+        return $filename;
     }
 }

@@ -395,6 +395,89 @@
               </button>
             </div>
 
+            <mat-card class="vendor-link-card">
+              <mat-card-header>
+                <mat-card-title>Link para proveedor</mat-card-title>
+                <mat-card-subtitle>
+                  Genera un acceso para que el proveedor complete el reporte desde fuera del sistema.
+                </mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="vendor-link-form">
+                  <mat-form-field appearance="outline" class="vendor-field">
+                    <mat-label>Correo del proveedor</mat-label>
+                    <input
+                      matInput
+                      type="email"
+                      [ngModel]="vendorEmail()"
+                      (ngModelChange)="vendorEmail.set($event)"
+                      placeholder="proveedor@correo.com"
+                      required
+                    />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="vendor-field">
+                    <mat-label>Nombre (opcional)</mat-label>
+                    <input
+                      matInput
+                      type="text"
+                      [ngModel]="vendorName()"
+                      (ngModelChange)="vendorName.set($event)"
+                      placeholder="Nombre o empresa"
+                    />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="vendor-field vendor-field-small">
+                    <mat-label>Dias de expiracion</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      min="1"
+                      [ngModel]="vendorExpiresDays()"
+                      (ngModelChange)="vendorExpiresDays.set($event ? +$event : 1)"
+                    />
+                  </mat-form-field>
+
+                  <button
+                    mat-flat-button
+                    color="primary"
+                    class="vendor-action"
+                    (click)="createVendorReportLink()"
+                    [disabled]="isCreatingVendorLink()"
+                  >
+                    @if (isCreatingVendorLink()) {
+                    <ng-container><mat-icon>progress_activity</mat-icon> Generando...</ng-container>
+                    } @else {
+                    <ng-container><mat-icon>link</mat-icon> Generar y enviar</ng-container>
+                    }
+                  </button>
+                </div>
+
+                @if (vendorLink()) {
+                <div class="vendor-link-result">
+                  <div class="vendor-link-label">Link generado</div>
+                  <div class="vendor-link-row">
+                    <a [href]="vendorLink()" target="_blank" rel="noopener">{{ vendorLink() }}</a>
+                    <button mat-stroked-button type="button" (click)="copyVendorLink()">
+                      <mat-icon>content_copy</mat-icon> Copiar
+                    </button>
+                  </div>
+                  @if (vendorLinkExpiresAt()) {
+                  <div class="vendor-link-meta">
+                    Expira el {{ vendorLinkExpiresAt() | date: 'mediumDate' }}
+                  </div>
+                  }
+                </div>
+                }
+
+                @if (vendorLinkError()) {
+                <div class="vendor-link-error">
+                  {{ vendorLinkError() }}
+                </div>
+                }
+              </mat-card-content>
+            </mat-card>
+
             @if (!selectedUnit() || selectedUnit()!.maintenanceHistory.length === 0) {
             <p class="empty-state">No hay reportes creados.</p>
             } @else {
@@ -422,7 +505,7 @@
                   } @else {
                   <button
                     mat-icon-button
-                    (click)="onDownloadReport(report.pdf_url)"
+                    (click)="onDownloadReport(report)"
                     [disabled]="!report.pdf_url"
                   >
                     <mat-icon>download</mat-icon>

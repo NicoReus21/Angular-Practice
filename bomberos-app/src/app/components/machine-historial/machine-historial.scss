@@ -287,6 +287,70 @@
   .total-amount { font-size: 24px; font-weight: 700; color: #3f51b5; }
 }
 
+.vendor-link-card {
+  margin-bottom: 20px;
+  border: 1px solid #e0e0e0;
+  background: #fdfdfd;
+}
+
+.vendor-link-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  align-items: end;
+}
+
+.vendor-field-small {
+  max-width: 180px;
+}
+
+.vendor-action {
+  height: 56px;
+}
+
+.vendor-link-result {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: #f4f7fb;
+  border: 1px dashed #c5d3f3;
+}
+
+.vendor-link-label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #3f51b5;
+}
+
+.vendor-link-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+
+  a {
+    color: #1a237e;
+    word-break: break-all;
+    text-decoration: none;
+  }
+}
+
+.vendor-link-meta {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #5f6368;
+}
+
+.vendor-link-error {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background-color: #ffebee;
+  border: 1px solid #ef9a9a;
+  color: #c62828;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
 /* --- RESPONSIVE (MÓVIL) --- */
 @media (max-width: 960px) {
   .dashboard-sidenav { width: 85vw; max-width: 320px; }

@@ -144,6 +144,14 @@ export class MachineHistorialComponent implements OnInit {
   newDocumentFile = signal<File | null>(null);
   isUploading = signal(false);
 
+  vendorEmail = signal<string>('');
+  vendorName = signal<string>('');
+  vendorExpiresDays = signal<number>(7);
+  vendorLink = signal<string | null>(null);
+  vendorLinkExpiresAt = signal<string | null>(null);
+  vendorLinkError = signal<string | null>(null);
+  isCreatingVendorLink = signal(false);
+
   isMobile = signal<boolean>(false);
   sidenavOpened = signal<boolean>(true);
 
@@ -211,6 +219,12 @@ export class MachineHistorialComponent implements OnInit {
     this.selectedUnitId.set(id);
     this.documentsDateStart.set(null);
     this.documentsDateEnd.set(null);
+    this.vendorEmail.set('');
+    this.vendorName.set('');
+    this.vendorExpiresDays.set(7);
+    this.vendorLink.set(null);
+    this.vendorLinkExpiresAt.set(null);
+    this.vendorLinkError.set(null);
     
     if (this.isMobile()) {
       this.sidenavOpened.set(false);
@@ -648,8 +662,18 @@ export class MachineHistorialComponent implements OnInit {
     });
   }
 
-  onDownloadReport(url: string | null): void {
-    if (url) window.open(url, '_blank');
+  onDownloadReport(report: MaintenanceLog): void {
+    if (!report) return;
+    this.vehicleService.downloadMaintenancePdf(report.id).subscribe({
+      next: (blob) => {
+        const blobUrl = URL.createObjectURL(blob);
+        window.open(blobUrl, '_blank');
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
+      },
+      error: () => {
+        this.snackBar.open('No se pudo descargar el reporte.', 'Cerrar', { duration: 4000, panelClass: 'error-snackbar' });
+      },
+    });
   }
 
   onAddDocument(): void {
@@ -745,5 +769,61 @@ export class MachineHistorialComponent implements OnInit {
         });
       }
     });
+  }
+
+  createVendorReportLink(): void {
+    const unit = this.selectedUnit();
+    const email = this.vendorEmail().trim();
+    const expiresInDays = this.vendorExpiresDays();
+    const name = this.vendorName().trim();
+
+    if (!unit) return;
+    if (!email || !email.includes('@')) {
+      this.snackBar.open('Ingresa un correo valido.', 'Cerrar', { duration: 4000, panelClass: 'error-snackbar' });
+      return;
+    }
+    if (!expiresInDays || expiresInDays < 1) {
+      this.snackBar.open('Los dias de expiracion deben ser mayor a 0.', 'Cerrar', { duration: 4000, panelClass: 'error-snackbar' });
+      return;
+    }
+
+    this.isCreatingVendorLink.set(true);
+    this.vendorLinkError.set(null);
+
+    this.vehicleService
+      .createVendorReportLink({
+        email,
+        name: name || null,
+        car_id: unit.id,
+        expires_in_days: expiresInDays,
+      })
+      .subscribe({
+        next: (response) => {
+          this.vendorLink.set(response.url);
+          this.vendorLinkExpiresAt.set(response.expires_at);
+          this.isCreatingVendorLink.set(false);
+          this.snackBar.open('Link generado y enviado al proveedor.', 'Cerrar', { duration: 4000, panelClass: 'success-snackbar' });
+        },
+        error: (err) => {
+          this.isCreatingVendorLink.set(false);
+          const message = this.getFirstErrorMessage(err, 'No se pudo generar el link.');
+          this.vendorLinkError.set(message);
+          this.snackBar.open(message, 'Cerrar', { duration: 5000, panelClass: 'error-snackbar' });
+        },
+      });
+  }
+
+  copyVendorLink(): void {
+    const link = this.vendorLink();
+    if (!link) return;
+
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(link).then(() => {
+        this.snackBar.open('Link copiado.', 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
+      });
+      return;
+    }
+
+    this.snackBar.open('No se pudo copiar el link.', 'Cerrar', { duration: 3000, panelClass: 'error-snackbar' });
   }
 }

@@ -116,6 +116,12 @@ export interface CreateMaintenanceDto {
   car_info_annex?: string;
 }
 
+export interface VendorReportLinkResponse {
+  token: string;
+  expires_at: string;
+  url: string;
+}
+
 export interface CreateChecklistDto {
   persona_cargo: string;
   fecha_realizacion: string;
@@ -231,5 +237,29 @@ export class MachineHistorialService {
 
   toggleDocumentPayment(documentId: number): Observable<ApiDocument> {
     return this.http.patch<ApiDocument>(`${this.apiUrl}/documents/${documentId}/toggle-payment`, {});
+  }
+
+  createVendorReportLink(payload: { email: string; car_id: number; expires_in_days: number; name?: string | null }): Observable<VendorReportLinkResponse> {
+    return this.http.post<VendorReportLinkResponse>(`${this.apiUrl}/vendor-report-links`, payload);
+  }
+
+  getVendorReportLink(token: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/vendor-report-links/${token}`);
+  }
+
+  submitVendorReport(token: string, payload: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/vendor-report-links/${token}`, payload);
+  }
+
+  downloadMaintenanceDocument(documentId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/maintenance-documents/${documentId}/download`, {
+      responseType: 'blob',
+    });
+  }
+
+  downloadMaintenancePdf(maintenanceId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/maintenances/${maintenanceId}/pdf`, {
+      responseType: 'blob',
+    });
   }
 }

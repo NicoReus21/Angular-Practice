@@ -1,0 +1,272 @@
+<div class="vendor-report-page">
+  <div class="vendor-hero">
+    <h1>Reporte de Servicio</h1>
+    <p>Complete este formulario para registrar el trabajo realizado.</p>
+  </div>
+
+  @if (loading()) {
+  <mat-card class="state-card">
+    <mat-card-content> Cargando informacion del link... </mat-card-content>
+  </mat-card>
+  } @else if (errorMessage()) {
+  <mat-card class="state-card error-state">
+    <mat-card-content>
+      <mat-icon>error</mat-icon>
+      <span>{{ errorMessage() }}</span>
+    </mat-card-content>
+  </mat-card>
+  } @else if (submitted()) {
+  <mat-card class="state-card success-state">
+    <mat-card-content>
+      <mat-icon>check_circle</mat-icon>
+      <span>Reporte enviado correctamente. Ya puede cerrar esta pagina.</span>
+    </mat-card-content>
+  </mat-card>
+  } @else {
+  <mat-card class="info-card">
+    <mat-card-header>
+      <mat-card-title>Informacion de la unidad</mat-card-title>
+      <mat-card-subtitle>Verifique los datos antes de completar el reporte.</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content class="info-grid">
+      <div class="info-item">
+        <span class="label">Unidad</span>
+        <span class="value">{{ linkData()?.car?.name }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Patente</span>
+        <span class="value">{{ linkData()?.car?.plate }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Modelo</span>
+        <span class="value">{{ linkData()?.car?.model || 'Sin modelo' }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Compania</span>
+        <span class="value">{{ linkData()?.car?.company }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Proveedor</span>
+        <span class="value">{{ linkData()?.vendor?.name || linkData()?.vendor?.email }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Fecha limite</span>
+        <span class="value">{{ linkData()?.expires_at | date: 'mediumDate' }}</span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <form [formGroup]="reportForm" class="report-form">
+    <h3 class="section-title">Informacion de la unidad</h3>
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field-half">
+        <mat-label>Kilometraje</mat-label>
+        <input matInput formControlName="mileage" type="number" required />
+        <mat-error>El kilometraje es requerido</mat-error>
+      </mat-form-field>
+    </div>
+
+    <mat-divider class="section-divider"></mat-divider>
+
+    <h3 class="section-title">Detalles de inspeccion</h3>
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field-third">
+        <mat-label>Cabina</mat-label>
+        <input matInput formControlName="cabin" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field-third">
+        <mat-label>Filtros (Codigo)</mat-label>
+        <input matInput formControlName="filter_code" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field-third">
+        <mat-label>Horimetro</mat-label>
+        <input matInput formControlName="hourmeter" />
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Senales de advertencia</mat-label>
+      <textarea matInput formControlName="warnings" rows="2"></textarea>
+    </mat-form-field>
+
+    <mat-divider class="section-divider"></mat-divider>
+
+    <h3 class="section-title">Detalles del servicio</h3>
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field-third">
+        <mat-label>Tipo de servicio</mat-label>
+        <mat-select formControlName="service_type" required>
+          <mat-option value="Mantencion Preventiva">M. Preventiva</mat-option>
+          <mat-option value="Mantencion Correctiva">M. Correctiva</mat-option>
+          <mat-option value="Revision General">Rev. General</mat-option>
+          <mat-option value="Reparacion">Reparacion</mat-option>
+          <mat-option value="Otros">Otros</mat-option>
+        </mat-select>
+        <mat-error>Seleccione un tipo de servicio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field-third">
+        <mat-label>Inspector</mat-label>
+        <input matInput formControlName="inspector_name" required />
+        <mat-error>Nombre del inspector requerido</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field-third">
+        <mat-label>Fecha</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="service_date" required />
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error>Fecha requerida</mat-error>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Ubicacion del equipo</mat-label>
+      <input matInput formControlName="location" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Problema reportado</mat-label>
+      <textarea matInput formControlName="reported_problem" rows="3" required></textarea>
+      <mat-error>Este campo es obligatorio</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Detalle actividades</mat-label>
+      <textarea matInput formControlName="activities_detail" rows="5" required></textarea>
+      <mat-error>Este campo es obligatorio</mat-error>
+    </mat-form-field>
+
+    <mat-divider class="section-divider"></mat-divider>
+
+    <h3 class="section-title">Cierre y pendientes</h3>
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field-half">
+        <mat-label>Trabajo pendiente</mat-label>
+        <textarea matInput formControlName="pending_work" rows="2"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field-half">
+        <mat-label>Criticidad</mat-label>
+        <mat-select formControlName="pending_type">
+          <mat-option value="Ninguno">Ninguno</mat-option>
+          <mat-option value="Critico">Critico</mat-option>
+          <mat-option value="Normal">Normal</mat-option>
+          <mat-option value="Bajo">Bajo</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Observaciones</mat-label>
+      <textarea matInput formControlName="observations" rows="2"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Anexo informacion</mat-label>
+      <textarea matInput formControlName="car_info_annex" rows="2"></textarea>
+    </mat-form-field>
+
+    <div class="file-section">
+      <h4 class="subsection-title">Imagenes adjuntas</h4>
+      <label for="vendor-file-upload" class="file-upload-label">
+        <mat-icon>add_photo_alternate</mat-icon>
+        Adjuntar fotos
+      </label>
+
+      <input
+        id="vendor-file-upload"
+        type="file"
+        multiple
+        accept="image/*"
+        (change)="onFileSelected($event)"
+        class="file-input"
+        #fileUploadInput
+      />
+
+      @if (selectedFiles().length > 0) {
+      <mat-list class="file-preview-list">
+        @for (file of selectedFiles(); track $index) {
+        <mat-list-item class="file-preview-item">
+          <mat-icon matListItemIcon>add_a_photo</mat-icon>
+          <div matListItemTitle>{{ file.name }}</div>
+          <div matListItemLine>{{ file.size / 1024 | number : '1.0-1' }} KB</div>
+          <button
+            mat-icon-button
+            (click)="onRemoveFile(file); fileUploadInput.value = ''"
+            type="button"
+            color="warn"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-list-item>
+        }
+      </mat-list>
+      }
+    </div>
+
+    <h3 class="section-title">Firmas digitales</h3>
+    <div class="signatures-container">
+      <div class="signature-box">
+        <div class="signature-header">
+          <label>Firma inspector responsable</label>
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="clearInspectorSignature()"
+            type="button"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        <div class="signature-pad-wrapper">
+          <signature-pad
+            #inspectorPad
+            [options]="signaturePadOptions"
+            (drawEnd)="drawComplete('inspector')"
+          ></signature-pad>
+        </div>
+        <p class="signature-help">Dibuje su firma en el recuadro</p>
+      </div>
+
+      <div class="signature-box">
+        <div class="signature-header">
+          <label>Firma oficial a cargo</label>
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="clearOfficerSignature()"
+            type="button"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        <div class="signature-pad-wrapper">
+          <signature-pad
+            #officerPad
+            [options]="signaturePadOptions"
+            (drawEnd)="drawComplete('officer')"
+          ></signature-pad>
+        </div>
+        <p class="signature-help">Dibuje su firma en el recuadro</p>
+      </div>
+    </div>
+
+    <div class="actions-row">
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        (click)="submitReport()"
+        [disabled]="isSubmitting()"
+      >
+        @if (isSubmitting()) {
+        <ng-container><mat-icon>progress_activity</mat-icon> Enviando...</ng-container>
+        } @else {
+        <ng-container><mat-icon>check_circle</mat-icon> Enviar reporte</ng-container>
+        }
+      </button>
+    </div>
+  </form>
+  }
+</div>
