@@ -42,9 +42,9 @@ export class ModulesOverviewComponent {
   readonly modules = signal<ModuleCard[]>([
     {
       title: 'Bombero accidentado',
-      subtitle: 'DocumentaciИn y seguimiento',
+      subtitle: 'Documentacion y seguimiento',
       description:
-        'Inicia nuevos procesos, sube la documentaciИn requerida y sigue el estado de cada caso.',
+        'Inicia nuevos procesos, sube la documentación requerida y sigue el estado de cada caso.',
       icon: 'health_and_safety',
       route: '/historial',
       ctaLabel: 'Gestionar casos',
@@ -68,7 +68,7 @@ export class ModulesOverviewComponent {
       title: 'Autenticación',
       subtitle: 'Usuarios y roles',
       description:
-        'Administra las credenciales, permisos y accesos necesarios para tu compaヵВa.',
+        'Administra las credenciales, permisos y accesos necesarios para tu compañía.',
       icon: 'admin_panel_settings',
       route: '/rols',
       ctaLabel: 'Gestionar accesos',
