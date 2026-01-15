@@ -232,11 +232,12 @@ export class MachineHistorialService {
   }
 
   deleteDocument(documentId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/documents/${documentId}`);
+  
+    return this.http.delete<void>(`${this.apiUrl}/car-documents/${documentId}`);
   }
 
   toggleDocumentPayment(documentId: number): Observable<ApiDocument> {
-    return this.http.patch<ApiDocument>(`${this.apiUrl}/documents/${documentId}/toggle-payment`, {});
+    return this.http.patch<ApiDocument>(`${this.apiUrl}/car-documents/${documentId}/toggle-payment`, {});
   }
 
   createVendorReportLink(payload: { email: string; car_id: number; expires_in_days: number; name?: string | null }): Observable<VendorReportLinkResponse> {
