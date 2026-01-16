@@ -81,7 +81,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // Documentos Generales (Bombero Accidentado)
     Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])
-        ->middleware('permission:Bombero Accidentado:Process:update');
+        ->middleware('permission:Bombero Accidentado:Process:update|Material Mayor:Document:delete');
 
     Route::get('/documents/{document}/view', [DocumentController::class, 'view'])
         ->middleware('permission:Bombero Accidentado:Process:read|Material Mayor:Document:read')
@@ -276,9 +276,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // --- Documentos (Gastos) ---
     Route::post('/cars/{car}/documents', [CarDocumentController::class, 'store'])
         ->middleware('permission:Material Mayor:Document:create');
-    
-    Route::delete('/car-documents/{document}', [CarDocumentController::class, 'destroy'])
-        ->middleware('permission:Material Mayor:Document:delete');
     Route::patch('/documents/{document}/toggle-payment', [CarDocumentController::class, 'togglePayment'])
         ->middleware('permission:Material Mayor:Document:update');
     Route::get('/maintenance-documents/{document}/download', [MaintenanceDocumentController::class, 'download'])
