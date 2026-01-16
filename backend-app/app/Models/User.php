@@ -111,4 +111,67 @@ class User extends Authenticatable
             ->where('rol_permission.permission_id', $permissionId)
             ->exists();
     }
+
+    public function hasPermissionWithSectionPrefix(string $module, string $sectionPrefix, string $action): bool
+    {
+        $permissionIds = $this->permissionIdsQuery();
+
+        return DB::table('permissions')
+            ->where('module', $module)
+            ->where('action', $action)
+            ->where('section', 'like', $sectionPrefix . '%')
+            ->whereIn('id', $permissionIds)
+            ->exists();
+    }
+
+    public function getPermissionSectionsByPrefix(string $module, string $action, string $sectionPrefix): array
+    {
+        $permissionIds = $this->permissionIdsQuery();
+
+        return DB::table('permissions')
+            ->where('module', $module)
+            ->where('action', $action)
+            ->where('section', 'like', $sectionPrefix . '%')
+            ->whereIn('id', $permissionIds)
+            ->pluck('section')
+            ->all();
+    }
+
+    public function hasCompanyPermission(string $module, string $section, string $action, string $companyKey): bool
+    {
+        if ($this->hasPermission($module, $section, $action)) {
+            return true;
+        }
+
+        if ($this->hasPermission($module, "{$section}:all", $action)) {
+            return true;
+        }
+
+        return $this->hasPermission($module, "{$section}:{$companyKey}", $action);
+    }
+
+    private function permissionIdsQuery()
+    {
+        $userId = $this->id;
+
+        $direct = DB::table('user_permissions')
+            ->select('id_permission')
+            ->where('id_user', $userId)
+            ->whereNull('revoked_at');
+
+        $groups = DB::table('user_groups')
+            ->join('group_permissions', 'group_permissions.id_group', '=', 'user_groups.id_group')
+            ->select('group_permissions.id_permission as id_permission')
+            ->where('user_groups.id_user', $userId)
+            ->whereNull('user_groups.removed_at')
+            ->whereNull('group_permissions.revoked_at');
+
+        $roles = DB::table('user_rols')
+            ->join('rol_permission', 'rol_permission.rol_id', '=', 'user_rols.id_rol')
+            ->select('rol_permission.permission_id as id_permission')
+            ->where('user_rols.id_user', $userId)
+            ->whereNull('user_rols.removed_at');
+
+        return $direct->union($groups)->union($roles);
+    }
 }

@@ -3,23 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Models\Car;
+use App\Models\Company;
+use App\Traits\ChecksCompanyPermission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage; 
+use Illuminate\Support\Str;
 
 class CarController extends Controller
 {
+    use ChecksCompanyPermission;
     /**
      * Muestra una lista de todas las unidades.
      * GET /api/cars
      */
     public function index()
     {
-        $cars = Car::with('maintenances', 'checklists.items', 'documents')
-            ->orderBy('name', 'asc')
-            ->get();
+        $query = Car::with('maintenances', 'checklists.items', 'documents')
+            ->orderBy('name', 'asc');
+
+        $user = request()->user();
+        if ($user) {
+            $companyIds = $this->getAllowedCompanyIds($user, 'read');
+            if (is_array($companyIds)) {
+                $query->whereIn('company_id', $companyIds);
+            }
+        }
+
+        $cars = $query->get();
 
         return response()->json($cars);
     }
@@ -34,7 +47,8 @@ class CarController extends Controller
             'name'    => 'required|string|max:255',
             'plate'   => 'required|string|unique:cars,plate',
             'model'   => 'nullable|string|max:255',
-            'company' => 'required|string|max:255',
+            'company' => 'nullable|string|max:255',
+            'company_id' => 'nullable|exists:companies,id',
             'status'  => 'required|string|max:255',
             'image'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', 
         ]);
@@ -44,6 +58,14 @@ class CarController extends Controller
         }
 
         $validatedData = $validator->validated();
+        $company = $this->resolveCompany($validatedData);
+        if (!$company) {
+            return response()->json(['errors' => ['company' => ['La compania es requerida.']]], 422);
+        }
+
+        if ($response = $this->forbidIfNoCompanyPermission($request, $company, 'create')) {
+            return $response;
+        }
     
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('car_images', 'public');
@@ -58,6 +80,11 @@ class CarController extends Controller
 
     public function show(Car $car)
     {
+        $company = $this->ensureCarCompany($car);
+        if ($company && ($response = $this->forbidIfNoCompanyPermission(request(), $company, 'read'))) {
+            return $response;
+        }
+
         return $car;
     }
 
@@ -77,7 +104,8 @@ class CarController extends Controller
                 Rule::unique('cars')->ignore($car->id),
             ],
             'model'    => 'nullable|string|max:255',
-            'company'  => 'sometimes|required|string|max:255',
+            'company'  => 'nullable|string|max:255',
+            'company_id' => 'nullable|exists:companies,id',
             'status'   => 'sometimes|required|string|max:255',
             'image'    => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
@@ -87,6 +115,14 @@ class CarController extends Controller
         }
 
         $validatedData = $validator->validated();
+        $targetCompany = array_key_exists('company', $validatedData) || array_key_exists('company_id', $validatedData)
+            ? $this->resolveCompany($validatedData)
+            : $this->ensureCarCompany($car);
+
+        if ($targetCompany && ($response = $this->forbidIfNoCompanyPermission($request, $targetCompany, 'update'))) {
+            return $response;
+        }
+
         if ($request->hasFile('image')) {
             if ($car->imageUrl) {
                 $oldPath = ltrim(str_replace('/storage', '', parse_url($car->imageUrl, PHP_URL_PATH)), '/');
@@ -105,6 +141,11 @@ class CarController extends Controller
 
     public function destroy(Car $car)
     {
+        $company = $this->ensureCarCompany($car);
+        if ($company && ($response = $this->forbidIfNoCompanyPermission(request(), $company, 'delete'))) {
+            return $response;
+        }
+
         if ($car->imageUrl) {
             $path = ltrim(str_replace('/storage', '', parse_url($car->imageUrl, PHP_URL_PATH)), '/');
             Storage::disk('public')->delete($path);
@@ -113,5 +154,88 @@ class CarController extends Controller
         $car->delete();
 
         return response()->json(null, 204);
+    }
+
+    private function resolveCompany(array &$validatedData): ?Company
+    {
+        if (!empty($validatedData['company_id'])) {
+            $company = Company::find($validatedData['company_id']);
+            if ($company) {
+                $validatedData['company'] = $company->name;
+            }
+            return $company;
+        }
+
+        if (!empty($validatedData['company'])) {
+            $name = $validatedData['company'];
+            $company = Company::firstOrCreate(
+                ['name' => $name],
+                ['code' => Str::slug($name, '-')]
+            );
+            if (!$company->code) {
+                $company->update(['code' => Str::slug($name, '-')]);
+            }
+            $validatedData['company_id'] = $company->id;
+            $validatedData['company'] = $company->name;
+            return $company;
+        }
+
+        return null;
+    }
+
+    private function ensureCarCompany(Car $car): ?Company
+    {
+        if ($car->company_id) {
+            return $car->company;
+        }
+
+        if ($car->company) {
+            $company = Company::firstOrCreate(
+                ['name' => $car->company],
+                ['code' => Str::slug($car->company, '-')]
+            );
+            if (!$company->code) {
+                $company->update(['code' => Str::slug($car->company, '-')]);
+            }
+            $car->company_id = $company->id;
+            $car->company = $company->name;
+            $car->save();
+            return $company;
+        }
+
+        return null;
+    }
+
+    private function getAllowedCompanyIds($user, string $action): ?array
+    {
+        if ($user->hasPermission('Material Mayor', 'Car', $action)) {
+            return null;
+        }
+
+        if ($user->hasPermission('Material Mayor', 'Car:all', $action)) {
+            return null;
+        }
+
+        $sections = $user->getPermissionSectionsByPrefix('Material Mayor', $action, 'Car:');
+        $codes = [];
+        foreach ($sections as $section) {
+            $parts = explode(':', $section, 2);
+            if (count($parts) === 2) {
+                $codes[] = $parts[1];
+            }
+        }
+        $codes = array_values(array_unique(array_filter($codes)));
+        if (in_array('all', $codes, true)) {
+            return null;
+        }
+        if (empty($codes)) {
+            return [];
+        }
+
+        return Company::query()
+            ->whereIn('code', $codes)
+            ->orWhereIn('name', $codes)
+            ->pluck('id')
+            ->all();
     }
 }

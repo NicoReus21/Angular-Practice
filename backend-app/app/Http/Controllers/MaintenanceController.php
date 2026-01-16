@@ -4,14 +4,18 @@ namespace App\Http\Controllers;
 use App\Models\Car;
 use App\Models\Maintenance;
 use App\Models\MaintenanceDocument;
+use App\Models\Company;
+use App\Traits\ChecksCompanyPermission;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class MaintenanceController extends Controller
 {
+    use ChecksCompanyPermission;
     public function store(Request $request, Car $car)
     {
         return $this->saveMaintenance($request, $car);
@@ -25,6 +29,12 @@ class MaintenanceController extends Controller
     private function saveMaintenance(Request $request, Car $car, Maintenance $maintenance = null)
     {
         $status = $request->input('status', 'completed');
+        $action = $maintenance ? 'update' : 'create';
+
+        $company = $this->ensureCarCompany($car);
+        if ($company && ($response = $this->forbidIfNoCompanyPermission($request, $company, $action, 'Maintenance'))) {
+            return $response;
+        }
 
         $rules = [
             'service_date'      => 'required|date',
@@ -106,6 +116,11 @@ class MaintenanceController extends Controller
     public function destroy(Maintenance $maintenance)
     {
         try {
+            $company = $this->ensureCarCompany($maintenance->car);
+            if ($company && ($response = $this->forbidIfNoCompanyPermission(request(), $company, 'delete', 'Maintenance'))) {
+                return $response;
+            }
+
             if ($maintenance->pdf_url) {
                 $relativePath = ltrim($maintenance->pdf_url, '/');
                 if (str_starts_with($relativePath, 'http')) {
@@ -146,6 +161,11 @@ class MaintenanceController extends Controller
 
     public function downloadPdf(Maintenance $maintenance)
     {
+        $company = $this->ensureCarCompany($maintenance->car);
+        if ($company && ($response = $this->forbidIfNoCompanyPermission(request(), $company, 'read', 'Maintenance'))) {
+            return $response;
+        }
+
         if (!$maintenance->pdf_url) {
             return response()->json(['message' => 'PDF no disponible'], 404);
         }
@@ -191,6 +211,29 @@ class MaintenanceController extends Controller
         }
 
         return response()->json(['message' => 'Archivo no encontrado'], 404);
+    }
+
+    private function ensureCarCompany(Car $car): ?Company
+    {
+        if ($car->company_id) {
+            return $car->company;
+        }
+
+        if ($car->company) {
+            $company = Company::firstOrCreate(
+                ['name' => $car->company],
+                ['code' => Str::slug($car->company, '-')]
+            );
+            if (!$company->code) {
+                $company->update(['code' => Str::slug($car->company, '-')]);
+            }
+            $car->company_id = $company->id;
+            $car->company = $company->name;
+            $car->save();
+            return $company;
+        }
+
+        return null;
     }
 
     private function buildAttachedImages(Maintenance $maintenance): array

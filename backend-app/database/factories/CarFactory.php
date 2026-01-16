@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Company;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Car>
@@ -16,11 +18,18 @@ class CarFactory extends Factory
      */
     public function definition(): array
     {
+        $companyName = $this->faker->company();
+        $company = Company::firstOrCreate(
+            ['name' => $companyName],
+            ['code' => Str::slug($companyName, '-')]
+        );
+
         return [
             'name' => $this->faker->company() . ' Unidad',
             'plate' => strtoupper($this->faker->bothify('??-####')),
             'model' => $this->faker->word(),
-            'company' => $this->faker->company(),
+            'company' => $company->name,
+            'company_id' => $company->id,
             'status' => 'operativo',
             'imageUrl' => null,
             'marca' => $this->faker->company(),

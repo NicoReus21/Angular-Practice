@@ -4,18 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\Car;
 use App\Models\CarDocument;
+use App\Models\Company;
+use App\Traits\ChecksCompanyPermission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class CarDocumentController extends Controller
 {
+    use ChecksCompanyPermission;
     /**
      * Almacena un nuevo documento (y gasto) para un carro.
      * POST /api/cars/{car}/documents
      */
     public function store(Request $request, Car $car)
     {
+        $company = $this->ensureCarCompany($car);
+        if ($company && ($response = $this->forbidIfNoCompanyPermission($request, $company, 'create', 'Document'))) {
+            return $response;
+        }
+
         $validator = Validator::make($request->all(), [
             'cost' => 'required|numeric|min:0',
             'file' => 'required|file|mimes:pdf,png,jpg,jpeg,doc,docx|max:10240',
@@ -51,6 +60,11 @@ class CarDocumentController extends Controller
      */
     public function togglePayment(CarDocument $document)
     {
+        $company = $this->ensureCarCompany($document->car);
+        if ($company && ($response = $this->forbidIfNoCompanyPermission(request(), $company, 'update', 'Document'))) {
+            return $response;
+        }
+
         $document->is_paid = !$document->is_paid;
         $document->save();
 
@@ -64,6 +78,11 @@ class CarDocumentController extends Controller
     public function destroy(CarDocument $document)
     {
         try {
+            $company = $this->ensureCarCompany($document->car);
+            if ($company && ($response = $this->forbidIfNoCompanyPermission(request(), $company, 'delete', 'Document'))) {
+                return $response;
+            }
+
             if ($document->path && Storage::disk('public')->exists($document->path)) {
                 Storage::disk('public')->delete($document->path);
             }
@@ -91,5 +110,28 @@ class CarDocumentController extends Controller
             return 'doc';
         }
         return 'other';
+    }
+
+    private function ensureCarCompany(Car $car): ?Company
+    {
+        if ($car->company_id) {
+            return $car->company;
+        }
+
+        if ($car->company) {
+            $company = Company::firstOrCreate(
+                ['name' => $car->company],
+                ['code' => Str::slug($car->company, '-')]
+            );
+            if (!$company->code) {
+                $company->update(['code' => Str::slug($car->company, '-')]);
+            }
+            $car->company_id = $company->id;
+            $car->company = $company->name;
+            $car->save();
+            return $company;
+        }
+
+        return null;
     }
 }

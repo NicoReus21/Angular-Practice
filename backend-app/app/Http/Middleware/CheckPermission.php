@@ -18,12 +18,18 @@ class CheckPermission
         $ruleList = array_filter(array_map('trim', explode('|', $rules)));
         foreach ($ruleList as $rule) {
             $parts = array_map('trim', explode(':', $rule));
-            if (count($parts) !== 3) {
+            if (count($parts) < 3) {
                 continue;
             }
 
-            [$module, $section, $action] = $parts;
+            $module = array_shift($parts);
+            $action = array_pop($parts);
+            $section = implode(':', $parts);
             if ($user->hasPermission($module, $section, $action)) {
+                return $next($request);
+            }
+
+            if ($user->hasPermissionWithSectionPrefix($module, $section . ':', $action)) {
                 return $next($request);
             }
         }

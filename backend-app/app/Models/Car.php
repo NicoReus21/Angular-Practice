@@ -19,6 +19,7 @@ class Car extends Model
         'plate',
         'model',
         'company',
+        'company_id',
         'status',
         'imageUrl',
         'marca',
@@ -51,5 +52,10 @@ class Car extends Model
     public function documents()
     {
         return $this->hasMany(CarDocument::class)->orderBy('created_at', 'desc');
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 }

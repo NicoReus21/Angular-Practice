@@ -4,16 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Car;
 use App\Models\CarChecklist;
+use App\Models\Company;
+use App\Traits\ChecksCompanyPermission;
 use Illuminate\Http\Request;
 use App\Models\CarChecklistItems;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class CarChecklistController extends Controller
 {
+    use ChecksCompanyPermission;
 
     public function store(Request $request, Car $car)
     {
+        $company = $this->ensureCarCompany($car);
+        if ($company && ($response = $this->forbidIfNoCompanyPermission($request, $company, 'create', 'Checklist'))) {
+            return $response;
+        }
+
         $validator = Validator::make($request->all(), [
             'persona_cargo' => 'required|string|max:255',
             'fecha_realizacion' => 'required|date',
@@ -59,6 +68,11 @@ class CarChecklistController extends Controller
 
     public function update(Request $request, CarChecklist $checklist)
     {
+        $company = $this->ensureCarCompany($checklist->car);
+        if ($company && ($response = $this->forbidIfNoCompanyPermission($request, $company, 'update', 'Checklist'))) {
+            return $response;
+        }
+
         $validator = Validator::make($request->all(), [
             'persona_cargo' => 'required|string|max:255',
             'fecha_realizacion' => 'required|date',
@@ -100,6 +114,11 @@ class CarChecklistController extends Controller
     public function destroy(CarChecklist $checklist)
     {
         try {
+            $company = $this->ensureCarCompany($checklist->car);
+            if ($company && ($response = $this->forbidIfNoCompanyPermission(request(), $company, 'delete', 'Checklist'))) {
+                return $response;
+            }
+
             $checklist->items()->delete(); 
             $checklist->delete();
             return response()->json(null, 204);
@@ -110,9 +129,37 @@ class CarChecklistController extends Controller
 
     public function toggleItem(CarChecklistItems $item)
     {
+        $company = $this->ensureCarCompany($item->checklist->car);
+        if ($company && ($response = $this->forbidIfNoCompanyPermission(request(), $company, 'update', 'Checklist'))) {
+            return $response;
+        }
+
         $item->completed = !$item->completed;
         $item->save();
 
         return response()->json($item);
+    }
+
+    private function ensureCarCompany(Car $car): ?Company
+    {
+        if ($car->company_id) {
+            return $car->company;
+        }
+
+        if ($car->company) {
+            $company = Company::firstOrCreate(
+                ['name' => $car->company],
+                ['code' => Str::slug($car->company, '-')]
+            );
+            if (!$company->code) {
+                $company->update(['code' => Str::slug($car->company, '-')]);
+            }
+            $car->company_id = $company->id;
+            $car->company = $company->name;
+            $car->save();
+            return $company;
+        }
+
+        return null;
     }
 }
