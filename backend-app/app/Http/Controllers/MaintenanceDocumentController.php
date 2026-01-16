@@ -104,7 +104,7 @@ class MaintenanceDocumentController extends Controller
     private function ensureCarCompany(Car $car): ?Company
     {
         if ($car->company_id) {
-            return $car->company;
+            return Company::find($car->company_id);
         }
 
         if ($car->company) {
