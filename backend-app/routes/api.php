@@ -78,6 +78,8 @@ Route::middleware('auth:sanctum')->group(function () {
         ->name('process.finalize');
     Route::delete('/process/{process}', [ProcessController::class, 'destroy'])
         ->middleware('permission:Bombero Accidentado:Process:delete');
+    
+    // Documentos Generales (Bombero Accidentado)
     Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])
         ->middleware('permission:Bombero Accidentado:Process:update|Material Mayor:Document:delete');
 
@@ -102,6 +104,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware('permission:Sistema:User:read');
     Route::get('/groups/{group}/users', [UserGroupController::class, 'getUsersForGroup'])
         ->middleware('permission:Sistema:Group:read');
+    
     Route::prefix('process/{process}')->group(function () {
         // Requerimiento Operativo
         Route::post('/upload_reporte_flash', [ReporteFlashController::class, 'store'])
@@ -269,6 +272,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware('permission:Material Mayor:Checklist:delete');
     Route::patch('/checklist-items/{item}/toggle', [CarChecklistController::class, 'toggleItem'])
         ->middleware('permission:Material Mayor:Checklist:update');
+    
     // --- Documentos (Gastos) ---
     Route::post('/cars/{car}/documents', [CarDocumentController::class, 'store'])
         ->middleware('permission:Material Mayor:Document:create');

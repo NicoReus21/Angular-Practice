@@ -1,6 +1,6 @@
 ﻿<form [formGroup]="reportForm">
   <h1 mat-dialog-title class="dialog-title-container">
-    <span class="title-text">Reporte de Servicio</span>
+    <span class="title-text">{{ dialogTitle }}</span>
     <button
       mat-icon-button
       class="close-button"
@@ -13,7 +13,7 @@
   </h1>
 
   <div mat-dialog-content class="dialog-content">
-    <h3 class="section-title">InformaciÃ³n de la Unidad</h3>
+    <h3 class="section-title">Información de la Unidad</h3>
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field-third">
         <mat-label>Modelo</mat-label>
@@ -24,7 +24,7 @@
         <input matInput formControlName="plate" />
       </mat-form-field>
       <mat-form-field appearance="outline" class="form-field-third">
-        <mat-label>CompaÃ±Ã­a</mat-label>
+        <mat-label>Compañía</mat-label>
         <input matInput formControlName="company" />
       </mat-form-field>
     </div>
@@ -33,30 +33,29 @@
       <mat-form-field appearance="outline" class="form-field-half">
         <mat-label>Kilometraje</mat-label>
         <input matInput formControlName="mileage" type="number" required />
-        <mat-error>El kilometraje es requerido</mat-error>
+        <mat-error>Requerido</mat-error>
       </mat-form-field>
     </div>
 
     <mat-divider class="section-divider"></mat-divider>
 
-    <h3 class="section-title">Detalles de InspecciÃ³n</h3>
+    <h3 class="section-title">Detalles de Inspección</h3>
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field-third">
         <mat-label>Cabina</mat-label>
         <input matInput formControlName="cabin" />
       </mat-form-field>
       <mat-form-field appearance="outline" class="form-field-third">
-        <mat-label>Filtros (CÃ³digo)</mat-label>
+        <mat-label>Filtros (Código)</mat-label>
         <input matInput formControlName="filter_code" />
       </mat-form-field>
       <mat-form-field appearance="outline" class="form-field-third">
-        <mat-label>HorÃ³metro</mat-label>
+        <mat-label>Horómetro</mat-label>
         <input matInput formControlName="hourmeter" />
       </mat-form-field>
     </div>
-
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>SeÃ±ales de Advertencia</mat-label>
+      <mat-label>Señales de Advertencia</mat-label>
       <textarea matInput formControlName="warnings" rows="2"></textarea>
     </mat-form-field>
 
@@ -67,19 +66,19 @@
       <mat-form-field appearance="outline" class="form-field-third">
         <mat-label>Tipo de Servicio</mat-label>
         <mat-select formControlName="service_type" required>
-          <mat-option value="MantenciÃ³n Preventiva">M. Preventiva</mat-option>
-          <mat-option value="MantenciÃ³n Correctiva">M. Correctiva</mat-option>
-          <mat-option value="RevisiÃ³n General">Rev. General</mat-option>
-          <mat-option value="ReparaciÃ³n">ReparaciÃ³n</mat-option>
+          <mat-option value="Mantención Preventiva">M. Preventiva</mat-option>
+          <mat-option value="Mantención Correctiva">M. Correctiva</mat-option>
+          <mat-option value="Revisión General">Rev. General</mat-option>
+          <mat-option value="Reparación">Reparación</mat-option>
           <mat-option value="Otros">Otros</mat-option>
         </mat-select>
-        <mat-error>Seleccione un tipo de servicio</mat-error>
+        <mat-error>Requerido</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field-third">
         <mat-label>Inspector</mat-label>
         <input matInput formControlName="inspector_name" required />
-        <mat-error>Nombre del inspector requerido</mat-error>
+        <mat-error>Requerido</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field-third">
@@ -87,26 +86,25 @@
         <input matInput [matDatepicker]="picker" formControlName="service_date" required />
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
-        <mat-error>Fecha requerida</mat-error>
+        <mat-error>Requerida</mat-error>
       </mat-form-field>
     </div>
 
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>UbicaciÃ³n del Equipo</mat-label>
+      <mat-label>Ubicación del Equipo</mat-label>
       <input matInput formControlName="location" />
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Problema Reportado</mat-label>
       <textarea matInput formControlName="reported_problem" rows="3" required></textarea>
-      <mat-error>Este campo es obligatorio</mat-error>
+      <mat-error>Requerido</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Detalle Actividades</mat-label>
       <textarea matInput formControlName="activities_detail" rows="5" required></textarea>
-      <!-- Agregado mat-error -->
-      <mat-error>Este campo es obligatorio</mat-error>
+      <mat-error>Requerido</mat-error>
     </mat-form-field>
 
     <mat-divider class="section-divider"></mat-divider>
@@ -122,7 +120,7 @@
         <mat-label>Criticidad</mat-label>
         <mat-select formControlName="pending_type">
           <mat-option value="Ninguno">Ninguno</mat-option>
-          <mat-option value="CrÃ­tico">CrÃ­tico</mat-option>
+          <mat-option value="Crítico">Crítico</mat-option>
           <mat-option value="Normal">Normal</mat-option>
           <mat-option value="Bajo">Bajo</mat-option>
         </mat-select>
@@ -135,7 +133,7 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Anexo InformaciÃ³n</mat-label>
+      <mat-label>Anexo Información</mat-label>
       <textarea matInput formControlName="car_info_annex" rows="2"></textarea>
     </mat-form-field>
 
@@ -143,42 +141,39 @@
     <div class="signatures-container">
       <div class="signature-box">
         <div class="signature-header">
-          <label>Firma Inspector Responsable</label>
+          <label>Firma Inspector</label>
           <button
             mat-icon-button
             color="warn"
             (click)="clearInspectorSignature()"
-            matTooltip="Borrar y firmar de nuevo"
+            matTooltip="Borrar"
             type="button"
           >
             <mat-icon>delete</mat-icon>
           </button>
         </div>
+
         @if (showSavedInspectorSignature()) {
         <div class="saved-signature-preview">
-          <img [src]="reportForm.get('inspector_signature')?.value" alt="Firma Guardada" />
-          <span class="saved-label">Firma Guardada</span>
+          <img [src]="reportForm.get('inspector_signature')?.value" alt="Firma Inspector" />
+          <span class="saved-label">Guardada</span>
         </div>
         } @else {
-        <div class="signature-pad-wrapper">
-          <signature-pad
-            #inspectorPad
-            [options]="signaturePadOptions"
-            (drawEnd)="drawComplete('inspector')"
-          ></signature-pad>
+        <div class="canvas-wrapper">
+          <canvas #inspectorCanvas></canvas>
+          <div class="placeholder-text">Inspector firme aquí</div>
         </div>
-        <p class="signature-help">Dibuje su firma en el recuadro</p>
         }
       </div>
 
       <div class="signature-box">
         <div class="signature-header">
-          <label>Firma Oficial a Cargo</label>
+          <label>Firma Oficial</label>
           <button
             mat-icon-button
             color="warn"
             (click)="clearOfficerSignature()"
-            matTooltip="Borrar y firmar de nuevo"
+            matTooltip="Borrar"
             type="button"
           >
             <mat-icon>delete</mat-icon>
@@ -187,25 +182,21 @@
 
         @if (showSavedOfficerSignature()) {
         <div class="saved-signature-preview">
-          <img [src]="reportForm.get('officer_signature')?.value" alt="Firma Guardada" />
-          <span class="saved-label">Firma Guardada</span>
+          <img [src]="reportForm.get('officer_signature')?.value" alt="Firma Oficial" />
+          <span class="saved-label">Guardada</span>
         </div>
         } @else {
-        <div class="signature-pad-wrapper">
-          <signature-pad
-            #officerPad
-            [options]="signaturePadOptions"
-            (drawEnd)="drawComplete('officer')"
-          ></signature-pad>
+        <div class="canvas-wrapper">
+          <canvas #officerCanvas></canvas>
+          <div class="placeholder-text">Oficial firme aquí</div>
         </div>
-        <p class="signature-help">Dibuje su firma en el recuadro</p>
         }
       </div>
     </div>
 
     <div class="file-section">
       @if (existingImages().length > 0) {
-      <h4 class="subsection-title">Imagenes Adjuntas (Guardadas)</h4>
+      <h4 class="subsection-title">Adjuntos Guardados</h4>
       <mat-list class="file-preview-list">
         @for (img of existingImages(); track img.id) {
         <mat-list-item class="file-preview-item saved-item">
@@ -280,7 +271,7 @@
       type="button"
       class="action-btn"
     >
-      <mat-icon>check_circle</mat-icon> Finalizar Reporte
+      <mat-icon>check_circle</mat-icon> Finalizar
     </button>
   </div>
 </form>

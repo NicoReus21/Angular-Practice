@@ -31,7 +31,6 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { BreakpointObserver } from '@angular/cdk/layout';
-// Importaciones para el Datepicker
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 
@@ -321,12 +320,12 @@ export class MachineHistorialComponent implements OnInit {
     if (!unit) return;
 
     Swal.fire({
-      title: `Â¿Eliminar ${unit.name}?`,
-      text: 'Se eliminarÃ¡ la unidad y todo su historial. Esta acciÃ³n no se puede deshacer.',
+      title: `¿Eliminar ${unit.name}?`,
+      text: 'Se eliminará la unidad y todo su historial. Esta acción no se puede deshacer.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
-      confirmButtonText: 'SÃ­, eliminar',
+      confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
@@ -347,10 +346,8 @@ export class MachineHistorialComponent implements OnInit {
 
   private mapApiCarToVehicleUnit(car: CarApiResponse): VehicleUnit {
     const rawUrl = this.mapApiUrl(
-      // Soportar distintas formas de devolver la URL desde la API
       (car as any).imageUrl || (car as any).image_url || (car as any).image
     );
-    // Truco para romper caché de imagen
     const imageUrl = rawUrl ? `${rawUrl}?t=${new Date().getTime()}` : null;
 
     return {
@@ -544,19 +541,19 @@ export class MachineHistorialComponent implements OnInit {
   onDeleteChecklist(checklistId: number, event: MouseEvent): void {
     event.stopPropagation();
     Swal.fire({
-      title: 'Â¿Eliminar Checklist?',
-      text: 'Se eliminarÃ¡ permanentemente.',
+      title: '¿Eliminar Checklist?',
+      text: 'Se eliminará permanentemente.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
-      confirmButtonText: 'SÃ­, eliminar',
+      confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
         this.vehicleService.deleteChecklist(checklistId).subscribe({
           next: () => {
             this.loadUnits();
-            Swal.fire('Â¡Eliminado!', 'Checklist eliminado.', 'success');
+            Swal.fire('¡Eliminado!', 'Checklist eliminado.', 'success');
           },
         });
       }
@@ -625,7 +622,7 @@ export class MachineHistorialComponent implements OnInit {
         action$.subscribe({
           next: () => {
             this.loadUnits();
-            const msg = dto.status === 'draft' ? 'Borrador guardado' : 'Reporte generado con Ã©xito';
+            const msg = dto.status === 'draft' ? 'Borrador guardado' : 'Reporte generado con éxito';
             this.snackBar.open(msg, 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
           },
           error: (err) => {
@@ -640,8 +637,8 @@ export class MachineHistorialComponent implements OnInit {
   onDeleteReport(reportId: number, event?: MouseEvent): void {
     if (event) event.stopPropagation();
     Swal.fire({
-      title: 'Â¿Eliminar Reporte?',
-      text: 'Esta acciÃ³n no se puede deshacer. Se eliminarÃ¡ el historial.',
+      title: '¿Eliminar Reporte?',
+      text: 'Esta acción no se puede deshacer. Se eliminará el historial.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
