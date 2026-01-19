@@ -39,4 +39,8 @@ return [
         'client_id' => env('GOOGLE_CLIENT_ID'),
     ],
 
+    'webhook' => [
+        'url' => env('WEBHOOK_URL'),
+    ],
+
 ];

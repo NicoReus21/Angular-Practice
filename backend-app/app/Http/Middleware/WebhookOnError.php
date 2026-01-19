@@ -31,7 +31,7 @@ class WebhookOnError
 
     private function sendWebhook(Request $request, ?Response $response, float $start, ?\Throwable $exception = null): void
     {
-        $url = env('WEBHOOK_URL');
+        $url = config('services.webhook.url') ?: env('WEBHOOK_URL');
         if (!$url) {
             return;
         }
@@ -62,10 +62,51 @@ class WebhookOnError
                 ] : null,
             ];
 
+            if ($this->isDiscordWebhook($url)) {
+                $message = sprintf(
+                    '[API] %s %s -> %s',
+                    $payload['method'],
+                    $payload['path'],
+                    $payload['status'] ?? 'error'
+                );
+                $discordPayload = [
+                    'content' => $message,
+                    'embeds' => [
+                        [
+                            'title' => 'Request details',
+                            'fields' => [
+                                ['name' => 'Status', 'value' => (string) ($payload['status'] ?? 'error'), 'inline' => true],
+                                ['name' => 'Route', 'value' => $payload['path'], 'inline' => true],
+                                ['name' => 'Method', 'value' => $payload['method'], 'inline' => true],
+                                ['name' => 'User', 'value' => $payload['user']['email'] ?? 'guest', 'inline' => true],
+                                ['name' => 'IP', 'value' => $payload['ip'] ?? 'unknown', 'inline' => true],
+                                ['name' => 'Duration', 'value' => $payload['duration_ms'] . 'ms', 'inline' => true],
+                            ],
+                        ],
+                    ],
+                ];
+
+                if ($payload['exception']) {
+                    $discordPayload['embeds'][0]['fields'][] = [
+                        'name' => 'Exception',
+                        'value' => $payload['exception']['class'] . ': ' . $payload['exception']['message'],
+                        'inline' => false,
+                    ];
+                }
+
+                Http::timeout(2)->post($url, $discordPayload);
+                return;
+            }
+
             Http::timeout(2)->post($url, $payload);
         } catch (\Throwable $e) {
             // No interrumpir la request si falla el webhook.
         }
+    }
+
+    private function isDiscordWebhook(string $url): bool
+    {
+        return str_contains($url, 'discord.com/api/webhooks');
     }
 
     private function sanitizeInput(array $input): array
