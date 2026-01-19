@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     
         $middleware->use([
             \Illuminate\Http\Middleware\HandleCors::class,
+            \App\Http\Middleware\WebhookOnError::class,
         ]);
         $middleware->alias([
             'permission' => \App\Http\Middleware\CheckPermission::class,
