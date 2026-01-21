@@ -58,4 +58,9 @@ class Car extends Model
     {
         return $this->belongsTo(Company::class);
     }
+
+    public function inspectionChecklists()
+    {
+        return $this->hasMany(InspectionChecklist::class)->orderBy('inspected_at', 'desc');
+    }
 }

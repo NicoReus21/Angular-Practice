@@ -43,6 +43,8 @@ use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\GroupPermissionController;
 use App\Http\Controllers\VendorReportLinkController;
 use App\Http\Controllers\MaintenanceDocumentController;
+use App\Http\Controllers\InspectionChecklistController;
+use App\Http\Controllers\InspectionCategoryController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
@@ -272,6 +274,25 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware('permission:Material Mayor:Checklist:delete');
     Route::patch('/checklist-items/{item}/toggle', [CarChecklistController::class, 'toggleItem'])
         ->middleware('permission:Material Mayor:Checklist:update');
+    Route::get('/cars/{car}/inspection-checklists', [InspectionChecklistController::class, 'index'])
+        ->middleware('permission:Material Mayor:Inspection:read');
+    Route::post('/cars/{car}/inspection-checklists', [InspectionChecklistController::class, 'store'])
+        ->middleware('permission:Material Mayor:Inspection:create');
+    Route::get('/inspection-checklists/{inspectionChecklist}', [InspectionChecklistController::class, 'show'])
+        ->middleware('permission:Material Mayor:Inspection:read');
+    Route::put('/inspection-checklists/{inspectionChecklist}', [InspectionChecklistController::class, 'update'])
+        ->middleware('permission:Material Mayor:Inspection:update');
+    Route::delete('/inspection-checklists/{inspectionChecklist}', [InspectionChecklistController::class, 'destroy'])
+        ->middleware('permission:Material Mayor:Inspection:delete');
+
+    Route::get('/inspection-categories', [InspectionCategoryController::class, 'index'])
+        ->middleware('permission:Material Mayor:InspectionCategory:read');
+    Route::post('/inspection-categories', [InspectionCategoryController::class, 'store'])
+        ->middleware('permission:Material Mayor:InspectionCategory:create');
+    Route::put('/inspection-categories/{inspectionCategory}', [InspectionCategoryController::class, 'update'])
+        ->middleware('permission:Material Mayor:InspectionCategory:update');
+    Route::delete('/inspection-categories/{inspectionCategory}', [InspectionCategoryController::class, 'destroy'])
+        ->middleware('permission:Material Mayor:InspectionCategory:delete');
     
     // --- Documentos (Gastos) ---
     Route::post('/cars/{car}/documents', [CarDocumentController::class, 'store'])

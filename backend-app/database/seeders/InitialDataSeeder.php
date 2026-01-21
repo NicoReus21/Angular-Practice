@@ -17,6 +17,7 @@ class InitialDataSeeder extends Seeder
         // Ensure base permissions exist before linking.
         $this->call(PermissionSeeder::class);
         $this->call(CompanyPermissionSeeder::class);
+        $this->call(InspectionCategorySeeder::class);
 
         $today = Carbon::today()->toDateString();
 

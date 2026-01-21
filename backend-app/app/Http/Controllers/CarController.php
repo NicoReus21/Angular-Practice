@@ -21,7 +21,7 @@ class CarController extends Controller
      */
     public function index()
     {
-        $query = Car::with('maintenances', 'checklists.items', 'documents')
+        $query = Car::with('maintenances', 'checklists.items', 'documents', 'inspectionChecklists.items')
             ->orderBy('name', 'asc');
 
         $user = request()->user();
@@ -75,7 +75,7 @@ class CarController extends Controller
         unset($validatedData['image']);
         $car = Car::create($validatedData);
         
-        return response()->json($car->load('maintenances', 'checklists.items', 'documents'), 201);
+        return response()->json($car->load('maintenances', 'checklists.items', 'documents', 'inspectionChecklists.items'), 201);
     }
 
     public function show(Car $car)
@@ -85,7 +85,7 @@ class CarController extends Controller
             return $response;
         }
 
-        return $car;
+        return $car->load('inspectionChecklists.items');
     }
 
     /**
@@ -136,7 +136,7 @@ class CarController extends Controller
 
         $car->update($validatedData);
         
-        return response()->json($car);
+        return response()->json($car->load('inspectionChecklists.items'));
     }
 
     public function destroy(Car $car)

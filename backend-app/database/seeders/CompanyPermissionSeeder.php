@@ -12,7 +12,7 @@ class CompanyPermissionSeeder extends Seeder
     {
         $companies = Company::all();
         $actions = ['create', 'read', 'update', 'delete'];
-        $sections = ['Car', 'Maintenance', 'Document', 'Checklist'];
+        $sections = ['Car', 'Maintenance', 'Document', 'Checklist', 'Inspection'];
 
         foreach ($companies as $company) {
             $permissionKey = $company->permissionKey();

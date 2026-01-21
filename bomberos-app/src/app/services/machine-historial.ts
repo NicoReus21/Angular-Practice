@@ -72,6 +72,28 @@ export interface ChecklistGroup {
   items: ChecklistTaskItem[];
 }
 
+export interface InspectionChecklistItem {
+  id: number;
+  key: string;
+  label: string;
+  value: 'yes' | 'no' | 'na';
+  comment?: string | null;
+}
+
+export interface InspectionCategory {
+  id: number;
+  key: string;
+  label: string;
+  sort_order: number;
+}
+
+export interface InspectionChecklist {
+  id: number;
+  car_id: number;
+  inspected_at: string | null;
+  items: InspectionChecklistItem[];
+}
+
 export interface CarApiResponse {
   id: number;
   name: string;
@@ -82,6 +104,7 @@ export interface CarApiResponse {
   maintenances: ApiMaintenance[];
   checklists: ApiChecklist[];
   documents: ApiDocument[];
+  inspection_checklists?: InspectionChecklist[];
   imageUrl: string | null;
   // Variaciones que puede enviar el backend
   image?: string | null;
@@ -218,6 +241,38 @@ export class MachineHistorialService {
 
   toggleChecklistItem(itemId: number): Observable<any> {
     return this.http.patch(`${this.apiUrl}/checklist-items/${itemId}/toggle`, {});
+  }
+
+  getInspectionChecklists(carId: number): Observable<InspectionChecklist[]> {
+    return this.http.get<InspectionChecklist[]>(`${this.apiUrl}/cars/${carId}/inspection-checklists`);
+  }
+
+  createInspectionChecklist(carId: number, payload: any): Observable<InspectionChecklist> {
+    return this.http.post<InspectionChecklist>(`${this.apiUrl}/cars/${carId}/inspection-checklists`, payload);
+  }
+
+  updateInspectionChecklist(checklistId: number, payload: any): Observable<InspectionChecklist> {
+    return this.http.put<InspectionChecklist>(`${this.apiUrl}/inspection-checklists/${checklistId}`, payload);
+  }
+
+  deleteInspectionChecklist(checklistId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/inspection-checklists/${checklistId}`);
+  }
+
+  getInspectionCategories(): Observable<InspectionCategory[]> {
+    return this.http.get<InspectionCategory[]>(`${this.apiUrl}/inspection-categories`);
+  }
+
+  createInspectionCategory(payload: { label: string; key?: string; sort_order?: number }): Observable<InspectionCategory> {
+    return this.http.post<InspectionCategory>(`${this.apiUrl}/inspection-categories`, payload);
+  }
+
+  updateInspectionCategory(categoryId: number, payload: { label?: string; key?: string; sort_order?: number }): Observable<InspectionCategory> {
+    return this.http.put<InspectionCategory>(`${this.apiUrl}/inspection-categories/${categoryId}`, payload);
+  }
+
+  deleteInspectionCategory(categoryId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/inspection-categories/${categoryId}`);
   }
 
   uploadDocument(carId: number, cost: number, file: File): Observable<ApiDocument> {

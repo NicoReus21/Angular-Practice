@@ -26,6 +26,9 @@ class PermissionSeeder extends Seeder
             ['module' => 'Material Mayor', 'section' => 'Document:all', 'actions' => ['create', 'read', 'update', 'delete']],
             ['module' => 'Material Mayor', 'section' => 'Checklist', 'actions' => ['create', 'read', 'update', 'delete']],
             ['module' => 'Material Mayor', 'section' => 'Checklist:all', 'actions' => ['create', 'read', 'update', 'delete']],
+            ['module' => 'Material Mayor', 'section' => 'Inspection', 'actions' => ['create', 'read', 'update', 'delete']],
+            ['module' => 'Material Mayor', 'section' => 'Inspection:all', 'actions' => ['create', 'read', 'update', 'delete']],
+            ['module' => 'Material Mayor', 'section' => 'InspectionCategory', 'actions' => ['create', 'read', 'update', 'delete']],
             ['module' => 'Material Mayor', 'section' => 'Home', 'actions' => ['read']],
 
             // Administración

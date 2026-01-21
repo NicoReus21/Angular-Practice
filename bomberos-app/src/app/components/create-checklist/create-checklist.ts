@@ -58,8 +58,8 @@ export class CreateChecklistComponent {
   newTaskName = signal<string>('');
 
   // Variables para textos dinámicos
-  dialogTitle = 'Crear Nuevo Checklist';
-  submitButtonLabel = 'Guardar Checklist';
+  dialogTitle = 'Registrar incidente';
+  submitButtonLabel = 'Guardar incidente';
 
   constructor() {
     this.checklistForm = this.fb.group({
@@ -69,8 +69,8 @@ export class CreateChecklistComponent {
 
     // --- LÓGICA DE EDICIÓN ---
     if (this.data && this.data.checklist) {
-      this.dialogTitle = 'Editar Checklist';
-      this.submitButtonLabel = 'Actualizar Checklist';
+      this.dialogTitle = 'Editar incidente';
+      this.submitButtonLabel = 'Actualizar incidente';
 
       // 1. Parsear la fecha (La API suele enviar string "YYYY-MM-DD")
       let fecha = new Date();

@@ -45,11 +45,14 @@ import {
   ApiDocument,
   ApiMaintenance,
   ChecklistGroup,
+  InspectionChecklist,
+  InspectionCategory,
 } from '../../services/machine-historial';
 
 import { CreateFiretruckComponent } from '../create-firetruck/create-firetruck';
 import { CreateReportComponent } from '../create-report/create-report';
 import { CreateChecklistComponent } from '../create-checklist/create-checklist';
+import { CreateInspectionChecklistComponent } from '../create-inspection-checklist/create-inspection-checklist';
 
 export interface MaintenanceLog {
   id: number;
@@ -83,6 +86,7 @@ export interface VehicleUnit {
   company: string;
   imageUrl: string | null;
   checklists: ChecklistGroup[];
+  inspectionChecklists: InspectionChecklist[];
   documents: AttachedDocument[];
   maintenanceHistory: MaintenanceLog[];
 }
@@ -153,6 +157,14 @@ export class MachineHistorialComponent implements OnInit {
 
   isMobile = signal<boolean>(false);
   sidenavOpened = signal<boolean>(true);
+  selectedTabIndex = signal<number>(0);
+  readonly categoriesTabIndex = 3;
+
+  inspectionCategories = signal<InspectionCategory[]>([]);
+  newCategoryLabel = signal<string>('');
+  newCategorySortOrder = signal<number | null>(null);
+  isLoadingCategories = signal<boolean>(false);
+  isSavingCategory = signal<boolean>(false);
 
   private backendUrl = environment.backendUrl;
 
@@ -203,6 +215,7 @@ export class MachineHistorialComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUnits();
+    this.loadInspectionCategories();
     this.breakpointObserver.observe(['(max-width: 960px)']).subscribe((result) => {
       const isSmallScreen = result.matches;
       this.isMobile.set(isSmallScreen);
@@ -214,8 +227,16 @@ export class MachineHistorialComponent implements OnInit {
     this.sidenavOpened.update((v) => !v);
   }
 
+  openCategoriesTab(): void {
+    this.selectedTabIndex.set(this.categoriesTabIndex);
+    if (this.isMobile()) {
+      this.sidenavOpened.set(false);
+    }
+  }
+
   onSelectUnit(id: number) {
     this.selectedUnitId.set(id);
+    this.selectedTabIndex.set(0);
     this.documentsDateStart.set(null);
     this.documentsDateEnd.set(null);
     this.vendorEmail.set('');
@@ -368,6 +389,12 @@ export class MachineHistorialComponent implements OnInit {
           completed: item.completed,
         })),
       })),
+      inspectionChecklists: (car.inspection_checklists || []).map((inspection) => ({
+        ...inspection,
+        inspected_at: inspection.inspected_at
+          ? new Date(inspection.inspected_at).toLocaleDateString('es-CL')
+          : null,
+      })),
       documents: (car.documents || []).map((doc) => this.mapApiDocumentToLocal(doc)),
       maintenanceHistory: (car.maintenances || []).map((m: ApiMaintenance) => ({
         id: m.id,
@@ -510,6 +537,109 @@ export class MachineHistorialComponent implements OnInit {
           },
           error: (err) => {
             this.snackBar.open(`Error: ${this.getFirstErrorMessage(err)}`, 'Cerrar', { duration: 5000, panelClass: 'error-snackbar' });
+          },
+        });
+      }
+    });
+  }
+
+  openCreateInspectionChecklistDialog(): void {
+    const unit = this.selectedUnit();
+    if (!unit) return;
+    const isMobile = this.isMobile();
+
+    const dialogRef = this.dialog.open(CreateInspectionChecklistComponent, {
+      width: isMobile ? '95vw' : '900px',
+      maxWidth: '100vw',
+      maxHeight: '95vh',
+      autoFocus: false,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.formData && result?.items?.length > 0) {
+        const dto = {
+          inspected_at:
+            result.formData.inspectedAt instanceof Date
+              ? result.formData.inspectedAt.toISOString().split('T')[0]
+              : result.formData.inspectedAt,
+          items: result.items,
+        };
+
+        this.vehicleService.createInspectionChecklist(unit.id, dto).subscribe({
+          next: () => {
+            this.loadUnits();
+            this.snackBar.open('Checklist de inspeccion creado', 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
+          },
+          error: (err) => {
+            this.snackBar.open(`Error: ${this.getFirstErrorMessage(err)}`, 'Cerrar', { duration: 5000, panelClass: 'error-snackbar' });
+          },
+        });
+      }
+    });
+  }
+
+  loadInspectionCategories(): void {
+    this.isLoadingCategories.set(true);
+    this.vehicleService.getInspectionCategories().subscribe({
+      next: (categories) => {
+        const sorted = [...categories].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+        this.inspectionCategories.set(sorted);
+        this.isLoadingCategories.set(false);
+      },
+      error: (err) => {
+        console.error('Error al cargar categorias:', err);
+        this.isLoadingCategories.set(false);
+        this.snackBar.open('Error al cargar categorias.', 'Cerrar', { duration: 4000, panelClass: 'error-snackbar' });
+      },
+    });
+  }
+
+  createInspectionCategory(): void {
+    const label = this.newCategoryLabel().trim();
+    const sortOrder = this.newCategorySortOrder();
+    if (!label) {
+      this.snackBar.open('Ingresa un nombre de categoria.', 'Cerrar', { duration: 3000, panelClass: 'error-snackbar' });
+      return;
+    }
+
+    this.isSavingCategory.set(true);
+    this.vehicleService.createInspectionCategory({
+      label,
+      sort_order: sortOrder ?? undefined,
+    }).subscribe({
+      next: (category) => {
+        this.inspectionCategories.update((list) => [...list, category].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0)));
+        this.newCategoryLabel.set('');
+        this.newCategorySortOrder.set(null);
+        this.isSavingCategory.set(false);
+        this.snackBar.open('Categoria creada.', 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
+      },
+      error: (err) => {
+        this.isSavingCategory.set(false);
+        this.snackBar.open(`Error: ${this.getFirstErrorMessage(err)}`, 'Cerrar', { duration: 5000, panelClass: 'error-snackbar' });
+      },
+    });
+  }
+
+  deleteInspectionCategory(category: InspectionCategory, event?: MouseEvent): void {
+    if (event) event.stopPropagation();
+    Swal.fire({
+      title: 'Eliminar categoria?',
+      text: 'Se quitara la categoria. Los items existentes conservaran su texto.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      confirmButtonText: 'Eliminar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.vehicleService.deleteInspectionCategory(category.id).subscribe({
+          next: () => {
+            this.inspectionCategories.update((list) => list.filter((c) => c.id !== category.id));
+            Swal.fire('Eliminado', 'Categoria eliminada.', 'success');
+          },
+          error: (err) => {
+            Swal.fire('Error', this.getFirstErrorMessage(err), 'error');
           },
         });
       }

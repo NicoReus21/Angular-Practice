@@ -1,0 +1,56 @@
+<h2 mat-dialog-title class="dialog-title">Checklist de inspeccion</h2>
+
+<mat-dialog-content class="dialog-content">
+  <form [formGroup]="form">
+    <div class="form-row">
+      <mat-form-field class="form-field-half" appearance="outline">
+        <mat-label>Fecha de inspeccion</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="inspectedAt" />
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        @if (form.get('inspectedAt')?.hasError('required')) {
+        <mat-error>Este campo es requerido.</mat-error>
+        }
+      </mat-form-field>
+    </div>
+  </form>
+
+  <mat-divider class="section-divider"></mat-divider>
+  <h3 class="section-title">Categorias</h3>
+
+  <div class="items-grid">
+    @for (item of items(); track item.key) {
+    <div class="inspection-card">
+      <div class="inspection-header">
+        <div class="inspection-title">{{ item.label }}</div>
+      </div>
+      <mat-button-toggle-group
+        class="inspection-toggle"
+        [value]="item.value"
+        (change)="setValue(item, $event.value)"
+      >
+        <mat-button-toggle value="yes">Si</mat-button-toggle>
+        <mat-button-toggle value="no">No</mat-button-toggle>
+        <mat-button-toggle value="na">N/A</mat-button-toggle>
+      </mat-button-toggle-group>
+
+      @if (item.value === 'no') {
+      <mat-form-field appearance="outline" class="comment-field">
+        <mat-label>Comentario requerido</mat-label>
+        <textarea
+          matInput
+          rows="2"
+          [ngModel]="item.comment"
+          (ngModelChange)="setComment(item, $event)"
+        ></textarea>
+      </mat-form-field>
+      }
+    </div>
+    }
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-stroked-button (click)="onCancel()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="onSave()">Guardar</button>
+</mat-dialog-actions>

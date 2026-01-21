@@ -57,6 +57,14 @@
       <mat-divider></mat-divider>
       }
     </mat-list>
+
+    <mat-divider class="sidenav-divider"></mat-divider>
+    <div class="sidenav-section">
+      <h3 class="mat-h3">Categorias</h3>
+      <button mat-stroked-button color="primary" (click)="openCategoriesTab()">
+        Administrar categorias
+      </button>
+    </div>
   </mat-sidenav>
 
   <mat-sidenav-content class="dashboard-content">
@@ -67,7 +75,7 @@
       </button>
       <span>Gestión Bomberos</span>
     </mat-toolbar>
-    } @if (!selectedUnit()) {
+    } @if (!selectedUnit() && selectedTabIndex() !== categoriesTabIndex) {
     <div class="no-selection">
       <mat-icon>directions_car</mat-icon>
       <h3 class="mat-h3">Seleccione una unidad</h3>
@@ -79,6 +87,7 @@
     } @else {
 
     <div class="main-content-area">
+      @if (selectedUnit()) {
       <div class="detail-header">
         <div class="header-info">
           <h1 class="mat-h1">{{ selectedUnit()!.name }}</h1>
@@ -156,19 +165,27 @@
           </div>
         </mat-card-content>
       </mat-card>
+      }
 
-      <mat-tab-group class="detail-tabs" animationDuration="0ms" dynamicHeight>
-        <mat-tab label="Checklist">
+      <mat-tab-group
+        class="detail-tabs"
+        animationDuration="0ms"
+        dynamicHeight
+        [selectedIndex]="selectedTabIndex()"
+        (selectedIndexChange)="selectedTabIndex.set($event)"
+      >
+        <mat-tab label="Incidentes informados" [disabled]="!selectedUnit()">
+          @if (selectedUnit()) {
           <div class="tab-content">
             <div class="tab-header">
-              <h3 class="mat-h3">Checklists Realizados</h3>
+              <h3 class="mat-h3">Incidentes informados</h3>
               <button mat-flat-button color="primary" (click)="openCreateChecklistDialog()">
-                <mat-icon>add</mat-icon> Crear Checklist
+                <mat-icon>add</mat-icon> Registrar incidente
               </button>
             </div>
 
             @if (selectedUnit()!.checklists.length === 0) {
-            <p class="empty-state">No hay checklists creados para esta unidad.</p>
+            <p class="empty-state">No hay incidentes informados para esta unidad.</p>
             } @else {
             <mat-accordion displayMode="flat">
               @for (checklist of selectedUnit()!.checklists; track checklist.id; let i = $index) {
@@ -219,10 +236,62 @@
               }
             </mat-accordion>
             }
+
+            <mat-divider class="form-divider"></mat-divider>
+
+            <div class="tab-header">
+              <h3 class="mat-h3">Checklist de inspeccion</h3>
+              <button mat-flat-button color="primary" (click)="openCreateInspectionChecklistDialog()">
+                <mat-icon>playlist_add_check</mat-icon> Crear inspeccion
+              </button>
+            </div>
+
+            @if (!selectedUnit()!.inspectionChecklists || selectedUnit()!.inspectionChecklists.length === 0) {
+            <p class="empty-state">No hay inspecciones registradas.</p>
+            } @else {
+            <mat-accordion displayMode="flat">
+              @for (inspection of selectedUnit()!.inspectionChecklists; track inspection.id; let i = $index) {
+              <mat-expansion-panel [expanded]="i === 0">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <mat-icon>fact_check</mat-icon>
+                    {{ inspection.inspected_at || 'Sin fecha' }}
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    {{ inspection.items?.length || 0 }} items
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <mat-list>
+                  @for (item of inspection.items; track item.id) {
+                  <mat-list-item class="checklist-item">
+                    <mat-icon matListItemIcon [ngClass]="{
+                      'task-complete': item.value === 'yes',
+                      'task-na': item.value === 'na',
+                      'task-no': item.value === 'no'
+                    }">
+                      {{ item.value === 'yes' ? 'check_circle' : item.value === 'na' ? 'remove_circle' : 'cancel' }}
+                    </mat-icon>
+                    <div matListItemTitle>{{ item.label }}</div>
+                    @if (item.value === 'no' && item.comment) {
+                    <div matListItemLine>Comentario: {{ item.comment }}</div>
+                    }
+                  </mat-list-item>
+                  <mat-divider></mat-divider>
+                  }
+                </mat-list>
+              </mat-expansion-panel>
+              }
+            </mat-accordion>
+            }
           </div>
+          } @else {
+          <p class="empty-state">Selecciona una unidad para ver esta seccion.</p>
+          }
         </mat-tab>
 
-        <mat-tab label="Gastos y Documentos">
+        <mat-tab label="Gastos y Documentos" [disabled]="!selectedUnit()">
+          @if (selectedUnit()) {
           <div class="tab-content">
             <div class="add-document-form">
               <h3 class="mat-h3" style="width: 100%">Añadir Nuevo Gasto</h3>
@@ -384,9 +453,13 @@
             </div>
             }
           </div>
+          } @else {
+          <p class="empty-state">Selecciona una unidad para ver esta seccion.</p>
+          }
         </mat-tab>
 
-        <mat-tab label="Reportes">
+        <mat-tab label="Reportes" [disabled]="!selectedUnit()">
+          @if (selectedUnit()) {
           <div class="tab-content">
             <div class="tab-header">
               <h3 class="mat-h3">Historial</h3>
@@ -523,6 +596,84 @@
               <mat-divider></mat-divider>
               }
             </mat-list>
+            }
+          </div>
+          } @else {
+          <p class="empty-state">Selecciona una unidad para ver esta seccion.</p>
+          }
+        </mat-tab>
+
+        <mat-tab label="Categorias">
+          <div class="tab-content">
+            <div class="tab-header">
+              <h3 class="mat-h3">Categorias de inspeccion</h3>
+            </div>
+
+            <div class="category-form">
+              <mat-form-field appearance="outline" class="category-field">
+                <mat-label>Nombre de categoria</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  [ngModel]="newCategoryLabel()"
+                  (ngModelChange)="newCategoryLabel.set($event)"
+                  placeholder="Ej: Chequeo de luces"
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="category-field category-field-small">
+                <mat-label>Orden</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  min="0"
+                  [ngModel]="newCategorySortOrder()"
+                  (ngModelChange)="newCategorySortOrder.set($event !== '' ? +$event : null)"
+                />
+              </mat-form-field>
+
+              <button
+                mat-flat-button
+                color="primary"
+                class="category-action"
+                (click)="createInspectionCategory()"
+                [disabled]="isSavingCategory()"
+              >
+                @if (isSavingCategory()) {
+                <ng-container><mat-icon>progress_activity</mat-icon> Guardando...</ng-container>
+                } @else {
+                <ng-container><mat-icon>add</mat-icon> Agregar</ng-container>
+                }
+              </button>
+            </div>
+
+            @if (isLoadingCategories()) {
+            <p class="empty-state">Cargando categorias...</p>
+            } @else if (inspectionCategories().length === 0) {
+            <p class="empty-state">No hay categorias registradas.</p>
+            } @else {
+            <div class="category-table">
+              <div class="category-row category-row--header">
+                <span>Nombre</span>
+                <span>Clave</span>
+                <span>Orden</span>
+                <span></span>
+              </div>
+              @for (category of inspectionCategories(); track category.id) {
+              <div class="category-row">
+                <span>{{ category.label }}</span>
+                <span class="category-key">{{ category.key }}</span>
+                <span>{{ category.sort_order || 0 }}</span>
+                <button
+                  mat-icon-button
+                  color="warn"
+                  (click)="deleteInspectionCategory(category, $event)"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+              }
+            </div>
             }
           </div>
         </mat-tab>
