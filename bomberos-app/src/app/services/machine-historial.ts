@@ -3,7 +3,21 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-const API_URL = environment.apiUrl;
+// Helper para asegurar que la URL base sea correcta
+const getBaseUrl = () => {
+  let url = environment.backendUrl || 'http://127.0.0.1:8000/api';
+  // Quitar slash final si existe
+  if (url.endsWith('/')) {
+    url = url.slice(0, -1);
+  }
+  // Agregar /api si falta (Solución al error CORS por 404)
+  if (!url.endsWith('/api')) {
+    url += '/api';
+  }
+  return url;
+};
+
+const API_URL = getBaseUrl();
 
 export interface ApiDocument {
   id: number;
@@ -106,9 +120,11 @@ export interface CarApiResponse {
   documents: ApiDocument[];
   inspection_checklists?: InspectionChecklist[];
   imageUrl: string | null;
-  // Variaciones que puede enviar el backend
+  // Campos que vienen del backend
   image?: string | null;
   image_url?: string | null;
+  manufacturing_year?: number; // Agregado para tipado fuerte
+  chassis_number?: string;     // Agregado para tipado fuerte
 }
 
 export interface CreateCarDto {
@@ -117,6 +133,9 @@ export interface CreateCarDto {
   model: string | null;
   company: string;
   status: 'En Servicio' | 'En Taller' | 'Fuera de Servicio';
+  // CORRECCIÓN: Soportar ambas nomenclaturas para evitar datos perdidos
+  manufacturing_year?: number;
+  chassis_number?: string;
 }
 
 export interface CreateMaintenanceDto {
@@ -157,6 +176,7 @@ export interface CreateChecklistDto {
 export class MachineHistorialService {
 
   private http = inject(HttpClient);
+  // Usa la URL normalizada con /api al final
   private apiUrl = API_URL;
 
   getUnits(): Observable<CarApiResponse[]> {
@@ -186,6 +206,18 @@ export class MachineHistorialService {
     if (data.model) formData.append('model', data.model);
     formData.append('company', data.company);
     formData.append('status', data.status);
+    
+    // CORRECCIÓN ROBUSTA: Buscar valor en snake_case O camelCase
+    // Esto asegura que el dato se envíe sin importar cómo venga del formulario
+    const year = data.manufacturing_year;
+    if (year) {
+      formData.append('manufacturing_year', year.toString());
+    }
+
+    const chassis = data.chassis_number;
+    if (chassis) {
+      formData.append('chassis_number', chassis);
+    }
     
     if (imageFile) {
       formData.append('image', imageFile, imageFile.name);

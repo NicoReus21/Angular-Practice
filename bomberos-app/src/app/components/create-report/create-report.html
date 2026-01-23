@@ -14,6 +14,7 @@
 
   <div mat-dialog-content class="dialog-content">
     <h3 class="section-title">Información de la Unidad</h3>
+    <!-- Fila 1: Modelo, Patente, Compañía -->
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field-third">
         <mat-label>Modelo</mat-label>
@@ -26,6 +27,18 @@
       <mat-form-field appearance="outline" class="form-field-third">
         <mat-label>Compañía</mat-label>
         <input matInput formControlName="company" />
+      </mat-form-field>
+    </div>
+
+    <!-- Fila 2: Año y Chasis (Corregido a snake_case para coincidir con TS) -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field-half">
+        <mat-label>Año Fabricación</mat-label>
+        <input matInput formControlName="manufacturing_year" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field-half">
+        <mat-label>N° Chasis</mat-label>
+        <input matInput formControlName="chassis_number" />
       </mat-form-field>
     </div>
 

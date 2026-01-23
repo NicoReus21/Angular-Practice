@@ -57,7 +57,17 @@ export class CreateReportComponent implements OnInit, AfterViewInit, OnDestroy {
   private backendUrl = environment.backendUrl;
 
   public data: {
-    unit: { id: number; model: string | null; plate: string; company: string; documents?: any[] };
+    unit: { 
+      id: number; 
+      model: string | null; 
+      plate: string; 
+      company: string; 
+      documents?: any[];
+      manufacturing_year?: number; 
+      chassis_number?: string;
+      // Index signature para permitir acceso dinámico
+      [key: string]: any; 
+    };
     editMode?: boolean;
     reportData?: ApiMaintenance;
   } = inject(MAT_DIALOG_DATA);
@@ -87,6 +97,10 @@ export class CreateReportComponent implements OnInit, AfterViewInit, OnDestroy {
       plate: [{ value: '', disabled: true }],
       company: [{ value: '', disabled: true }],
       model: [{ value: '', disabled: true }],
+      // CORRECCIÓN: Usamos snake_case para coincidir con el HTML y resolver el error
+      manufacturing_year: [{ value: '', disabled: true }],
+      chassis_number: [{ value: '', disabled: true }],
+      
       mileage: ['', Validators.required],
       cabin: [''],
       filter_code: [''],
@@ -109,10 +123,15 @@ export class CreateReportComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.data.unit) {
+      const u = this.data.unit;
+
       this.reportForm.patchValue({
-        model: this.data.unit.model,
-        plate: this.data.unit.plate,
-        company: this.data.unit.company,
+        model: u.model,
+        plate: u.plate,
+        company: u.company,
+        // Asignamos a los controles en snake_case
+        manufacturing_year: u.manufacturing_year,
+        chassis_number: u.chassis_number,
       });
     }
 
@@ -358,9 +377,12 @@ export class CreateReportComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
 
+    // Remover campos de solo lectura antes de enviar
     delete formData.model;
     delete formData.plate;
     delete formData.company;
+    delete formData.manufacturing_year; // Nombre actualizado a snake_case
+    delete formData.chassis_number;     // Nombre actualizado a snake_case
 
     this.dialogRef.close({
       formData: { ...formData, status },

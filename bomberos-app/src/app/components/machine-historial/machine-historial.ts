@@ -12,6 +12,7 @@ import { CommonModule, CurrencyPipe } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
+// Material Imports
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
@@ -33,15 +34,17 @@ import { MatMenuModule } from '@angular/material/menu';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
+import { MatProgressBarModule } from '@angular/material/progress-bar'; // <--- IMPORTACIÓN NUEVA
 
+// Third Party
 import Swal from 'sweetalert2';
 import { environment } from '../../../environments/environment';
 
+// Local Services & Components
 import {
   MachineHistorialService,
   CarApiResponse,
   CreateChecklistDto,
-  CreateCarDto,
   ApiDocument,
   ApiMaintenance,
   ChecklistGroup,
@@ -54,6 +57,7 @@ import { CreateReportComponent } from '../create-report/create-report';
 import { CreateChecklistComponent } from '../create-checklist/create-checklist';
 import { CreateInspectionChecklistComponent } from '../create-inspection-checklist/create-inspection-checklist';
 
+// Interfaces
 export interface MaintenanceLog {
   id: number;
   date: string;
@@ -85,6 +89,10 @@ export interface VehicleUnit {
   plate: string;
   company: string;
   imageUrl: string | null;
+  // Campos nuevos
+  manufacturing_year?: number;
+  chassis_number?: string;
+  
   checklists: ChecklistGroup[];
   inspectionChecklists: InspectionChecklist[];
   documents: AttachedDocument[];
@@ -119,6 +127,7 @@ export interface VehicleUnit {
     MatMenuModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatProgressBarModule, // <--- MODULO AGREGADO
   ],
   templateUrl: './machine-historial.html',
   styleUrls: ['./machine-historial.scss'],
@@ -137,16 +146,17 @@ export class MachineHistorialComponent implements OnInit {
   selectedUnitId = signal<number | null>(null);
   currentStatusFilter = signal<'Todos' | 'En Servicio' | 'En Taller' | 'Fuera de Servicio'>('Todos');
 
-  // SeÃ±ales para el filtro de rango de fechas
+  // Filtro de fechas
   documentsDateStart = signal<Date | null>(null);
   documentsDateEnd = signal<Date | null>(null);
 
-  // SeÃ±ales para nuevo documento
+  // Nuevo documento
   newDocumentName = signal<string>('');
   newDocumentCost = signal<number | null>(null);
   newDocumentFile = signal<File | null>(null);
   isUploading = signal(false);
 
+  // Vendor Link
   vendorEmail = signal<string>('');
   vendorName = signal<string>('');
   vendorExpiresDays = signal<number>(7);
@@ -155,11 +165,13 @@ export class MachineHistorialComponent implements OnInit {
   vendorLinkError = signal<string | null>(null);
   isCreatingVendorLink = signal(false);
 
+  // UI State
   isMobile = signal<boolean>(false);
   sidenavOpened = signal<boolean>(true);
   selectedTabIndex = signal<number>(0);
   readonly categoriesTabIndex = 3;
 
+  // Categorias
   inspectionCategories = signal<InspectionCategory[]>([]);
   newCategoryLabel = signal<string>('');
   newCategorySortOrder = signal<number | null>(null);
@@ -168,6 +180,23 @@ export class MachineHistorialComponent implements OnInit {
 
   private backendUrl = environment.backendUrl;
 
+  // --- COMPUTEDS (Estadísticas y Filtros) ---
+
+  // 1. Estadísticas Generales (NUEVO)
+  totalUnitsCount = computed(() => this.allUnits().length);
+
+  serviceUnitsCount = computed(() => 
+    this.allUnits().filter(u => u.status === 'En Servicio').length
+  );
+
+  availabilityPercentage = computed(() => {
+    const total = this.totalUnitsCount();
+    const service = this.serviceUnitsCount();
+    if (total === 0) return 0;
+    return Math.round((service / total) * 100);
+  });
+
+  // 2. Filtros de Unidades
   filteredUnits = computed(() => {
     const status = this.currentStatusFilter();
     if (status === 'Todos') return this.allUnits();
@@ -191,7 +220,6 @@ export class MachineHistorialComponent implements OnInit {
     return unit.documents.filter((doc) => {
       const docDate = new Date(doc.created_at_raw);
       const docTime = docDate.getTime();
-
       let isValid = true;
       
       if (start) {
@@ -223,6 +251,8 @@ export class MachineHistorialComponent implements OnInit {
     });
   }
 
+  // --- Actions ---
+
   toggleSidenav(): void {
     this.sidenavOpened.update((v) => !v);
   }
@@ -237,14 +267,8 @@ export class MachineHistorialComponent implements OnInit {
   onSelectUnit(id: number) {
     this.selectedUnitId.set(id);
     this.selectedTabIndex.set(0);
-    this.documentsDateStart.set(null);
-    this.documentsDateEnd.set(null);
-    this.vendorEmail.set('');
-    this.vendorName.set('');
-    this.vendorExpiresDays.set(7);
-    this.vendorLink.set(null);
-    this.vendorLinkExpiresAt.set(null);
-    this.vendorLinkError.set(null);
+    this.clearDateFilterData();
+    this.clearVendorLinkData();
     
     if (this.isMobile()) {
       this.sidenavOpened.set(false);
@@ -257,8 +281,21 @@ export class MachineHistorialComponent implements OnInit {
 
   clearDateFilter(event: Event) {
     event.stopPropagation();
+    this.clearDateFilterData();
+  }
+
+  private clearDateFilterData() {
     this.documentsDateStart.set(null);
     this.documentsDateEnd.set(null);
+  }
+
+  private clearVendorLinkData() {
+    this.vendorEmail.set('');
+    this.vendorName.set('');
+    this.vendorExpiresDays.set(7);
+    this.vendorLink.set(null);
+    this.vendorLinkExpiresAt.set(null);
+    this.vendorLinkError.set(null);
   }
 
   getStatusChipClass(status: string): string {
@@ -306,70 +343,14 @@ export class MachineHistorialComponent implements OnInit {
     });
   }
 
-  onEditUnit(): void {
-    const unit = this.selectedUnit();
-    if (!unit) return;
-
-    const isMobile = this.isMobile();
-    const dialogRef = this.dialog.open(CreateFiretruckComponent, {
-      width: isMobile ? '95vw' : '600px',
-      maxWidth: '100vw',
-      maxHeight: '95vh',
-      autoFocus: false,
-      data: { unit: unit }
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result && result.formData && result.id) {
-        this.vehicleService.updateUnit(result.id, result.formData, result.imageFile).subscribe({
-          next: (updatedCar) => {
-            this.allUnits.update((units) => 
-              units.map(u => u.id === updatedCar.id ? this.mapApiCarToVehicleUnit(updatedCar) : u)
-            );
-            this.snackBar.open('Unidad actualizada correctamente', 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
-          },
-          error: (err) => {
-            this.snackBar.open(`Error al actualizar: ${this.getFirstErrorMessage(err)}`, 'Cerrar', { duration: 5000, panelClass: 'error-snackbar' });
-          }
-        });
-      }
-    });
-  }
-
-  onDeleteUnit(): void {
-    const unit = this.selectedUnit();
-    if (!unit) return;
-
-    Swal.fire({
-      title: `¿Eliminar ${unit.name}?`,
-      text: 'Se eliminará la unidad y todo su historial. Esta acción no se puede deshacer.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.vehicleService.deleteUnit(unit.id).subscribe({
-          next: () => {
-            this.allUnits.update(units => units.filter(u => u.id !== unit.id));
-            this.selectedUnitId.set(null);
-            Swal.fire('Eliminado', 'La unidad ha sido eliminada.', 'success');
-          },
-          error: (err) => {
-            Swal.fire('Error', 'No se pudo eliminar la unidad.', 'error');
-            console.error(err);
-          }
-        });
-      }
-    });
-  }
+  // --- Mapeo de datos ---
 
   private mapApiCarToVehicleUnit(car: CarApiResponse): VehicleUnit {
     const rawUrl = this.mapApiUrl(
       (car as any).imageUrl || (car as any).image_url || (car as any).image
     );
     const imageUrl = rawUrl ? `${rawUrl}?t=${new Date().getTime()}` : null;
+
 
     return {
       id: car.id,
@@ -378,6 +359,8 @@ export class MachineHistorialComponent implements OnInit {
       model: car.model,
       plate: car.plate,
       company: car.company,
+      manufacturing_year: car.manufacturing_year,
+      chassis_number: car.chassis_number,
       imageUrl: imageUrl, 
       checklists: (car.checklists || []).map((cl) => ({
         id: cl.id,
@@ -400,7 +383,7 @@ export class MachineHistorialComponent implements OnInit {
         id: m.id,
         date: new Date(m.service_date).toLocaleDateString('es-CL'),
         technician: m.inspector_name || 'Borrador',
-        description: m.reported_problem || 'Sin descripciÃ³n',
+        description: m.reported_problem || 'Sin descripción',
         service_type: m.service_type || 'Borrador',
         pdf_url: this.mapApiUrl(m.pdf_url),
         status: m.status,
@@ -412,7 +395,6 @@ export class MachineHistorialComponent implements OnInit {
   private mapApiDocumentToLocal(doc: ApiDocument): AttachedDocument {
     const dateSource = (doc as any).date || doc.created_at;
     const dateObj = new Date(dateSource);
-
     return {
       id: doc.id,
       name: doc.file_name,
@@ -430,20 +412,14 @@ export class MachineHistorialComponent implements OnInit {
     if (!url) return null;
     if (url.startsWith('http')) return this.normalizeBackendUrl(url);
     if (url.startsWith('/')) return `${this.backendUrl}${url}`;
-    // Si viene sin slash inicial (ej: "storage/..."), se asume relativo al backend.
     return `${this.backendUrl}/${url}`;
   }
 
   private normalizeBackendUrl(url: string): string {
-    // Reemplaza host/puerto localhost por el backend configurado
     try {
       const backend = new URL(this.backendUrl);
       const current = new URL(url, this.backendUrl);
-
-      const isLocalHost =
-        current.hostname === 'localhost' ||
-        current.hostname === '127.0.0.1';
-
+      const isLocalHost = current.hostname === 'localhost' || current.hostname === '127.0.0.1';
       if (isLocalHost) {
         current.hostname = backend.hostname;
         current.protocol = backend.protocol;
@@ -460,17 +436,14 @@ export class MachineHistorialComponent implements OnInit {
     if (err.error?.errors) {
       try {
         const allErrorArrays = Object.values(err.error.errors) as string[][];
-        if (allErrorArrays.length > 0 && allErrorArrays[0].length > 0) {
-          return allErrorArrays[0][0];
-        }
-      } catch (e) {
-        console.error('Error al parsear validaciÃ³n:', e);
-      }
+        if (allErrorArrays.length > 0 && allErrorArrays[0].length > 0) return allErrorArrays[0][0];
+      } catch (e) { console.error(e); }
     }
     return err.message || defaultMsg;
   }
 
-  
+  // --- Checklists & Inspections ---
+
   onChecklistItemToggle(checklistGroupId: number, taskId: number): void {
     this.allUnits.update((units) => {
       return units.map((unit) => {
@@ -482,9 +455,7 @@ export class MachineHistorialComponent implements OnInit {
                 return {
                   ...cl,
                   items: cl.items.map((item) => {
-                    if (item.id === taskId) {
-                      return { ...item, completed: !item.completed };
-                    }
+                    if (item.id === taskId) return { ...item, completed: !item.completed };
                     return item;
                   }),
                 };
@@ -496,10 +467,8 @@ export class MachineHistorialComponent implements OnInit {
         return unit;
       });
     });
-
     this.vehicleService.toggleChecklistItem(taskId).subscribe({
       error: (err) => {
-        console.error('Error al guardar toggle:', err);
         this.snackBar.open('Error al guardar estado. Revertiendo...', 'Cerrar', { duration: 3000 });
         this.loadUnits();
       },
@@ -510,7 +479,6 @@ export class MachineHistorialComponent implements OnInit {
     const unit = this.selectedUnit();
     if (!unit) return;
     const isMobile = this.isMobile();
-
     const dialogRef = this.dialog.open(CreateChecklistComponent, {
       width: isMobile ? '95vw' : '600px',
       maxWidth: '100vw',
@@ -518,26 +486,21 @@ export class MachineHistorialComponent implements OnInit {
       autoFocus: false,
       panelClass: 'custom-dialog-container'
     });
-
     dialogRef.afterClosed().subscribe((result) => {
       if (result?.formData && result?.tasks?.length > 0) {
         const dto: CreateChecklistDto = {
           persona_cargo: result.formData.personaCargo,
-          fecha_realizacion:
-            result.formData.fechaRealizacion instanceof Date
+          fecha_realizacion: result.formData.fechaRealizacion instanceof Date
               ? result.formData.fechaRealizacion.toISOString().split('T')[0]
               : result.formData.fechaRealizacion,
           tasks: result.tasks.map((t: any) => t.task),
         };
-
         this.vehicleService.createChecklist(unit.id, dto).subscribe({
           next: () => {
             this.loadUnits();
             this.snackBar.open('Checklist creado', 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
           },
-          error: (err) => {
-            this.snackBar.open(`Error: ${this.getFirstErrorMessage(err)}`, 'Cerrar', { duration: 5000, panelClass: 'error-snackbar' });
-          },
+          error: (err) => this.snackBar.open(`Error: ${this.getFirstErrorMessage(err)}`, 'Cerrar', { duration: 5000, panelClass: 'error-snackbar' }),
         });
       }
     });
@@ -547,32 +510,26 @@ export class MachineHistorialComponent implements OnInit {
     const unit = this.selectedUnit();
     if (!unit) return;
     const isMobile = this.isMobile();
-
     const dialogRef = this.dialog.open(CreateInspectionChecklistComponent, {
       width: isMobile ? '95vw' : '900px',
       maxWidth: '100vw',
       maxHeight: '95vh',
       autoFocus: false,
     });
-
     dialogRef.afterClosed().subscribe((result) => {
       if (result?.formData && result?.items?.length > 0) {
         const dto = {
-          inspected_at:
-            result.formData.inspectedAt instanceof Date
+          inspected_at: result.formData.inspectedAt instanceof Date
               ? result.formData.inspectedAt.toISOString().split('T')[0]
               : result.formData.inspectedAt,
           items: result.items,
         };
-
         this.vehicleService.createInspectionChecklist(unit.id, dto).subscribe({
           next: () => {
             this.loadUnits();
             this.snackBar.open('Checklist de inspeccion creado', 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
           },
-          error: (err) => {
-            this.snackBar.open(`Error: ${this.getFirstErrorMessage(err)}`, 'Cerrar', { duration: 5000, panelClass: 'error-snackbar' });
-          },
+          error: (err) => this.snackBar.open(`Error: ${this.getFirstErrorMessage(err)}`, 'Cerrar', { duration: 5000, panelClass: 'error-snackbar' }),
         });
       }
     });
@@ -601,12 +558,8 @@ export class MachineHistorialComponent implements OnInit {
       this.snackBar.open('Ingresa un nombre de categoria.', 'Cerrar', { duration: 3000, panelClass: 'error-snackbar' });
       return;
     }
-
     this.isSavingCategory.set(true);
-    this.vehicleService.createInspectionCategory({
-      label,
-      sort_order: sortOrder ?? undefined,
-    }).subscribe({
+    this.vehicleService.createInspectionCategory({ label, sort_order: sortOrder ?? undefined }).subscribe({
       next: (category) => {
         this.inspectionCategories.update((list) => [...list, category].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0)));
         this.newCategoryLabel.set('');
@@ -638,9 +591,7 @@ export class MachineHistorialComponent implements OnInit {
             this.inspectionCategories.update((list) => list.filter((c) => c.id !== category.id));
             Swal.fire('Eliminado', 'Categoria eliminada.', 'success');
           },
-          error: (err) => {
-            Swal.fire('Error', this.getFirstErrorMessage(err), 'error');
-          },
+          error: (err) => Swal.fire('Error', this.getFirstErrorMessage(err), 'error'),
         });
       }
     });
@@ -652,18 +603,14 @@ export class MachineHistorialComponent implements OnInit {
     if (!unit) return;
     const currentChecklist = unit.checklists.find((c) => c.id === checklistId);
     if (!currentChecklist) return;
-
     const dialogRef = this.dialog.open(CreateChecklistComponent, {
       width: '600px',
       autoFocus: false,
       data: { editMode: true, checklist: currentChecklist },
     });
-
     dialogRef.afterClosed().subscribe((result) => {
       if (result?.formData && result?.tasks?.length > 0) {
-        this.vehicleService
-          .updateChecklist(checklistId, {} as any)
-          .subscribe({ next: () => this.loadUnits() });
+        this.vehicleService.updateChecklist(checklistId, {} as any).subscribe({ next: () => this.loadUnits() });
       }
     });
   }
@@ -690,11 +637,12 @@ export class MachineHistorialComponent implements OnInit {
     });
   }
 
+  // --- Reports ---
+
   openCreateReportDialog(): void {
     const unit = this.selectedUnit();
     if (!unit) return;
     const isMobile = this.isMobile();
-
     const dialogRef = this.dialog.open(CreateReportComponent, {
       width: isMobile ? '95vw' : '800px',
       maxWidth: '100vw',
@@ -702,7 +650,6 @@ export class MachineHistorialComponent implements OnInit {
       autoFocus: false,
       data: { unit: { ...unit } },
     });
-
     this.handleReportDialogClose(dialogRef, unit.id, 'create');
   }
 
@@ -717,12 +664,7 @@ export class MachineHistorialComponent implements OnInit {
     this.handleReportDialogClose(dialogRef, unit.id, 'update', report.id);
   }
 
-  private handleReportDialogClose(
-    dialogRef: any,
-    unitId: number,
-    mode: 'create' | 'update',
-    reportId?: number
-  ) {
+  private handleReportDialogClose(dialogRef: any, unitId: number, mode: 'create' | 'update', reportId?: number) {
     dialogRef.afterClosed().subscribe((result: { formData: any; files: File[] }) => {
       if (result && result.formData) {
         const formData = new FormData();
@@ -731,14 +673,10 @@ export class MachineHistorialComponent implements OnInit {
           dto.service_date = dto.service_date.toISOString().split('T')[0];
         }
         Object.keys(dto).forEach((key) => {
-          if (dto[key] !== null && dto[key] !== undefined) {
-            formData.append(key, dto[key]);
-          }
+          if (dto[key] !== null && dto[key] !== undefined) formData.append(key, dto[key]);
         });
         if (result.files && result.files.length > 0) {
-          result.files.forEach((file) => {
-            formData.append('attachments[]', file);
-          });
+          result.files.forEach((file) => formData.append('attachments[]', file));
         }
 
         let action$;
@@ -781,9 +719,7 @@ export class MachineHistorialComponent implements OnInit {
             this.loadUnits();
             Swal.fire('Eliminado', 'El reporte ha sido eliminado.', 'success');
           },
-          error: () => {
-            Swal.fire('Error', 'No se pudo eliminar el reporte.', 'error');
-          },
+          error: () => Swal.fire('Error', 'No se pudo eliminar el reporte.', 'error'),
         });
       }
     });
@@ -797,18 +733,17 @@ export class MachineHistorialComponent implements OnInit {
         window.open(blobUrl, '_blank');
         setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
       },
-      error: () => {
-        this.snackBar.open('No se pudo descargar el reporte.', 'Cerrar', { duration: 4000, panelClass: 'error-snackbar' });
-      },
+      error: () => this.snackBar.open('No se pudo descargar el reporte.', 'Cerrar', { duration: 4000, panelClass: 'error-snackbar' }),
     });
   }
+
+  // --- Documents & Units ---
 
   onAddDocument(): void {
     const cost = this.newDocumentCost();
     const file = this.newDocumentFile();
     const unitId = this.selectedUnitId();
     if (!unitId || cost === null || cost < 0 || !file) return;
-
     this.isUploading.set(true);
     this.uploadAndAddDocument(unitId, cost, file);
     this.clearFileSelection();
@@ -845,7 +780,6 @@ export class MachineHistorialComponent implements OnInit {
         return unit;
       });
     });
-
     this.vehicleService.toggleDocumentPayment(docId).subscribe({
       next: (updatedDoc) => {
         const statusMsg = updatedDoc.is_paid ? 'marcado como pagado' : 'marcado como pendiente';
@@ -876,6 +810,34 @@ export class MachineHistorialComponent implements OnInit {
     }
   }
 
+  onEditUnit(): void {
+    const unit = this.selectedUnit();
+    if (!unit) return;
+    const isMobile = this.isMobile();
+    const dialogRef = this.dialog.open(CreateFiretruckComponent, {
+      width: isMobile ? '95vw' : '600px',
+      maxWidth: '100vw',
+      maxHeight: '95vh',
+      autoFocus: false,
+      data: { unit: unit }
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result && result.formData && result.id) {
+        this.vehicleService.updateUnit(result.id, result.formData, result.imageFile).subscribe({
+          next: (updatedCar) => {
+            this.allUnits.update((units) => 
+              units.map(u => u.id === updatedCar.id ? this.mapApiCarToVehicleUnit(updatedCar) : u)
+            );
+            this.snackBar.open('Unidad actualizada correctamente', 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
+          },
+          error: (err) => {
+            this.snackBar.open(`Error al actualizar: ${this.getFirstErrorMessage(err)}`, 'Cerrar', { duration: 5000, panelClass: 'error-snackbar' });
+          }
+        });
+      }
+    });
+  }
+
   openCreateUnitDialog(): void {
     const isMobile = this.isMobile();
     const dialogRef = this.dialog.open(CreateFiretruckComponent, {
@@ -884,7 +846,6 @@ export class MachineHistorialComponent implements OnInit {
       maxHeight: '95vh',
       autoFocus: false,
     });
-
     dialogRef.afterClosed().subscribe((result) => {
       if (result && result.formData && !result.id) {
         this.vehicleService.createUnit(result.formData, result.imageFile).subscribe({
@@ -898,12 +859,39 @@ export class MachineHistorialComponent implements OnInit {
     });
   }
 
+  onDeleteUnit(): void {
+    const unit = this.selectedUnit();
+    if (!unit) return;
+    Swal.fire({
+      title: `¿Eliminar ${unit.name}?`,
+      text: 'Se eliminará la unidad y todo su historial. Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.vehicleService.deleteUnit(unit.id).subscribe({
+          next: () => {
+            this.allUnits.update(units => units.filter(u => u.id !== unit.id));
+            this.selectedUnitId.set(null);
+            Swal.fire('Eliminado', 'La unidad ha sido eliminada.', 'success');
+          },
+          error: (err) => {
+            Swal.fire('Error', 'No se pudo eliminar la unidad.', 'error');
+            console.error(err);
+          }
+        });
+      }
+    });
+  }
+
   createVendorReportLink(): void {
     const unit = this.selectedUnit();
     const email = this.vendorEmail().trim();
     const expiresInDays = this.vendorExpiresDays();
     const name = this.vendorName().trim();
-
     if (!unit) return;
     if (!email || !email.includes('@')) {
       this.snackBar.open('Ingresa un correo valido.', 'Cerrar', { duration: 4000, panelClass: 'error-snackbar' });
@@ -913,44 +901,38 @@ export class MachineHistorialComponent implements OnInit {
       this.snackBar.open('Los dias de expiracion deben ser mayor a 0.', 'Cerrar', { duration: 4000, panelClass: 'error-snackbar' });
       return;
     }
-
     this.isCreatingVendorLink.set(true);
     this.vendorLinkError.set(null);
-
-    this.vehicleService
-      .createVendorReportLink({
-        email,
-        name: name || null,
-        car_id: unit.id,
-        expires_in_days: expiresInDays,
-      })
-      .subscribe({
-        next: (response) => {
-          this.vendorLink.set(response.url);
-          this.vendorLinkExpiresAt.set(response.expires_at);
-          this.isCreatingVendorLink.set(false);
-          this.snackBar.open('Link generado y enviado al proveedor.', 'Cerrar', { duration: 4000, panelClass: 'success-snackbar' });
-        },
-        error: (err) => {
-          this.isCreatingVendorLink.set(false);
-          const message = this.getFirstErrorMessage(err, 'No se pudo generar el link.');
-          this.vendorLinkError.set(message);
-          this.snackBar.open(message, 'Cerrar', { duration: 5000, panelClass: 'error-snackbar' });
-        },
-      });
+    this.vehicleService.createVendorReportLink({
+      email,
+      name: name || null,
+      car_id: unit.id,
+      expires_in_days: expiresInDays,
+    }).subscribe({
+      next: (response) => {
+        this.vendorLink.set(response.url);
+        this.vendorLinkExpiresAt.set(response.expires_at);
+        this.isCreatingVendorLink.set(false);
+        this.snackBar.open('Link generado y enviado al proveedor.', 'Cerrar', { duration: 4000, panelClass: 'success-snackbar' });
+      },
+      error: (err) => {
+        this.isCreatingVendorLink.set(false);
+        const message = this.getFirstErrorMessage(err, 'No se pudo generar el link.');
+        this.vendorLinkError.set(message);
+        this.snackBar.open(message, 'Cerrar', { duration: 5000, panelClass: 'error-snackbar' });
+      },
+    });
   }
 
   copyVendorLink(): void {
     const link = this.vendorLink();
     if (!link) return;
-
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard.writeText(link).then(() => {
         this.snackBar.open('Link copiado.', 'Cerrar', { duration: 3000, panelClass: 'success-snackbar' });
       });
       return;
     }
-
     this.snackBar.open('No se pudo copiar el link.', 'Cerrar', { duration: 3000, panelClass: 'error-snackbar' });
   }
 }

@@ -30,6 +30,61 @@
   h2 { margin: 0; font-weight: 500; }
 }
 
+/* =========================================
+   NUEVO: ESTILOS PARA ESTADÍSTICAS
+   ========================================= */
+.stats-summary {
+  margin: 16px 16px 8px 16px;
+  padding: 16px;
+  background-color: #f5f7fa;
+  border: 1px solid #e3e8ee;
+  border-radius: 8px;
+
+  .stats-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .stats-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #546e7a;
+  }
+
+  .stats-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2ecc71; // Verde por defecto
+
+    &.text-warn {
+      color: #e74c3c; // Rojo si es bajo (< 50%)
+    }
+  }
+
+  .stats-progress {
+    height: 6px;
+    border-radius: 3px;
+    margin-bottom: 8px;
+  }
+
+  .stats-detail {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-size: 12px;
+    color: #78909c;
+    
+    .tiny-icon {
+      font-size: 14px;
+      height: 14px;
+      width: 14px;
+      margin-right: 4px;
+    }
+  }
+}
+
 /* Filtros de estado */
 .status-filter {
   display: flex;
@@ -48,10 +103,10 @@
 }
 
 /* =========================================
-   LISTA DE UNIDADES (CORREGIDO)
+   LISTA DE UNIDADES
    ========================================= */
 .unit-list {
-  height: calc(100% - 140px);
+  height: calc(100% - 240px); /* Ajustado para dar espacio al widget de estadisticas */
   overflow-y: auto;
   padding-top: 8px;
 
@@ -62,7 +117,7 @@
   /* Item de la lista personalizado */
   .unit-item-custom {
     cursor: pointer;
-    height: auto !important; /* CRÍTICO: Permite altura variable */
+    height: auto !important;
     min-height: 75px;        
     padding-top: 8px;
     padding-bottom: 8px;

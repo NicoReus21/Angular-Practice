@@ -14,6 +14,7 @@
   </div>
 
   <div mat-dialog-content class="dialog-content">
+    <!-- Nombre de la Unidad -->
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Nombre de la Unidad (Ej: B6)</mat-label>
       <input matInput formControlName="name" cdkFocusInitial />
@@ -22,6 +23,7 @@
       }
     </mat-form-field>
 
+    <!-- Fila 1: Patente y Modelo -->
     <div class="form-row">
       <mat-form-field appearance="outline" class="form-field-half">
         <mat-label>Patente (Ej: KD-VV-46)</mat-label>
@@ -37,6 +39,21 @@
       </mat-form-field>
     </div>
 
+    <!-- Fila 2: Año y Chasis (CORREGIDO a snake_case) -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="form-field-half">
+        <mat-label>Año de Fabricación</mat-label>
+        <!-- type="number" ayuda a que el input sea numérico -->
+        <input matInput type="number" formControlName="manufacturing_year" placeholder="Ej: 2018" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="form-field-half">
+        <mat-label>Número de Chasis</mat-label>
+        <input matInput formControlName="chassis_number" />
+      </mat-form-field>
+    </div>
+
+    <!-- Compañía -->
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Compañía (Ej: 6ta-10ma)</mat-label>
       <input matInput formControlName="company" />
@@ -45,6 +62,7 @@
       }
     </mat-form-field>
 
+    <!-- Estado -->
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Estado Inicial</mat-label>
       <mat-select formControlName="status">
@@ -63,6 +81,7 @@
       </mat-select>
     </mat-form-field>
 
+    <!-- Sección de Imagen -->
     <div class="image-upload-section">
       @if (currentImageUrl() && !selectedImageName()) {
         <div class="current-image-preview">
