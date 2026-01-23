@@ -51,6 +51,8 @@ class CarController extends Controller
             'company_id' => 'nullable|exists:companies,id',
             'status'  => 'required|string|max:255',
             'image'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', 
+            'manufacturing_year' => 'nullable|integer',
+            'chassis_number' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -108,6 +110,8 @@ class CarController extends Controller
             'company_id' => 'nullable|exists:companies,id',
             'status'   => 'sometimes|required|string|max:255',
             'image'    => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'manufacturing_year' => 'nullable|integer',
+            'chassis_number' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {

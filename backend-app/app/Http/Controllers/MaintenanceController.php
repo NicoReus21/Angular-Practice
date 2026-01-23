@@ -55,6 +55,7 @@ class MaintenanceController extends Controller
             'car_info_annex'    => 'nullable|string',
             'inspector_signature' => 'nullable|string',
             'officer_signature'   => 'nullable|string',
+            'manufacturing_year'    => 'nullable|integer',
         ];
 
         if ($status === 'completed') {

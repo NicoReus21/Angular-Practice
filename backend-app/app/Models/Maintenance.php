@@ -34,7 +34,8 @@ class Maintenance extends Model
         'inspector_signature',
         'officer_signature',
         'status',
-        'pdf_url'
+        'pdf_url',
+        'manufacturing_year',
     ];
 
     public function car()

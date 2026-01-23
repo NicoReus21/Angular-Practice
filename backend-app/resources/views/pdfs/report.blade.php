@@ -81,7 +81,10 @@
             <div class="section-title">Detalles de la Unidad</div>
             <div class="field"><label>Kilometraje:</label> <span>{{ $maintenance->mileage }} km</span></div>
             <div class="field"><label>Horómetro:</label> <span>{{ $maintenance->hourmeter ?? 'N/A' }}</span></div>
-            <div class="field"><label>N° Chasis:</label> <span>{{ $maintenance->chassis_number ?? 'N/A' }}</span></div>
+            
+            <!-- CORRECCIÓN: Accedemos a los datos a través de la relación 'car' -->
+            <div class="field"><label>N° Chasis:</label> <span>{{ $maintenance->car->chassis_number ?? 'N/A' }}</span></div>
+            <div class="field"><label>Año de Fabricación:</label> <span>{{ $maintenance->car->manufacturing_year ?? 'N/A' }}</span></div>
         </div>
 
         <div class="section">

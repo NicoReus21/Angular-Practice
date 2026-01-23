@@ -28,6 +28,7 @@ class Car extends Model
         'cabin',
         'mileage',
         'hourmeter',
+        'manufacturing_year',
     ];
 
     /**

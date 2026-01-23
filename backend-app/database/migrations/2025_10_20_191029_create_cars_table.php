@@ -24,7 +24,9 @@ return new class extends Migration
             $table->string('cabin')->nullable(); 
             $table->integer('mileage')->nullable();
             $table->integer('hourmeter')->nullable();
-            
+            $table->unsignedBigInteger('company_id')->nullable(); 
+            $table->string('imageUrl')->nullable(); 
+            $table->integer('manufacturing_year')->nullable();
             $table->timestamps();
         });
     }
