@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('vendor_report_links', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            
             $table->foreignId('vendor_id')->constrained('vendors')->onDelete('cascade');
-            $table->foreignId('car_id')->constrained('cars')->onDelete('cascade');
+            $table->foreignId('car_id')->constrained('cars')->onDelete('cascade'); 
             $table->string('token', 64)->unique();
-            $table->timestamp('expires_at');
+            $table->timestamp('expires_at')->nullable();
             $table->timestamp('used_at')->nullable();
             $table->foreignId('maintenance_id')->nullable()->constrained('maintenances')->nullOnDelete();
             $table->foreignId('created_by_user_id')->nullable()->constrained('users')->nullOnDelete();
