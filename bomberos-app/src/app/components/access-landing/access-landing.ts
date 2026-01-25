@@ -9,7 +9,7 @@ import { AuthService } from '../../services/auth-service';
 @Component({
   selector: 'app-access-landing',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatButtonModule, MatCardModule, MatIconModule],
+  imports: [CommonModule, MatButtonModule, MatCardModule, MatIconModule],
   templateUrl: './access-landing.html',
   styleUrl: './access-landing.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
