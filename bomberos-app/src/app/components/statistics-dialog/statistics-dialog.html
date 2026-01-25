@@ -1,0 +1,84 @@
+<h2 mat-dialog-title>Resumen Operativo y Financiero</h2>
+
+<mat-dialog-content class="stats-content">
+  <div class="stat-section">
+    <div class="section-header">
+      <div class="header-left">
+        <mat-icon class="section-icon icon-green">local_shipping</mat-icon>
+        <span class="section-title">Disponibilidad de Flota</span>
+      </div>
+      <span class="highlight-value" [class.warn-text]="availabilityPercentage() < 50">
+        {{ availabilityPercentage() }}%
+      </span>
+    </div>
+
+    <mat-progress-bar
+      mode="determinate"
+      class="custom-progress"
+      [value]="availabilityPercentage()"
+      [color]="availabilityPercentage() < 50 ? 'warn' : 'primary'"
+    >
+    </mat-progress-bar>
+
+    <div class="stat-details">
+      <span>{{ serviceUnitsCount() }} unidades en servicio</span>
+      <span class="separator">•</span>
+      <span>{{ totalUnitsCount() }} total flota</span>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="stat-section budget-section">
+    <div class="section-header">
+      <div class="header-left">
+        <mat-icon class="section-icon icon-gold">account_balance_wallet</mat-icon>
+        <span class="section-title">Presupuesto {{ globalBudgetMetrics().year }}</span>
+      </div>
+      <button mat-icon-button (click)="openEditBudgetDialog()" matTooltip="Editar Presupuesto">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </div>
+
+    <div class="budget-big-numbers">
+      <div class="number-group">
+        <span class="label">Gastado</span>
+        <span class="value spent">{{
+          globalBudgetMetrics().totalSpent | currency: 'CLP' : 'symbol-narrow' : '1.0-0'
+        }}</span>
+      </div>
+      <div class="number-group right">
+        <span class="label">Total</span>
+        <span class="value total">{{
+          globalBudgetMetrics().budget | currency: 'CLP' : 'symbol-narrow' : '1.0-0'
+        }}</span>
+      </div>
+    </div>
+
+    <mat-progress-bar
+      mode="determinate"
+      class="custom-progress"
+      [value]="globalBudgetMetrics().percentageUsed"
+      [color]="globalBudgetMetrics().percentageUsed > 90 ? 'warn' : 'accent'"
+    >
+    </mat-progress-bar>
+
+    <div class="budget-footer">
+      @if (globalBudgetMetrics().isOverBudget) {
+        <span class="alert-badge">
+          <mat-icon>warning</mat-icon> Excedido por
+          {{ globalBudgetMetrics().remaining * -1 | currency: 'CLP' : 'symbol-narrow' : '1.0-0' }}
+        </span>
+      } @else {
+        <span class="ok-badge">
+          Disponible:
+          {{ globalBudgetMetrics().remaining | currency: 'CLP' : 'symbol-narrow' : '1.0-0' }}
+        </span>
+      }
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cerrar</button>
+</mat-dialog-actions>
