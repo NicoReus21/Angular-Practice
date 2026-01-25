@@ -45,6 +45,7 @@ use App\Http\Controllers\VendorReportLinkController;
 use App\Http\Controllers\MaintenanceDocumentController;
 use App\Http\Controllers\InspectionChecklistController;
 use App\Http\Controllers\InspectionCategoryController;
+use App\Http\Controllers\AnnualBudgetController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
@@ -302,4 +303,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/maintenance-documents/{document}/download', [MaintenanceDocumentController::class, 'download'])
         ->middleware('permission:Material Mayor:Document:read')
         ->name('maintenance-documents.download');
+
+    // --- Presupuesto Anual ---
+    Route::get('/budgets/{year?}', [AnnualBudgetController::class, 'show'])
+        ->middleware('permission:Material Mayor:AnnualBudget:read');
+    Route::post('/budgets', [AnnualBudgetController::class, 'store'])
+        ->middleware('permission:Material Mayor:AnnualBudget:update');
 });
