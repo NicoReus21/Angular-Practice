@@ -9,31 +9,23 @@
   >
     <div class="sidenav-header">
       <h2 class="mat-h2">Unidades</h2>
-      <button mat-icon-button (click)="openCreateUnitDialog()" matTooltip="Crear nueva unidad">
-        <mat-icon>add</mat-icon>
-      </button>
+
+      <div class="header-buttons">
+        <button
+          mat-icon-button
+          (click)="openStatisticsDialog()"
+          matTooltip="Ver Estadísticas y Presupuesto"
+          style="color: #f39c12"
+        >
+          <mat-icon>bar_chart</mat-icon>
+        </button>
+
+        <button mat-icon-button (click)="openCreateUnitDialog()" matTooltip="Crear nueva unidad">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
     </div>
 
-    <div class="stats-summary">
-      <div class="stats-row">
-        <span class="stats-label">Disponibilidad Operativa</span>
-        <span class="stats-value" [class.text-warn]="availabilityPercentage() < 50">
-          {{ availabilityPercentage() }}%
-        </span>
-      </div>
-      
-      <mat-progress-bar 
-        mode="determinate" 
-        [value]="availabilityPercentage()"
-        [color]="availabilityPercentage() < 50 ? 'warn' : 'primary'"
-        class="stats-progress">
-      </mat-progress-bar>
-      
-      <div class="stats-detail">
-        <mat-icon class="tiny-icon">local_shipping</mat-icon>
-        <span>{{ serviceUnitsCount() }} / {{ totalUnitsCount() }} en servicio</span>
-      </div>
-    </div>
     <mat-button-toggle-group
       class="status-filter"
       [value]="currentStatusFilter()"
@@ -47,34 +39,34 @@
 
     <mat-list role="list" class="unit-list">
       @for (unit of filteredUnits(); track unit.id) {
-      <mat-list-item
-        role="listitem"
-        (click)="onSelectUnit(unit.id)"
-        [activated]="unit.id === selectedUnitId()"
-        class="unit-item-custom"
-        mat-ripple
-      >
-        <span
-          matListItemIcon
-          class="status-indicator"
-          [ngClass]="{
-            'status-servicio': unit.status === 'En Servicio',
-            'status-taller': unit.status === 'En Taller',
-            'status-fuera': unit.status === 'Fuera de Servicio'
-          }"
+        <mat-list-item
+          role="listitem"
+          (click)="onSelectUnit(unit.id)"
+          [activated]="unit.id === selectedUnitId()"
+          class="unit-item-custom"
+          mat-ripple
         >
-        </span>
+          <span
+            matListItemIcon
+            class="status-indicator"
+            [ngClass]="{
+              'status-servicio': unit.status === 'En Servicio',
+              'status-taller': unit.status === 'En Taller',
+              'status-fuera': unit.status === 'Fuera de Servicio',
+            }"
+          >
+          </span>
 
-        <span matListItemTitle class="unit-name">
-          {{ unit.name }}
-        </span>
+          <span matListItemTitle class="unit-name">
+            {{ unit.name }}
+          </span>
 
-        <span matListItemLine class="unit-meta">
-          <span class="patent-badge">{{ unit.plate }}</span>
-        </span>
-      </mat-list-item>
+          <span matListItemLine class="unit-meta">
+            <span class="patent-badge">{{ unit.plate }}</span>
+          </span>
+        </mat-list-item>
 
-      <mat-divider></mat-divider>
+        <mat-divider></mat-divider>
       }
     </mat-list>
 
@@ -89,615 +81,668 @@
 
   <mat-sidenav-content class="dashboard-content">
     @if (isMobile()) {
-    <mat-toolbar color="primary" class="mobile-toolbar">
-      <button mat-icon-button (click)="toggleSidenav()">
-        <mat-icon>menu</mat-icon>
-      </button>
-      <span>Gestión Bomberos</span>
-    </mat-toolbar>
-    } @if (!selectedUnit() && selectedTabIndex() !== categoriesTabIndex) {
-    <div class="no-selection">
-      <mat-icon>directions_car</mat-icon>
-      <h3 class="mat-h3">Seleccione una unidad</h3>
+      <mat-toolbar color="primary" class="mobile-toolbar">
+        <button mat-icon-button (click)="toggleSidenav()">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span>Gestión Bomberos</span>
+      </mat-toolbar>
+    }
+    @if (!selectedUnit() && selectedTabIndex() !== categoriesTabIndex) {
+      <div class="no-selection">
+        <mat-icon>directions_car</mat-icon>
+        <h3 class="mat-h3">Seleccione una unidad</h3>
 
-      <button mat-raised-button color="primary" (click)="toggleSidenav()">
-        Ver Lista de Unidades
-      </button>
-    </div>
+        <button mat-raised-button color="primary" (click)="toggleSidenav()">
+          Ver Lista de Unidades
+        </button>
+      </div>
     } @else {
+      <div class="main-content-area">
+        @if (selectedUnit()) {
+          <div class="detail-header">
+            <div class="header-info">
+              <h1 class="mat-h1">{{ selectedUnit()!.name }}</h1>
 
-    <div class="main-content-area">
-      @if (selectedUnit()) {
-      <div class="detail-header">
-        <div class="header-info">
-          <h1 class="mat-h1">{{ selectedUnit()!.name }}</h1>
+              <mat-chip-listbox>
+                <mat-chip
+                  [ngClass]="getStatusChipClass(selectedUnit()!.status)"
+                  [matMenuTriggerFor]="statusMenu"
+                  matTooltip="Clic para cambiar estado"
+                  style="cursor: pointer; padding-right: 8px"
+                >
+                  {{ selectedUnit()!.status }}
 
-          <mat-chip-listbox>
-            <mat-chip
-              [ngClass]="getStatusChipClass(selectedUnit()!.status)"
-              [matMenuTriggerFor]="statusMenu"
-              matTooltip="Clic para cambiar estado"
-              style="cursor: pointer; padding-right: 8px"
-            >
-              {{ selectedUnit()!.status }}
+                  <mat-icon matChipTrailingIcon>arrow_drop_down</mat-icon>
+                </mat-chip>
+              </mat-chip-listbox>
 
-              <mat-icon matChipTrailingIcon>arrow_drop_down</mat-icon>
-            </mat-chip>
-          </mat-chip-listbox>
-
-          <mat-menu #statusMenu="matMenu">
-            <button mat-menu-item (click)="onChangeStatus('En Servicio')">
-              <mat-icon style="color: #2ecc71">check_circle</mat-icon>
-              <span>En Servicio</span>
-            </button>
-            <button mat-menu-item (click)="onChangeStatus('En Taller')">
-              <mat-icon style="color: #f39c12">build</mat-icon>
-              <span>En Taller</span>
-            </button>
-            <button mat-menu-item (click)="onChangeStatus('Fuera de Servicio')">
-              <mat-icon style="color: #e74c3c">block</mat-icon>
-              <span>Fuera de Servicio</span>
-            </button>
-          </mat-menu>
-        </div>
-
-        <div class="header-actions">
-          <button mat-icon-button color="primary" matTooltip="Editar unidad" (click)="onEditUnit()">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button
-            mat-icon-button
-            color="warn"
-            matTooltip="Eliminar unidad"
-            (click)="onDeleteUnit()"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
-        </div>
-      </div>
-
-      <div class="image-container">
-        <img
-          [src]="selectedUnit()!.imageUrl || 'assets/images/default-truck-large.png'"
-          class="unit-image"
-          [alt]="'Foto de ' + selectedUnit()!.name"
-        />
-      </div>
-
-      <mat-card class="info-card">
-        <mat-card-header>
-          <mat-card-title>Información General</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="info-grid">
-            <div class="info-item">
-              <mat-icon>label</mat-icon>
-              <div class="info-text"><strong>Patente:</strong> {{ selectedUnit()!.plate }}</div>
-            </div>
-            <div class="info-item">
-              <mat-icon>directions_car</mat-icon>
-              <div class="info-text"><strong>Modelo:</strong> {{ selectedUnit()!.model }}</div>
-            </div>
-            <div class="info-item">
-              <mat-icon>business</mat-icon>
-              <div class="info-text"><strong>Compañía:</strong> {{ selectedUnit()!.company }}</div>
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-      }
-
-      <mat-tab-group
-        class="detail-tabs"
-        animationDuration="0ms"
-        dynamicHeight
-        [selectedIndex]="selectedTabIndex()"
-        (selectedIndexChange)="selectedTabIndex.set($event)"
-      >
-        <mat-tab label="Incidentes informados" [disabled]="!selectedUnit()">
-          @if (selectedUnit()) {
-          <div class="tab-content">
-            <div class="tab-header">
-              <h3 class="mat-h3">Incidentes informados</h3>
-              <button mat-flat-button color="primary" (click)="openCreateChecklistDialog()">
-                <mat-icon>add</mat-icon> Registrar incidente
-              </button>
-            </div>
-
-            @if (selectedUnit()!.checklists.length === 0) {
-            <p class="empty-state">No hay incidentes informados para esta unidad.</p>
-            } @else {
-            <mat-accordion displayMode="flat">
-              @for (checklist of selectedUnit()!.checklists; track checklist.id; let i = $index) {
-              <mat-expansion-panel [expanded]="i === 0">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    <mat-icon>fact_check</mat-icon>
-                    {{ checklist.fecha_realizacion }}
-                  </mat-panel-title>
-                  <mat-panel-description>
-                    {{ checklist.persona_cargo }}
-                  </mat-panel-description>
-
-                  <button
-                    mat-icon-button
-                    class="edit-button"
-                    (click)="onEditChecklist(checklist.id, $event)"
-                  >
-                    <mat-icon>edit</mat-icon>
-                  </button>
-                  <button
-                    mat-icon-button
-                    class="delete-button"
-                    (click)="onDeleteChecklist(checklist.id, $event)"
-                  >
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </mat-expansion-panel-header>
-
-                <mat-list>
-                  @for (item of checklist.items; track item.id) {
-                  <mat-list-item
-                    (click)="onChecklistItemToggle(checklist.id, item.id)"
-                    class="checklist-item"
-                    mat-ripple
-                  >
-                    <mat-icon matListItemIcon [ngClass]="{ 'task-complete': item.completed }">
-                      {{ item.completed ? 'check_circle' : 'radio_button_unchecked' }}
-                    </mat-icon>
-                    <div matListItemTitle [ngClass]="{ 'task-complete-text': item.completed }">
-                      {{ item.task_description }}
-                    </div>
-                  </mat-list-item>
-                  <mat-divider></mat-divider>
-                  }
-                </mat-list>
-              </mat-expansion-panel>
-              }
-            </mat-accordion>
-            }
-
-            <mat-divider class="form-divider"></mat-divider>
-
-            <div class="tab-header">
-              <h3 class="mat-h3">Checklist de inspeccion</h3>
-              <button mat-flat-button color="primary" (click)="openCreateInspectionChecklistDialog()">
-                <mat-icon>playlist_add_check</mat-icon> Crear inspeccion
-              </button>
-            </div>
-
-            @if (!selectedUnit()!.inspectionChecklists || selectedUnit()!.inspectionChecklists.length === 0) {
-            <p class="empty-state">No hay inspecciones registradas.</p>
-            } @else {
-            <mat-accordion displayMode="flat">
-              @for (inspection of selectedUnit()!.inspectionChecklists; track inspection.id; let i = $index) {
-              <mat-expansion-panel [expanded]="i === 0">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    <mat-icon>fact_check</mat-icon>
-                    {{ inspection.inspected_at || 'Sin fecha' }}
-                  </mat-panel-title>
-                  <mat-panel-description>
-                    {{ inspection.items .length || 0 }} items
-                  </mat-panel-description>
-                </mat-expansion-panel-header>
-
-                <mat-list>
-                  @for (item of inspection.items; track item.id) {
-                  <mat-list-item class="checklist-item">
-                    <mat-icon matListItemIcon [ngClass]="{
-                      'task-complete': item.value === 'yes',
-                      'task-na': item.value === 'na',
-                      'task-no': item.value === 'no'
-                    }">
-                      {{ item.value === 'yes' ? 'check_circle' : item.value === 'na' ? 'remove_circle' : 'cancel' }}
-                    </mat-icon>
-                    <div matListItemTitle>{{ item.label }}</div>
-                    @if (item.value === 'no' && item.comment) {
-                    <div matListItemLine>Comentario: {{ item.comment }}</div>
-                    }
-                  </mat-list-item>
-                  <mat-divider></mat-divider>
-                  }
-                </mat-list>
-              </mat-expansion-panel>
-              }
-            </mat-accordion>
-            }
-          </div>
-          } @else {
-          <p class="empty-state">Selecciona una unidad para ver esta seccion.</p>
-          }
-        </mat-tab>
-
-        <mat-tab label="Gastos y Documentos" [disabled]="!selectedUnit()">
-          @if (selectedUnit()) {
-          <div class="tab-content">
-            <div class="add-document-form">
-              <h3 class="mat-h3" style="width: 100%">Añadir Nuevo Gasto</h3>
-              <mat-form-field appearance="outline" class="cost-input">
-                <mat-label>Monto (CLP)</mat-label>
-                <input
-                  matInput
-                  type="number"
-                  [ngModel]="newDocumentCost()"
-                  (ngModelChange)="newDocumentCost.set($event ? +$event : null)"
-                  min="0"
-                />
-                <span matTextPrefix>$&nbsp;</span>
-              </mat-form-field>
-
-              <div class="file-button-container">
-                <input type="file" #fileInput hidden (change)="onFileSelected($event)" />
-                <button mat-stroked-button (click)="fileInput.click()" class="file-button">
-                  <mat-icon>attach_file</mat-icon> Adjuntar
+              <mat-menu #statusMenu="matMenu">
+                <button mat-menu-item (click)="onChangeStatus('En Servicio')">
+                  <mat-icon style="color: #2ecc71">check_circle</mat-icon>
+                  <span>En Servicio</span>
                 </button>
-                <div class="file-name-container">
-                  <span class="file-name">{{ newDocumentName() || 'Sin archivo' }}</span>
-                  @if (newDocumentName()) {
-                  <button mat-icon-button (click)="clearFileSelection()">
-                    <mat-icon>close</mat-icon>
-                  </button>
-                  }
-                </div>
-              </div>
+                <button mat-menu-item (click)="onChangeStatus('En Taller')">
+                  <mat-icon style="color: #f39c12">build</mat-icon>
+                  <span>En Taller</span>
+                </button>
+                <button mat-menu-item (click)="onChangeStatus('Fuera de Servicio')">
+                  <mat-icon style="color: #e74c3c">block</mat-icon>
+                  <span>Fuera de Servicio</span>
+                </button>
+              </mat-menu>
+            </div>
 
+            <div class="header-actions">
               <button
-                mat-flat-button
+                mat-icon-button
                 color="primary"
-                (click)="onAddDocument()"
-                [disabled]="
-                  newDocumentCost() === null ||
-                  (newDocumentCost() ?? 0) < 0 ||
-                  !newDocumentFile() ||
-                  isUploading()
-                "
-                class="add-button"
+                matTooltip="Editar unidad"
+                (click)="onEditUnit()"
               >
-                @if (isUploading()) {
-                <ng-container> <mat-icon>progress_activity</mat-icon> Subiendo... </ng-container>
-                } @else {
-                <ng-container> <mat-icon>add</mat-icon> Añadir </ng-container>
-                }
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="warn"
+                matTooltip="Eliminar unidad"
+                (click)="onDeleteUnit()"
+              >
+                <mat-icon>delete</mat-icon>
               </button>
             </div>
+          </div>
 
-            <mat-divider class="form-divider"></mat-divider>
+          <div class="image-container">
+            <img
+              [src]="selectedUnit()!.imageUrl || 'assets/images/default-truck-large.png'"
+              class="unit-image"
+              [alt]="'Foto de ' + selectedUnit()!.name"
+            />
+          </div>
 
-            <div
-              class="filter-section"
-              style="padding: 10px 0; display: flex; align-items: center; gap: 10px"
-            >
-              <mat-form-field
-                appearance="outline"
-                class="full-width"
-                style="font-size: 14px; max-width: 300px"
-              >
-                <mat-label>Filtrar por rango de fechas</mat-label>
-                <mat-date-range-input [rangePicker]="historyPicker">
-                  <input
-                    matStartDate
-                    placeholder="Desde"
-                    [ngModel]="documentsDateStart()"
-                    (dateChange)="documentsDateStart.set($event.value)"
-                  />
-                  <input
-                    matEndDate
-                    placeholder="Hasta"
-                    [ngModel]="documentsDateEnd()"
-                    (dateChange)="documentsDateEnd.set($event.value)"
-                  />
-                </mat-date-range-input>
-                <mat-datepicker-toggle matIconSuffix [for]="historyPicker"></mat-datepicker-toggle>
-                <mat-date-range-picker #historyPicker></mat-date-range-picker>
-
-                @if (documentsDateStart() || documentsDateEnd()) {
-                <button mat-icon-button matSuffix (click)="clearDateFilter($event)">
-                  <mat-icon>close</mat-icon>
-                </button>
-                }
-              </mat-form-field>
-            </div>
-
-            @if (filteredDocuments().length === 0) {
-            <p class="empty-state">
-              @if (documentsDateStart() || documentsDateEnd()) { No se encontraron documentos en
-              este rango de fechas. } @else { No hay gastos registrados. }
-            </p>
-            } @else {
-            <mat-list>
-              @for (doc of filteredDocuments(); track doc.id) {
-
-              <div class="document-wrapper" [class.unpaid-row]="!doc.is_paid">
-                <mat-list-item class="document-item">
-                  <mat-icon matListItemIcon [class.text-warn]="!doc.is_paid">{{
-                    getDocumentIcon(doc.type)
-                  }}</mat-icon>
-
-                  <div matListItemTitle class="doc-title-row">
-                    {{ doc.name }}
-                    @if (!doc.is_paid) {
-                    <span class="unpaid-badge">PENDIENTE DE PAGO</span>
-                    }
-                  </div>
-                  <div matListItemLine>Subido: {{ doc.uploaded_at_formatted }}</div>
-
-                  <span class="document-cost" [class.text-warn]="!doc.is_paid">
-                    {{ doc.cost || 0 | currency : 'CLP' : 'symbol-narrow' : '1.0-0' }}
-                  </span>
-
-                  <div class="action-buttons">
-                    <button
-                      mat-icon-button
-                      [matTooltip]="doc.is_paid ? 'Marcar como no pagado' : 'Marcar como pagado'"
-                      (click)="onTogglePayment(doc.id, $event)"
-                    >
-                      <mat-icon [style.color]="doc.is_paid ? '#2ecc71' : '#bdbdbd'">
-                        {{ doc.is_paid ? 'paid' : 'money_off' }}
-                      </mat-icon>
-                    </button>
-
-                    <button
-                      mat-icon-button
-                      (click)="onDownloadDocument(doc.url); $event.stopPropagation()"
-                    >
-                      <mat-icon>download</mat-icon>
-                    </button>
-                    <button
-                      mat-icon-button
-                      color="warn"
-                      (click)="onDeleteDocument(doc.id); $event.stopPropagation()"
-                    >
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                  </div>
-                </mat-list-item>
-
-                @if (!doc.is_paid) {
-                <div class="unpaid-alert">
-                  <mat-icon class="alert-icon">warning</mat-icon>
-                  <span>Este documento no ha sido pagado.</span>
+          <mat-card class="info-card">
+            <mat-card-header>
+              <mat-card-title>Información General</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="info-grid">
+                <div class="info-item">
+                  <mat-icon>label</mat-icon>
+                  <div class="info-text"><strong>Patente:</strong> {{ selectedUnit()!.plate }}</div>
                 </div>
+                <div class="info-item">
+                  <mat-icon>directions_car</mat-icon>
+                  <div class="info-text"><strong>Modelo:</strong> {{ selectedUnit()!.model }}</div>
+                </div>
+                <div class="info-item">
+                  <mat-icon>business</mat-icon>
+                  <div class="info-text">
+                    <strong>Compañía:</strong> {{ selectedUnit()!.company }}
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        }
+
+        <mat-tab-group
+          class="detail-tabs"
+          animationDuration="0ms"
+          dynamicHeight
+          [selectedIndex]="selectedTabIndex()"
+          (selectedIndexChange)="selectedTabIndex.set($event)"
+        >
+          <mat-tab label="Incidentes informados" [disabled]="!selectedUnit()">
+            @if (selectedUnit()) {
+              <div class="tab-content">
+                <div class="tab-header">
+                  <h3 class="mat-h3">Incidentes informados</h3>
+                  <button mat-flat-button color="primary" (click)="openCreateChecklistDialog()">
+                    <mat-icon>add</mat-icon> Registrar incidente
+                  </button>
+                </div>
+
+                @if (selectedUnit()!.checklists.length === 0) {
+                  <p class="empty-state">No hay incidentes informados para esta unidad.</p>
+                } @else {
+                  <mat-accordion displayMode="flat">
+                    @for (
+                      checklist of selectedUnit()!.checklists;
+                      track checklist.id;
+                      let i = $index
+                    ) {
+                      <mat-expansion-panel [expanded]="i === 0">
+                        <mat-expansion-panel-header>
+                          <mat-panel-title>
+                            <mat-icon>fact_check</mat-icon>
+                            {{ checklist.fecha_realizacion }}
+                          </mat-panel-title>
+                          <mat-panel-description>
+                            {{ checklist.persona_cargo }}
+                          </mat-panel-description>
+
+                          <button
+                            mat-icon-button
+                            class="edit-button"
+                            (click)="onEditChecklist(checklist.id, $event)"
+                          >
+                            <mat-icon>edit</mat-icon>
+                          </button>
+                          <button
+                            mat-icon-button
+                            class="delete-button"
+                            (click)="onDeleteChecklist(checklist.id, $event)"
+                          >
+                            <mat-icon>delete</mat-icon>
+                          </button>
+                        </mat-expansion-panel-header>
+
+                        <mat-list>
+                          @for (item of checklist.items; track item.id) {
+                            <mat-list-item
+                              (click)="onChecklistItemToggle(checklist.id, item.id)"
+                              class="checklist-item"
+                              mat-ripple
+                            >
+                              <mat-icon
+                                matListItemIcon
+                                [ngClass]="{ 'task-complete': item.completed }"
+                              >
+                                {{ item.completed ? 'check_circle' : 'radio_button_unchecked' }}
+                              </mat-icon>
+                              <div
+                                matListItemTitle
+                                [ngClass]="{ 'task-complete-text': item.completed }"
+                              >
+                                {{ item.task_description }}
+                              </div>
+                            </mat-list-item>
+                            <mat-divider></mat-divider>
+                          }
+                        </mat-list>
+                      </mat-expansion-panel>
+                    }
+                  </mat-accordion>
+                }
+
+                <mat-divider class="form-divider"></mat-divider>
+
+                <div class="tab-header">
+                  <h3 class="mat-h3">Checklist de inspeccion</h3>
+                  <button
+                    mat-flat-button
+                    color="primary"
+                    (click)="openCreateInspectionChecklistDialog()"
+                  >
+                    <mat-icon>playlist_add_check</mat-icon> Crear inspeccion
+                  </button>
+                </div>
+
+                @if (
+                  !selectedUnit()!.inspectionChecklists ||
+                  selectedUnit()!.inspectionChecklists.length === 0
+                ) {
+                  <p class="empty-state">No hay inspecciones registradas.</p>
+                } @else {
+                  <mat-accordion displayMode="flat">
+                    @for (
+                      inspection of selectedUnit()!.inspectionChecklists;
+                      track inspection.id;
+                      let i = $index
+                    ) {
+                      <mat-expansion-panel [expanded]="i === 0">
+                        <mat-expansion-panel-header>
+                          <mat-panel-title>
+                            <mat-icon>fact_check</mat-icon>
+                            {{ inspection.inspected_at || 'Sin fecha' }}
+                          </mat-panel-title>
+                          <mat-panel-description>
+                            {{ inspection.items.length || 0 }} items
+                          </mat-panel-description>
+                        </mat-expansion-panel-header>
+
+                        <mat-list>
+                          @for (item of inspection.items; track item.id) {
+                            <mat-list-item class="checklist-item">
+                              <mat-icon
+                                matListItemIcon
+                                [ngClass]="{
+                                  'task-complete': item.value === 'yes',
+                                  'task-na': item.value === 'na',
+                                  'task-no': item.value === 'no',
+                                }"
+                              >
+                                {{
+                                  item.value === 'yes'
+                                    ? 'check_circle'
+                                    : item.value === 'na'
+                                      ? 'remove_circle'
+                                      : 'cancel'
+                                }}
+                              </mat-icon>
+                              <div matListItemTitle>{{ item.label }}</div>
+                              @if (item.value === 'no' && item.comment) {
+                                <div matListItemLine>Comentario: {{ item.comment }}</div>
+                              }
+                            </mat-list-item>
+                            <mat-divider></mat-divider>
+                          }
+                        </mat-list>
+                      </mat-expansion-panel>
+                    }
+                  </mat-accordion>
                 }
               </div>
-              <mat-divider></mat-divider>
-              }
-            </mat-list>
-
-            <div class="total-cost">
-              <span class="total-label">Total (Filtrado):</span>
-              <span class="total-amount">{{
-                totalDocumentsCost() | currency : 'CLP' : 'symbol-narrow' : '1.0-0'
-              }}</span>
-            </div>
+            } @else {
+              <p class="empty-state">Selecciona una unidad para ver esta seccion.</p>
             }
-          </div>
-          } @else {
-          <p class="empty-state">Selecciona una unidad para ver esta seccion.</p>
-          }
-        </mat-tab>
+          </mat-tab>
 
-        <mat-tab label="Reportes" [disabled]="!selectedUnit()">
-          @if (selectedUnit()) {
-          <div class="tab-content">
-            <div class="tab-header">
-              <h3 class="mat-h3">Historial</h3>
-              <button mat-flat-button color="primary" (click)="openCreateReportDialog()">
-                <mat-icon>add</mat-icon> Crear
-              </button>
-            </div>
-
-            <mat-card class="vendor-link-card">
-              <mat-card-header>
-                <mat-card-title>Link para proveedor</mat-card-title>
-                <mat-card-subtitle>
-                  Genera un acceso para que el proveedor complete el reporte desde fuera del sistema.
-                </mat-card-subtitle>
-              </mat-card-header>
-              <mat-card-content>
-                <div class="vendor-link-form">
-                  <mat-form-field appearance="outline" class="vendor-field">
-                    <mat-label>Correo del proveedor</mat-label>
-                    <input
-                      matInput
-                      type="email"
-                      [ngModel]="vendorEmail()"
-                      (ngModelChange)="vendorEmail.set($event)"
-                      placeholder="proveedor@correo.com"
-                      required
-                    />
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline" class="vendor-field">
-                    <mat-label>Nombre (opcional)</mat-label>
-                    <input
-                      matInput
-                      type="text"
-                      [ngModel]="vendorName()"
-                      (ngModelChange)="vendorName.set($event)"
-                      placeholder="Nombre o empresa"
-                    />
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline" class="vendor-field vendor-field-small">
-                    <mat-label>Dias de expiracion</mat-label>
+          <mat-tab label="Gastos y Documentos" [disabled]="!selectedUnit()">
+            @if (selectedUnit()) {
+              <div class="tab-content">
+                <div class="add-document-form">
+                  <h3 class="mat-h3" style="width: 100%">Añadir Nuevo Gasto</h3>
+                  <mat-form-field appearance="outline" class="cost-input">
+                    <mat-label>Monto (CLP)</mat-label>
                     <input
                       matInput
                       type="number"
-                      min="1"
-                      [ngModel]="vendorExpiresDays()"
-                      (ngModelChange)="vendorExpiresDays.set($event ? +$event : 1)"
+                      [ngModel]="newDocumentCost()"
+                      (ngModelChange)="newDocumentCost.set($event ? +$event : null)"
+                      min="0"
                     />
+                    <span matTextPrefix>$&nbsp;</span>
                   </mat-form-field>
+
+                  <div class="file-button-container">
+                    <input type="file" #fileInput hidden (change)="onFileSelected($event)" />
+                    <button mat-stroked-button (click)="fileInput.click()" class="file-button">
+                      <mat-icon>attach_file</mat-icon> Adjuntar
+                    </button>
+                    <div class="file-name-container">
+                      <span class="file-name">{{ newDocumentName() || 'Sin archivo' }}</span>
+                      @if (newDocumentName()) {
+                        <button mat-icon-button (click)="clearFileSelection()">
+                          <mat-icon>close</mat-icon>
+                        </button>
+                      }
+                    </div>
+                  </div>
 
                   <button
                     mat-flat-button
                     color="primary"
-                    class="vendor-action"
-                    (click)="createVendorReportLink()"
-                    [disabled]="isCreatingVendorLink()"
+                    (click)="onAddDocument()"
+                    [disabled]="
+                      newDocumentCost() === null ||
+                      (newDocumentCost() ?? 0) < 0 ||
+                      !newDocumentFile() ||
+                      isUploading()
+                    "
+                    class="add-button"
                   >
-                    @if (isCreatingVendorLink()) {
-                    <ng-container><mat-icon>progress_activity</mat-icon> Generando...</ng-container>
+                    @if (isUploading()) {
+                      <ng-container>
+                        <mat-icon>progress_activity</mat-icon> Subiendo...
+                      </ng-container>
                     } @else {
-                    <ng-container><mat-icon>link</mat-icon> Generar y enviar</ng-container>
+                      <ng-container> <mat-icon>add</mat-icon> Añadir </ng-container>
                     }
                   </button>
                 </div>
 
-                @if (vendorLink()) {
-                <div class="vendor-link-result">
-                  <div class="vendor-link-label">Link generado</div>
-                  <div class="vendor-link-row">
-                    <a [href]="vendorLink()" target="_blank" rel="noopener">{{ vendorLink() }}</a>
-                    <button mat-stroked-button type="button" (click)="copyVendorLink()">
-                      <mat-icon>content_copy</mat-icon> Copiar
-                    </button>
-                  </div>
-                  @if (vendorLinkExpiresAt()) {
-                  <div class="vendor-link-meta">
-                    Expira el {{ vendorLinkExpiresAt() | date: 'mediumDate' }}
-                  </div>
-                  }
-                </div>
-                }
+                <mat-divider class="form-divider"></mat-divider>
 
-                @if (vendorLinkError()) {
-                <div class="vendor-link-error">
-                  {{ vendorLinkError() }}
-                </div>
-                }
-              </mat-card-content>
-            </mat-card>
-
-            @if (!selectedUnit() || selectedUnit()!.maintenanceHistory.length === 0) {
-            <p class="empty-state">No hay reportes creados.</p>
-            } @else {
-            <mat-list>
-              @for (report of selectedUnit()!.maintenanceHistory; track report.id) {
-              <mat-list-item class="document-item">
-                <mat-icon matListItemIcon>{{
-                  report.status === 'draft' ? 'edit_note' : 'description'
-                }}</mat-icon>
-                <div matListItemTitle>
-                  {{ report.service_type }}
-                  @if (report.status === 'draft') { <span class="draft-badge">BORRADOR</span> }
-                </div>
-                <div matListItemLine>{{ report.date }} | {{ report.technician }}</div>
-
-                <div class="action-buttons">
-                  @if (report.status === 'draft') {
-                  <button
-                    mat-icon-button
-                    color="primary"
-                    (click)="onEditReportDraft(report); $event.stopPropagation()"
-                  >
-                    <mat-icon>edit</mat-icon>
-                  </button>
-                  } @else {
-                  <button
-                    mat-icon-button
-                    (click)="onDownloadReport(report)"
-                    [disabled]="!report.pdf_url"
-                  >
-                    <mat-icon>download</mat-icon>
-                  </button>
-                  }
-                  <button
-                    mat-icon-button
-                    color="warn"
-                    (click)="onDeleteReport(report.id); $event.stopPropagation()"
-                  >
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </div>
-              </mat-list-item>
-              <mat-divider></mat-divider>
-              }
-            </mat-list>
-            }
-          </div>
-          } @else {
-          <p class="empty-state">Selecciona una unidad para ver esta seccion.</p>
-          }
-        </mat-tab>
-
-        <mat-tab label="Categorias">
-          <div class="tab-content">
-            <div class="tab-header">
-              <h3 class="mat-h3">Categorias de inspeccion</h3>
-            </div>
-
-            <div class="category-form">
-              <mat-form-field appearance="outline" class="category-field">
-                <mat-label>Nombre de categoria</mat-label>
-                <input
-                  matInput
-                  type="text"
-                  [ngModel]="newCategoryLabel()"
-                  (ngModelChange)="newCategoryLabel.set($event)"
-                  placeholder="Ej: Chequeo de luces"
-                />
-              </mat-form-field>
-
-              <mat-form-field appearance="outline" class="category-field category-field-small">
-                <mat-label>Orden</mat-label>
-                <input
-                  matInput
-                  type="number"
-                  min="0"
-                  [ngModel]="newCategorySortOrder()"
-                  (ngModelChange)="newCategorySortOrder.set($event !== '' ? +$event : null)"
-                />
-              </mat-form-field>
-
-              <button
-                mat-flat-button
-                color="primary"
-                class="category-action"
-                (click)="createInspectionCategory()"
-                [disabled]="isSavingCategory()"
-              >
-                @if (isSavingCategory()) {
-                <ng-container><mat-icon>progress_activity</mat-icon> Guardando...</ng-container>
-                } @else {
-                <ng-container><mat-icon>add</mat-icon> Agregar</ng-container>
-                }
-              </button>
-            </div>
-
-            @if (isLoadingCategories()) {
-            <p class="empty-state">Cargando categorias...</p>
-            } @else if (inspectionCategories().length === 0) {
-            <p class="empty-state">No hay categorias registradas.</p>
-            } @else {
-            <div class="category-table">
-              <div class="category-row category-row--header">
-                <span>Nombre</span>
-                <span>Clave</span>
-                <span>Orden</span>
-                <span></span>
-              </div>
-              @for (category of inspectionCategories(); track category.id) {
-              <div class="category-row">
-                <span>{{ category.label }}</span>
-                <span class="category-key">{{ category.key }}</span>
-                <span>{{ category.sort_order || 0 }}</span>
-                <button
-                  mat-icon-button
-                  color="warn"
-                  (click)="deleteInspectionCategory(category, $event)"
+                <div
+                  class="filter-section"
+                  style="padding: 10px 0; display: flex; align-items: center; gap: 10px"
                 >
-                  <mat-icon>delete</mat-icon>
+                  <mat-form-field
+                    appearance="outline"
+                    class="full-width"
+                    style="font-size: 14px; max-width: 300px"
+                  >
+                    <mat-label>Filtrar por rango de fechas</mat-label>
+                    <mat-date-range-input [rangePicker]="historyPicker">
+                      <input
+                        matStartDate
+                        placeholder="Desde"
+                        [ngModel]="documentsDateStart()"
+                        (dateChange)="documentsDateStart.set($event.value)"
+                      />
+                      <input
+                        matEndDate
+                        placeholder="Hasta"
+                        [ngModel]="documentsDateEnd()"
+                        (dateChange)="documentsDateEnd.set($event.value)"
+                      />
+                    </mat-date-range-input>
+                    <mat-datepicker-toggle
+                      matIconSuffix
+                      [for]="historyPicker"
+                    ></mat-datepicker-toggle>
+                    <mat-date-range-picker #historyPicker></mat-date-range-picker>
+
+                    @if (documentsDateStart() || documentsDateEnd()) {
+                      <button mat-icon-button matSuffix (click)="clearDateFilter($event)">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    }
+                  </mat-form-field>
+                </div>
+
+                @if (filteredDocuments().length === 0) {
+                  <p class="empty-state">
+                    @if (documentsDateStart() || documentsDateEnd()) {
+                      No se encontraron documentos en este rango de fechas.
+                    } @else {
+                      No hay gastos registrados.
+                    }
+                  </p>
+                } @else {
+                  <mat-list>
+                    @for (doc of filteredDocuments(); track doc.id) {
+                      <div class="document-wrapper" [class.unpaid-row]="!doc.is_paid">
+                        <mat-list-item class="document-item">
+                          <mat-icon matListItemIcon [class.text-warn]="!doc.is_paid">{{
+                            getDocumentIcon(doc.type)
+                          }}</mat-icon>
+
+                          <div matListItemTitle class="doc-title-row">
+                            {{ doc.name }}
+                            @if (!doc.is_paid) {
+                              <span class="unpaid-badge">PENDIENTE DE PAGO</span>
+                            }
+                          </div>
+                          <div matListItemLine>Subido: {{ doc.uploaded_at_formatted }}</div>
+
+                          <span class="document-cost" [class.text-warn]="!doc.is_paid">
+                            {{ doc.cost || 0 | currency: 'CLP' : 'symbol-narrow' : '1.0-0' }}
+                          </span>
+
+                          <div class="action-buttons">
+                            <button
+                              mat-icon-button
+                              [matTooltip]="
+                                doc.is_paid ? 'Marcar como no pagado' : 'Marcar como pagado'
+                              "
+                              (click)="onTogglePayment(doc.id, $event)"
+                            >
+                              <mat-icon [style.color]="doc.is_paid ? '#2ecc71' : '#bdbdbd'">
+                                {{ doc.is_paid ? 'paid' : 'money_off' }}
+                              </mat-icon>
+                            </button>
+
+                            <button
+                              mat-icon-button
+                              (click)="onDownloadDocument(doc.url); $event.stopPropagation()"
+                            >
+                              <mat-icon>download</mat-icon>
+                            </button>
+                            <button
+                              mat-icon-button
+                              color="warn"
+                              (click)="onDeleteDocument(doc.id); $event.stopPropagation()"
+                            >
+                              <mat-icon>delete</mat-icon>
+                            </button>
+                          </div>
+                        </mat-list-item>
+
+                        @if (!doc.is_paid) {
+                          <div class="unpaid-alert">
+                            <mat-icon class="alert-icon">warning</mat-icon>
+                            <span>Este documento no ha sido pagado.</span>
+                          </div>
+                        }
+                      </div>
+                      <mat-divider></mat-divider>
+                    }
+                  </mat-list>
+
+                  <div class="total-cost">
+                    <span class="total-label">Total (Filtrado):</span>
+                    <span class="total-amount">{{
+                      totalDocumentsCost() | currency: 'CLP' : 'symbol-narrow' : '1.0-0'
+                    }}</span>
+                  </div>
+                }
+              </div>
+            } @else {
+              <p class="empty-state">Selecciona una unidad para ver esta seccion.</p>
+            }
+          </mat-tab>
+
+          <mat-tab label="Reportes" [disabled]="!selectedUnit()">
+            @if (selectedUnit()) {
+              <div class="tab-content">
+                <div class="tab-header">
+                  <h3 class="mat-h3">Historial</h3>
+                  <button mat-flat-button color="primary" (click)="openCreateReportDialog()">
+                    <mat-icon>add</mat-icon> Crear
+                  </button>
+                </div>
+
+                <mat-card class="vendor-link-card">
+                  <mat-card-header>
+                    <mat-card-title>Link para proveedor</mat-card-title>
+                    <mat-card-subtitle>
+                      Genera un acceso para que el proveedor complete el reporte desde fuera del
+                      sistema.
+                    </mat-card-subtitle>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <div class="vendor-link-form">
+                      <mat-form-field appearance="outline" class="vendor-field">
+                        <mat-label>Correo del proveedor</mat-label>
+                        <input
+                          matInput
+                          type="email"
+                          [ngModel]="vendorEmail()"
+                          (ngModelChange)="vendorEmail.set($event)"
+                          placeholder="proveedor@correo.com"
+                          required
+                        />
+                      </mat-form-field>
+
+                      <mat-form-field appearance="outline" class="vendor-field">
+                        <mat-label>Nombre (opcional)</mat-label>
+                        <input
+                          matInput
+                          type="text"
+                          [ngModel]="vendorName()"
+                          (ngModelChange)="vendorName.set($event)"
+                          placeholder="Nombre o empresa"
+                        />
+                      </mat-form-field>
+
+                      <mat-form-field appearance="outline" class="vendor-field vendor-field-small">
+                        <mat-label>Dias de expiracion</mat-label>
+                        <input
+                          matInput
+                          type="number"
+                          min="1"
+                          [ngModel]="vendorExpiresDays()"
+                          (ngModelChange)="vendorExpiresDays.set($event ? +$event : 1)"
+                        />
+                      </mat-form-field>
+
+                      <button
+                        mat-flat-button
+                        color="primary"
+                        class="vendor-action"
+                        (click)="createVendorReportLink()"
+                        [disabled]="isCreatingVendorLink()"
+                      >
+                        @if (isCreatingVendorLink()) {
+                          <ng-container
+                            ><mat-icon>progress_activity</mat-icon> Generando...</ng-container
+                          >
+                        } @else {
+                          <ng-container><mat-icon>link</mat-icon> Generar y enviar</ng-container>
+                        }
+                      </button>
+                    </div>
+
+                    @if (vendorLink()) {
+                      <div class="vendor-link-result">
+                        <div class="vendor-link-label">Link generado</div>
+                        <div class="vendor-link-row">
+                          <a [href]="vendorLink()" target="_blank" rel="noopener">{{
+                            vendorLink()
+                          }}</a>
+                          <button mat-stroked-button type="button" (click)="copyVendorLink()">
+                            <mat-icon>content_copy</mat-icon> Copiar
+                          </button>
+                        </div>
+                        @if (vendorLinkExpiresAt()) {
+                          <div class="vendor-link-meta">
+                            Expira el {{ vendorLinkExpiresAt() | date: 'mediumDate' }}
+                          </div>
+                        }
+                      </div>
+                    }
+
+                    @if (vendorLinkError()) {
+                      <div class="vendor-link-error">
+                        {{ vendorLinkError() }}
+                      </div>
+                    }
+                  </mat-card-content>
+                </mat-card>
+
+                @if (!selectedUnit() || selectedUnit()!.maintenanceHistory.length === 0) {
+                  <p class="empty-state">No hay reportes creados.</p>
+                } @else {
+                  <mat-list>
+                    @for (report of selectedUnit()!.maintenanceHistory; track report.id) {
+                      <mat-list-item class="document-item">
+                        <mat-icon matListItemIcon>{{
+                          report.status === 'draft' ? 'edit_note' : 'description'
+                        }}</mat-icon>
+                        <div matListItemTitle>
+                          {{ report.service_type }}
+                          @if (report.status === 'draft') {
+                            <span class="draft-badge">BORRADOR</span>
+                          }
+                        </div>
+                        <div matListItemLine>{{ report.date }} | {{ report.technician }}</div>
+
+                        <div class="action-buttons">
+                          @if (report.status === 'draft') {
+                            <button
+                              mat-icon-button
+                              color="primary"
+                              (click)="onEditReportDraft(report); $event.stopPropagation()"
+                            >
+                              <mat-icon>edit</mat-icon>
+                            </button>
+                          } @else {
+                            <button
+                              mat-icon-button
+                              (click)="onDownloadReport(report)"
+                              [disabled]="!report.pdf_url"
+                            >
+                              <mat-icon>download</mat-icon>
+                            </button>
+                          }
+                          <button
+                            mat-icon-button
+                            color="warn"
+                            (click)="onDeleteReport(report.id); $event.stopPropagation()"
+                          >
+                            <mat-icon>delete</mat-icon>
+                          </button>
+                        </div>
+                      </mat-list-item>
+                      <mat-divider></mat-divider>
+                    }
+                  </mat-list>
+                }
+              </div>
+            } @else {
+              <p class="empty-state">Selecciona una unidad para ver esta seccion.</p>
+            }
+          </mat-tab>
+
+          <mat-tab label="Categorias">
+            <div class="tab-content">
+              <div class="tab-header">
+                <h3 class="mat-h3">Categorias de inspeccion</h3>
+              </div>
+
+              <div class="category-form">
+                <mat-form-field appearance="outline" class="category-field">
+                  <mat-label>Nombre de categoria</mat-label>
+                  <input
+                    matInput
+                    type="text"
+                    [ngModel]="newCategoryLabel()"
+                    (ngModelChange)="newCategoryLabel.set($event)"
+                    placeholder="Ej: Chequeo de luces"
+                  />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="category-field category-field-small">
+                  <mat-label>Orden</mat-label>
+                  <input
+                    matInput
+                    type="number"
+                    min="0"
+                    [ngModel]="newCategorySortOrder()"
+                    (ngModelChange)="newCategorySortOrder.set($event !== '' ? +$event : null)"
+                  />
+                </mat-form-field>
+
+                <button
+                  mat-flat-button
+                  color="primary"
+                  class="category-action"
+                  (click)="createInspectionCategory()"
+                  [disabled]="isSavingCategory()"
+                >
+                  @if (isSavingCategory()) {
+                    <ng-container><mat-icon>progress_activity</mat-icon> Guardando...</ng-container>
+                  } @else {
+                    <ng-container><mat-icon>add</mat-icon> Agregar</ng-container>
+                  }
                 </button>
               </div>
+
+              @if (isLoadingCategories()) {
+                <p class="empty-state">Cargando categorias...</p>
+              } @else if (inspectionCategories().length === 0) {
+                <p class="empty-state">No hay categorias registradas.</p>
+              } @else {
+                <div class="category-table">
+                  <div class="category-row category-row--header">
+                    <span>Nombre</span>
+                    <span>Clave</span>
+                    <span>Orden</span>
+                    <span></span>
+                  </div>
+                  @for (category of inspectionCategories(); track category.id) {
+                    <div class="category-row">
+                      <span>{{ category.label }}</span>
+                      <span class="category-key">{{ category.key }}</span>
+                      <span>{{ category.sort_order || 0 }}</span>
+                      <button
+                        mat-icon-button
+                        color="warn"
+                        (click)="deleteInspectionCategory(category, $event)"
+                      >
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  }
+                </div>
               }
             </div>
-            }
-          </div>
-        </mat-tab>
-      </mat-tab-group>
-    </div>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
     }
   </mat-sidenav-content>
 </mat-sidenav-container>

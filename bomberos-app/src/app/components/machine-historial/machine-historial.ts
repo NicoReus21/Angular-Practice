@@ -11,8 +11,6 @@ import {
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-
-// Material Imports
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
@@ -34,7 +32,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
-import { MatProgressBarModule } from '@angular/material/progress-bar'; // <--- IMPORTACIÓN NUEVA
 
 // Third Party
 import Swal from 'sweetalert2';
@@ -56,8 +53,8 @@ import { CreateFiretruckComponent } from '../create-firetruck/create-firetruck';
 import { CreateReportComponent } from '../create-report/create-report';
 import { CreateChecklistComponent } from '../create-checklist/create-checklist';
 import { CreateInspectionChecklistComponent } from '../create-inspection-checklist/create-inspection-checklist';
+import { StatisticsDialogComponent } from '../statistics-dialog/statistics-dialog';
 
-// Interfaces
 export interface MaintenanceLog {
   id: number;
   date: string;
@@ -89,7 +86,6 @@ export interface VehicleUnit {
   plate: string;
   company: string;
   imageUrl: string | null;
-  // Campos nuevos
   manufacturing_year?: number;
   chassis_number?: string;
   
@@ -127,7 +123,7 @@ export interface VehicleUnit {
     MatMenuModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatProgressBarModule, // <--- MODULO AGREGADO
+    // MatProgressBarModule ya no es necesario aquí, se usa en el popup
   ],
   templateUrl: './machine-historial.html',
   styleUrls: ['./machine-historial.scss'],
@@ -146,7 +142,7 @@ export class MachineHistorialComponent implements OnInit {
   selectedUnitId = signal<number | null>(null);
   currentStatusFilter = signal<'Todos' | 'En Servicio' | 'En Taller' | 'Fuera de Servicio'>('Todos');
 
-  // Filtro de fechas
+  // Filtro de fechas para documentos
   documentsDateStart = signal<Date | null>(null);
   documentsDateEnd = signal<Date | null>(null);
 
@@ -180,23 +176,6 @@ export class MachineHistorialComponent implements OnInit {
 
   private backendUrl = environment.backendUrl;
 
-  // --- COMPUTEDS (Estadísticas y Filtros) ---
-
-  // 1. Estadísticas Generales (NUEVO)
-  totalUnitsCount = computed(() => this.allUnits().length);
-
-  serviceUnitsCount = computed(() => 
-    this.allUnits().filter(u => u.status === 'En Servicio').length
-  );
-
-  availabilityPercentage = computed(() => {
-    const total = this.totalUnitsCount();
-    const service = this.serviceUnitsCount();
-    if (total === 0) return 0;
-    return Math.round((service / total) * 100);
-  });
-
-  // 2. Filtros de Unidades
   filteredUnits = computed(() => {
     const status = this.currentStatusFilter();
     if (status === 'Todos') return this.allUnits();
@@ -244,6 +223,7 @@ export class MachineHistorialComponent implements OnInit {
   ngOnInit(): void {
     this.loadUnits();
     this.loadInspectionCategories();
+    
     this.breakpointObserver.observe(['(max-width: 960px)']).subscribe((result) => {
       const isSmallScreen = result.matches;
       this.isMobile.set(isSmallScreen);
@@ -251,7 +231,17 @@ export class MachineHistorialComponent implements OnInit {
     });
   }
 
-  // --- Actions ---
+  openStatisticsDialog(): void {
+    const isMobile = this.isMobile();
+    this.dialog.open(StatisticsDialogComponent, {
+      width: isMobile ? '95vw' : '500px',
+      maxWidth: '100vw',
+      autoFocus: false,
+      data: { 
+        units: this.allUnits() 
+      }
+    });
+  }
 
   toggleSidenav(): void {
     this.sidenavOpened.update((v) => !v);

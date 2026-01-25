@@ -3,17 +3,10 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-// Helper para asegurar que la URL base sea correcta
 const getBaseUrl = () => {
   let url = environment.backendUrl || 'http://127.0.0.1:8000/api';
-  // Quitar slash final si existe
-  if (url.endsWith('/')) {
-    url = url.slice(0, -1);
-  }
-  // Agregar /api si falta (Solución al error CORS por 404)
-  if (!url.endsWith('/api')) {
-    url += '/api';
-  }
+  if (url.endsWith('/')) url = url.slice(0, -1);
+  if (!url.endsWith('/api')) url += '/api';
   return url;
 };
 
@@ -120,11 +113,10 @@ export interface CarApiResponse {
   documents: ApiDocument[];
   inspection_checklists?: InspectionChecklist[];
   imageUrl: string | null;
-  // Campos que vienen del backend
   image?: string | null;
   image_url?: string | null;
-  manufacturing_year?: number; // Agregado para tipado fuerte
-  chassis_number?: string;     // Agregado para tipado fuerte
+  manufacturing_year?: number; 
+  chassis_number?: string; 
 }
 
 export interface CreateCarDto {
@@ -133,7 +125,6 @@ export interface CreateCarDto {
   model: string | null;
   company: string;
   status: 'En Servicio' | 'En Taller' | 'Fuera de Servicio';
-  // CORRECCIÓN: Soportar ambas nomenclaturas para evitar datos perdidos
   manufacturing_year?: number;
   chassis_number?: string;
 }
@@ -164,25 +155,68 @@ export interface VendorReportLinkResponse {
   url: string;
 }
 
+export interface AnnualBudget {
+  year: number;
+  amount: number;
+}
+
 export interface CreateChecklistDto {
   persona_cargo: string;
   fecha_realizacion: string;
   tasks: string[];
 }
 
+export interface MaintenanceLog {
+  id: number;
+  date: string;
+  technician: string;
+  description: string;
+  service_type: string;
+  pdf_url: string | null;
+  status: 'draft' | 'completed';
+  fullData?: ApiMaintenance;
+}
+
+export interface AttachedDocument {
+  id: number;
+  name: string;
+  type: 'pdf' | 'doc' | 'img' | 'other';
+  url: string;
+  uploaded_at_formatted: string;
+  created_at_raw: Date; 
+  cost: number;
+  is_paid: boolean;
+  maintenance_id?: number;
+}
+
+export interface VehicleUnit {
+  id: number;
+  name: string;
+  status: 'En Servicio' | 'En Taller' | 'Fuera de Servicio';
+  model: string | null;
+  plate: string;
+  company: string;
+  imageUrl: string | null;
+  manufacturing_year?: number;
+  chassis_number?: string;
+  
+  checklists: ChecklistGroup[];
+  inspectionChecklists: InspectionChecklist[];
+  documents: AttachedDocument[];
+  maintenanceHistory: MaintenanceLog[];
+}
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MachineHistorialService {
-
   private http = inject(HttpClient);
-  // Usa la URL normalizada con /api al final
   private apiUrl = API_URL;
 
   getUnits(): Observable<CarApiResponse[]> {
     return this.http.get<CarApiResponse[]>(`${this.apiUrl}/cars`);
   }
-  
+
   createUnit(data: CreateCarDto, imageFile: File | null): Observable<CarApiResponse> {
     const formData = new FormData();
     this.appendCarData(formData, data, imageFile);
@@ -192,7 +226,7 @@ export class MachineHistorialService {
   updateUnit(id: number, data: CreateCarDto, imageFile: File | null): Observable<CarApiResponse> {
     const formData = new FormData();
     this.appendCarData(formData, data, imageFile);
-    formData.append('_method', 'PUT'); 
+    formData.append('_method', 'PUT');
     return this.http.post<CarApiResponse>(`${this.apiUrl}/cars/${id}`, formData);
   }
 
@@ -206,9 +240,7 @@ export class MachineHistorialService {
     if (data.model) formData.append('model', data.model);
     formData.append('company', data.company);
     formData.append('status', data.status);
-    
-    // CORRECCIÓN ROBUSTA: Buscar valor en snake_case O camelCase
-    // Esto asegura que el dato se envíe sin importar cómo venga del formulario
+
     const year = data.manufacturing_year;
     if (year) {
       formData.append('manufacturing_year', year.toString());
@@ -218,7 +250,7 @@ export class MachineHistorialService {
     if (chassis) {
       formData.append('chassis_number', chassis);
     }
-    
+
     if (imageFile) {
       formData.append('image', imageFile, imageFile.name);
     }
@@ -231,21 +263,24 @@ export class MachineHistorialService {
   createMaintenance(carId: number, maintenanceData: any): Observable<ApiMaintenance> {
     return this.http.post<ApiMaintenance>(
       `${this.apiUrl}/cars/${carId}/maintenances`,
-      maintenanceData
+      maintenanceData,
     );
   }
 
   updateMaintenance(maintenanceId: number, maintenanceData: any): Observable<ApiMaintenance> {
     return this.http.put<ApiMaintenance>(
       `${this.apiUrl}/maintenances/${maintenanceId}`,
-      maintenanceData
+      maintenanceData,
     );
   }
 
-  updateMaintenanceWithFiles(maintenanceId: number, maintenanceData: FormData): Observable<ApiMaintenance> {
+  updateMaintenanceWithFiles(
+    maintenanceId: number,
+    maintenanceData: FormData,
+  ): Observable<ApiMaintenance> {
     return this.http.post<ApiMaintenance>(
-      `${this.apiUrl}/maintenances/${maintenanceId}`, 
-      maintenanceData
+      `${this.apiUrl}/maintenances/${maintenanceId}`,
+      maintenanceData,
     );
   }
 
@@ -254,17 +289,14 @@ export class MachineHistorialService {
   }
 
   createChecklist(carId: number, checklistData: CreateChecklistDto): Observable<ApiChecklist> {
-    return this.http.post<ApiChecklist>(
-      `${this.apiUrl}/cars/${carId}/checklists`,
-      checklistData
-    );
+    return this.http.post<ApiChecklist>(`${this.apiUrl}/cars/${carId}/checklists`, checklistData);
   }
 
-  updateChecklist(checklistId: number, checklistData: CreateChecklistDto): Observable<ApiChecklist> {
-    return this.http.put<ApiChecklist>(
-      `${this.apiUrl}/checklists/${checklistId}`,
-      checklistData
-    );
+  updateChecklist(
+    checklistId: number,
+    checklistData: CreateChecklistDto,
+  ): Observable<ApiChecklist> {
+    return this.http.put<ApiChecklist>(`${this.apiUrl}/checklists/${checklistId}`, checklistData);
   }
 
   deleteChecklist(checklistId: number): Observable<void> {
@@ -276,15 +308,23 @@ export class MachineHistorialService {
   }
 
   getInspectionChecklists(carId: number): Observable<InspectionChecklist[]> {
-    return this.http.get<InspectionChecklist[]>(`${this.apiUrl}/cars/${carId}/inspection-checklists`);
+    return this.http.get<InspectionChecklist[]>(
+      `${this.apiUrl}/cars/${carId}/inspection-checklists`,
+    );
   }
 
   createInspectionChecklist(carId: number, payload: any): Observable<InspectionChecklist> {
-    return this.http.post<InspectionChecklist>(`${this.apiUrl}/cars/${carId}/inspection-checklists`, payload);
+    return this.http.post<InspectionChecklist>(
+      `${this.apiUrl}/cars/${carId}/inspection-checklists`,
+      payload,
+    );
   }
 
   updateInspectionChecklist(checklistId: number, payload: any): Observable<InspectionChecklist> {
-    return this.http.put<InspectionChecklist>(`${this.apiUrl}/inspection-checklists/${checklistId}`, payload);
+    return this.http.put<InspectionChecklist>(
+      `${this.apiUrl}/inspection-checklists/${checklistId}`,
+      payload,
+    );
   }
 
   deleteInspectionChecklist(checklistId: number): Observable<void> {
@@ -295,12 +335,22 @@ export class MachineHistorialService {
     return this.http.get<InspectionCategory[]>(`${this.apiUrl}/inspection-categories`);
   }
 
-  createInspectionCategory(payload: { label: string; key?: string; sort_order?: number }): Observable<InspectionCategory> {
+  createInspectionCategory(payload: {
+    label: string;
+    key?: string;
+    sort_order?: number;
+  }): Observable<InspectionCategory> {
     return this.http.post<InspectionCategory>(`${this.apiUrl}/inspection-categories`, payload);
   }
 
-  updateInspectionCategory(categoryId: number, payload: { label?: string; key?: string; sort_order?: number }): Observable<InspectionCategory> {
-    return this.http.put<InspectionCategory>(`${this.apiUrl}/inspection-categories/${categoryId}`, payload);
+  updateInspectionCategory(
+    categoryId: number,
+    payload: { label?: string; key?: string; sort_order?: number },
+  ): Observable<InspectionCategory> {
+    return this.http.put<InspectionCategory>(
+      `${this.apiUrl}/inspection-categories/${categoryId}`,
+      payload,
+    );
   }
 
   deleteInspectionCategory(categoryId: number): Observable<void> {
@@ -312,22 +362,26 @@ export class MachineHistorialService {
     formData.append('cost', cost.toString());
     formData.append('file', file, file.name);
 
-    return this.http.post<ApiDocument>(
-      `${this.apiUrl}/cars/${carId}/documents`,
-      formData
-    );
+    return this.http.post<ApiDocument>(`${this.apiUrl}/cars/${carId}/documents`, formData);
   }
 
   deleteDocument(documentId: number): Observable<void> {
-  
     return this.http.delete<void>(`${this.apiUrl}/documents/${documentId}`);
   }
 
   toggleDocumentPayment(documentId: number): Observable<ApiDocument> {
-    return this.http.patch<ApiDocument>(`${this.apiUrl}/documents/${documentId}/toggle-payment`, {});
+    return this.http.patch<ApiDocument>(
+      `${this.apiUrl}/documents/${documentId}/toggle-payment`,
+      {},
+    );
   }
 
-  createVendorReportLink(payload: { email: string; car_id: number; expires_in_days: number; name?: string | null }): Observable<VendorReportLinkResponse> {
+  createVendorReportLink(payload: {
+    email: string;
+    car_id: number;
+    expires_in_days: number;
+    name?: string | null;
+  }): Observable<VendorReportLinkResponse> {
     return this.http.post<VendorReportLinkResponse>(`${this.apiUrl}/vendor-report-links`, payload);
   }
 
@@ -349,5 +403,13 @@ export class MachineHistorialService {
     return this.http.get(`${this.apiUrl}/maintenances/${maintenanceId}/pdf`, {
       responseType: 'blob',
     });
+  }
+
+  getAnnualBudget(year: number): Observable<AnnualBudget> {
+    return this.http.get<AnnualBudget>(`${this.apiUrl}/budgets/${year}`);
+  }
+
+  saveAnnualBudget(year: number, amount: number): Observable<AnnualBudget> {
+    return this.http.post<AnnualBudget>(`${this.apiUrl}/budgets`, { year, amount });
   }
 }
